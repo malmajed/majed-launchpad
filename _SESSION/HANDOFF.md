@@ -1,6 +1,6 @@
 # Launchpad — session handoff
 
-Last updated: 2026-10-05 · Status: **all four tracks live (62 missions, 16 cases); build complete**
+Last updated: 2026-10-05 · Status: **four career tracks live (62 missions, 16 cases) + CFA Level I live (20 missions, exam simulator). CFA Level II (b01–b16) and Level III (x01–x22) still to build.**
 
 ## What it is
 Family learning PWA (single-file HTML) at https://malmajed.github.io/majed-launchpad/
@@ -18,6 +18,12 @@ Family standings, read-only Follow page (follow.html) with profile selector.
 - Link helpers HBRS/INV/OCW/DAMO/WIKI live in app.js (track files load alphabetically, so shared helpers must be in core files).
 - Approved mission lists are in `TRACKS[].titles` in `build/src/app.js` (titles are fixed; keep ids m01.. e01.. s01..).
 - Each batch should also add 4 more cases of the week to `CASES` (fictional GCC companies, illustrative data).
+
+- CFA Level I DONE (build v8): `labs_cfa1.js`, `data_cfa1.js` (a01–a20, 10 three-option MCQs each, `topic` tag per mission). `exam.js` = exam simulator (`#/exam`, `#/exam/cfa1|cfa2|cfa3`), samples by `m.topic` weights, tops up short topics from the rest of the bank, auto-saves MCQ-only results to `state.exams`.
+- CFA Level II TODO: track `cfa2`, prefix `b`, 16 titles in TRACKS. Each mission needs `topic` (keys in `EXAMS.cfa2.topics`) and `sets:[{t,v (vignette html),qs:[{q,o[3],a,w}x4]}]` for the simulator.
+- CFA Level III TODO: track `cfa3`, prefix `x`, 22 titles (10 core + 4 PM + 4 Private Markets + 4 Private Wealth pathway). Needs `sets` and `cr:[{q,model,pts:[...]}]`.
+- CFA content is ORIGINAL, aligned to CFA Institute's published topic outline/weights (2026). Never copy curriculum text. Code & Standards per 2023 revision (effective 1 Jan 2024: I(E) Competence; VI(A) Avoid or Disclose Conflicts).
+- Tests: `/home/claude/test7.js` (Level I missions/labs/quizzes), `test8.js` (exam simulator), server on 8766.
 
 ## Files
 - `build/src/core.js` — launchpad-kit core (sync, photos, DUEL). Patched only for: per-profile USER/LSKEY, `user` in push/pull/photo, duel `current.id` crash fix. Chess engine removed.

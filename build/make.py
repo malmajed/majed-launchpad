@@ -3,7 +3,7 @@ import os,re,sys,datetime
 R=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));S=os.path.join(R,'build','src')
 rd=lambda f:open(os.path.join(S,f)).read()
 ver=sys.argv[1] if len(sys.argv)>1 else 'dev'
-order=['core.js','app.js','engine.js','labs_consult.js','sims_consult.js','data_consult.js','cases.js']
+order=['core.js','app.js','icons.js','engine.js','labs_consult.js','sims_consult.js','data_consult.js','cases.js']
 extra=sorted(f for f in os.listdir(S) if f.endswith('.js') and f not in order)  # batch files: labs_mba.js, data_mba.js ...
 js='\n'.join([rd('core.js'),f"const BUILD='{ver} · {datetime.date.today()}';"]+[rd(f) for f in order[1:]+extra]+['boot();'])
 head='''<!doctype html>

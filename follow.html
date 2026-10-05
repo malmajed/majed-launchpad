@@ -289,7 +289,7 @@ const DUEL={
       box.innerHTML=`${DUEL.board(D,me)}<div class="readout">${txt}</div><div class="ctl">${both?`<button class="sbtn alt" id="dAgain">Back</button>`:''}</div>`;const ag=box.querySelector('#dAgain');if(ag)ag.onclick=()=>{if(stop)stop();onAgain()};if(both&&stop){stop();stop=null}};draw();if(!(D.p[0].done&&D.p[1].done))stop=DUEL.poll(D,me,draw);return()=>{if(stop)stop()}}
 };
 
-const BUILD='v7 · 2026-10-05';
+const BUILD='v8 · 2026-10-05';
 /* ================= Majed's Launchpad — app shell ================= */
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -314,9 +314,13 @@ const TRACKS=[
  {id:'consult',ico:'❖',name:'Consulting',sub:'The case method, Harvard-style',batch:1,titles:['How engagements work','Structured thinking and MECE','Issue trees','Hypothesis-driven problem solving','Profitability cases','Market sizing and estimation','Market-entry cases','Growth and M&A cases','Operations and cost-reduction cases','Pricing and new-product cases','Reading exhibits fast','Pyramid principle and storylining','Slide-writing','Client communication','Case-interview mastery']},
  {id:'mba',ico:'◆',name:'MBA Core',sub:'Accounting, finance, marketing, strategy, economics, data',batch:2,titles:['Reading the three statements','Working capital and the cash cycle','Ratio analysis and DuPont','Cost behaviour and break-even','Time value of money','Cost of capital','DCF valuation','Microeconomics for managers','Macroeconomics and the Saudi economy','Pricing strategy','Marketing: STP and the 4Ps','Competitive strategy: Five Forces','Growth strategy: BCG and Ansoff','Operations strategy and process analysis','Organisational behaviour','Data analysis for decisions']},
  {id:'eng',ico:'⚙',name:'Engineering Refresher',sub:'Manufacturing, lean, quality, OR, supply chain',batch:3,titles:['Manufacturing systems and process types','Capacity, utilisation and bottlenecks','Line balancing','Lean: 8 wastes and VSM','Lean tools: 5S, SMED, kanban','OEE and TPM','Six Sigma and process capability','Statistical process control','Quality systems: FMEA and root cause','Demand forecasting','Inventory: EOQ and safety stock','Supply-chain design and bullwhip','Operations research I: linear programming','Operations research II: queuing and scheduling','Industry 4.0','Project management: CPM and EVM']},
- {id:'startup',ico:'▲',name:'Entrepreneurship',sub:'From problem to pitch, in the Saudi ecosystem',batch:4,titles:['Opportunity recognition','Customer discovery','Jobs-to-be-done and value proposition','Lean canvas','Market sizing: TAM/SAM/SOM','Business and revenue models','Unit economics','MVP and experiments','Go-to-market','Financial model and runway','Fundraising stages and instruments','Cap tables and dilution','Term sheets','The Saudi ecosystem','The pitch']}
+ {id:'startup',ico:'▲',name:'Entrepreneurship',sub:'From problem to pitch, in the Saudi ecosystem',batch:4,titles:['Opportunity recognition','Customer discovery','Jobs-to-be-done and value proposition','Lean canvas','Market sizing: TAM/SAM/SOM','Business and revenue models','Unit economics','MVP and experiments','Go-to-market','Financial model and runway','Fundraising stages and instruments','Cap tables and dilution','Term sheets','The Saudi ecosystem','The pitch']},
+ {id:'cfa1',group:'cfa',ico:'Ⅰ',name:'CFA Level I',sub:'Tools and concepts: ten topics, weighted to the exam',batch:5,titles:['Ethics: Code and Standards I–III','Ethics: Standards IV–VII and GIPS','Ethics case drill','Rates, returns and time value of money','Statistics, hypothesis tests and regression','Markets, business cycles and policy','International trade and exchange rates','Income statement and balance sheet','Cash flows and analysis tools','Inventories, long-lived assets, taxes and liabilities','Reporting quality and ratio applications','Corporate issuers: governance, investment, capital structure','Equity markets, indices and efficiency','Industry analysis and equity valuation','Fixed income: instruments, pricing and yields','Term structure, duration and convexity','Credit risk and securitisation','Derivatives: forwards, futures, swaps and options','Alternative investments','Portfolio management and risk']},
+ {id:'cfa2',group:'cfa',ico:'Ⅱ',name:'CFA Level II',sub:'Asset valuation and analysis, tested in item sets',batch:6,titles:['Ethics vignettes','Multiple regression and time series','Machine learning and big data','Currencies and economic growth','Intercorporate investments and multinationals','Employee compensation, financial institutions and earnings quality','Capital structure, payouts, cost of capital and restructuring','Equity: DDM and free cash flow models','Multiples, residual income and private companies','Arbitrage-free valuation and binomial trees','Embedded options, credit models and CDS','Derivatives pricing, BSM and Greeks','Real estate, private equity and commodities','Multifactor models, VaR, backtesting and active management','Item-set technique','Level II mock']},
+ {id:'cfa3',group:'cfa',ico:'Ⅲ',name:'CFA Level III',sub:'Portfolio management and wealth planning, core plus three pathways',batch:7,titles:['Capital market expectations','Asset allocation: strategic and liability-relative','Asset allocation: constraints, goals and rebalancing','Portfolio construction: active vs passive and equity','Portfolio construction: fixed income and liability-driven','Trading, execution and monitoring','Derivatives, currency and risk management','Performance measurement, attribution and manager selection','Ethics and GIPS','Constructed-response technique','Pathway PM: index and active equity','Pathway PM: fixed income strategies','Pathway PM: hedge fund and multi-asset strategies','Pathway PM: trade strategy and case','Pathway Private Markets: private equity and private debt','Pathway Private Markets: real estate and infrastructure','Pathway Private Markets: fund structures, due diligence and performance','Pathway Private Markets: case','Pathway Private Wealth: clients, IPS and taxes','Pathway Private Wealth: estate, family and philanthropy','Pathway Private Wealth: risk management and insurance','Pathway Private Wealth: case']}
 ];
-const PFX={consult:'c',mba:'m',eng:'e',startup:'s'};
+const PFX={consult:'c',mba:'m',eng:'e',startup:'s',cfa1:'a',cfa2:'b',cfa3:'x'};
+const TOTAL=()=>TRACKS.reduce((n,t)=>n+t.titles.length,0);
 const M={};          // mission id -> mission object
 const LABS={};       // lab key -> fn(el, mission, done)
 const CASES=[];      // case-of-the-week list
@@ -356,6 +360,10 @@ const BADGES=[
  ['mba','◆','MBA Core complete',s=>trackDone('mba')],
  ['eng','⚙','Engineering complete',s=>trackDone('eng')],
  ['startup','▲','Entrepreneurship complete',s=>trackDone('startup')],
+ ['cfa1','Ⅰ','CFA Level I complete',s=>trackDone('cfa1')],
+ ['cfa2','Ⅱ','CFA Level II complete',s=>trackDone('cfa2')],
+ ['cfa3','Ⅲ','CFA Level III complete',s=>trackDone('cfa3')],
+ ['exam70','🎓','CFA mock exam 70%+',s=>(s.exams||[]).some(e=>e.score>=.7&&e.n>=30)],
  ['perfect','💯','Perfect test score',s=>Object.values(s.progress).some(p=>p.best>=1)],
  ['streak7','🔥','7-day streak',s=>streak()>=7],
  ['streak30','🌋','30-day streak',s=>streak()>=30],
@@ -401,7 +409,7 @@ function famStreak(s){if(!s||!s.days)return 0;let n=0;const d=new Date();if(!s.d
 function famDone(s){return s&&s.progress?Object.keys(s.progress).filter(id=>s.progress[id].status==='completed').length:0}
 async function familyTable(box){if(window._fam&&Date.now()-window._fam.t<300000){box.innerHTML=window._fam.h;return}if(!SYNC.url){box.innerHTML='<p class="note">Family standings need cloud sync.</p>';return}box.innerHTML='<p class="note">Loading family…</p>';const F=await familyStates();const ws=weekStart();
   const rows=USERS.map(u=>{const s=F[u.id];const last=s&&s.log&&s.log.length?s.log[s.log.length-1].t:0;return{u,s,xp:(s&&s.xp)||0,done:famDone(s),st:famStreak(s),wk:s&&s.log?s.log.filter(l=>l.t>=ws&&l.type==='complete').length:0,last}}).sort((x,y)=>y.xp-x.xp);
-  box.innerHTML=`<div class="tablewrap"><table class="t"><tr><th>Person</th><th>Level</th><th>XP</th><th>Missions</th><th>This week</th><th>Streak</th><th>Last active</th></tr>${rows.map(r=>`<tr><td><span class="row" style="gap:8px">${avatar(r.u.id,26)}${r.u.name}</span></td><td>${r.s?level(r.xp).name:'—'}</td><td>${fmt(r.xp)}</td><td>${r.done}/62</td><td>${r.wk}</td><td>${r.st}</td><td>${r.last?new Date(r.last).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—'}</td></tr>`).join('')}</table></div>`;window._fam={t:Date.now(),h:box.innerHTML}}
+  box.innerHTML=`<div class="tablewrap"><table class="t"><tr><th>Person</th><th>Level</th><th>XP</th><th>Missions</th><th>This week</th><th>Streak</th><th>Last active</th></tr>${rows.map(r=>`<tr><td><span class="row" style="gap:8px">${avatar(r.u.id,26)}${r.u.name}</span></td><td>${r.s?level(r.xp).name:'—'}</td><td>${fmt(r.xp)}</td><td>${r.done}/${TOTAL()}</td><td>${r.wk}</td><td>${r.st}</td><td>${r.last?new Date(r.last).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—'}</td></tr>`).join('')}</table></div>`;window._fam={t:Date.now(),h:box.innerHTML}}
 function vFamily(){view().innerHTML=`<a href="#/more" class="note">← More</a><h1>Family</h1><p class="note">Everyone's standing. Each person's missions, tests and reflections stay in their own profile.</p><div class="card" id="fam"></div><p class="note">Challenge each other in <a href="#/rooms">Online rooms</a>: Case Sprint duel or a partner case.</p>`;familyTable($('#fam'))}
 
 /* ---------- router ---------- */
@@ -411,7 +419,7 @@ function route(){const h=location.hash.replace(/^#\/?/,'')||'home';const [v,a,b]
   if(!USER){vPicker();return}
   if(locked()){vLock();return}
   $$('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.v===v||(v==='track'&&x.dataset.v==='tracks')||(v==='m'&&x.dataset.v==='tracks')||(['goals','badges','rooms','settings','journal','family'].includes(v)&&x.dataset.v==='more')));
-  const V={family:vFamily,home:vHome,tracks:vTracks,track:()=>vTrack(a),m:()=>vMission(a,b),review:vReview,case:()=>vCase(a),more:vMore,goals:vGoals,badges:vBadges,rooms:vRooms,settings:vSettings,journal:vJournal}[v]||vHome;
+  const V={exam:()=>vExam(a,b),family:vFamily,home:vHome,tracks:vTracks,track:()=>vTrack(a),m:()=>vMission(a,b),review:vReview,case:()=>vCase(a),more:vMore,goals:vGoals,badges:vBadges,rooms:vRooms,settings:vSettings,journal:vJournal}[v]||vHome;
   if(roomStop){roomStop();roomStop=null}
   V();renderTop()}
 function renderMap(){route()}
@@ -431,7 +439,7 @@ function vHome(){const L=level(state.xp||0);const ip=inProgress()||nextMission()
   <div class="grid g4 g2m kpis" style="margin:12px 0 14px">
     <div class="stat"><small>Level</small><b>${L.name}</b><small>${fmt(state.xp)} XP</small></div>
     <div class="stat"><small>Streak</small><b>${streak()} 🔥</b><small>days in a row</small></div>
-    <div class="stat"><small>Missions</small><b>${done().length}<span class="muted" style="font-size:1rem">/62</span></b><small>completed</small></div>
+    <div class="stat"><small>Missions</small><b>${done().length}<span class="muted" style="font-size:1rem">/${TOTAL()}</span></b><small>completed</small></div>
     <div class="stat"><small>Review due</small><b>${due}</b><small>concept cards</small></div>
   </div>
   ${m?`<div class="card upnext" style="--tc:${tcol(m.track).c}"><div class="row" style="flex-wrap:nowrap;align-items:flex-start"><span class="tile">${mico(ip,26)}</span><div style="min-width:0"><div class="eyebrow" style="color:var(--tc)">${(state.progress[ip]||{}).status==='started'?'Continue':'Up next'} · ${TRACKS.find(t=>t.id===m.track).name}</div><h2 style="margin-top:4px">${esc(m.title)}</h2></div></div><p class="note">${esc(m.blurb)}</p><div class="row"><button class="sbtn" onclick="go('#/m/${ip}')">Open mission</button><span class="note">~${m.mins||35} min</span></div></div>`:''}
@@ -441,11 +449,12 @@ function vHome(){const L=level(state.xp||0);const ip=inProgress()||nextMission()
   </div>
   ${due?`<div class="card"><div class="row"><div><h3 style="margin:0">Spaced review</h3><p class="note" style="margin:0">${due} card${due===1?'':'s'} due. Five minutes keeps the concepts fresh.</p></div><span class="spacer"></span><button class="sbtn" onclick="go('#/review')">Review now</button></div></div>`:''}
   <h2 style="margin-top:18px">Tracks</h2>
-  <div class="grid g2">${TRACKS.map(trackCard).join('')}</div>`}
+  ${trackGroups()}`}
+function trackGroups(){const g1=TRACKS.filter(t=>!t.group),g2=TRACKS.filter(t=>t.group==='cfa');return`<div class="grid g2">${g1.map(trackCard).join('')}</div><div class="row" style="margin:20px 0 8px"><h2 style="margin:0">CFA Program</h2><span class="spacer"></span><a class="note" href="#/exam">Exam simulator →</a></div><p class="note" style="margin-top:0">Original study material aligned to CFA Institute's published topic outline and weights. Use it alongside the official curriculum.</p><div class="grid g3">${g2.map(trackCard).join('')}</div>`}
 function trackCard(t){const s=trackStats(t.id),c=tcol(t.id);const avail=t.titles.some((_,i)=>M[mid(t.id,i)]);return`<div class="card tcard trk" style="--tc:${c.c}" onclick="go('#/track/${t.id}')"><div class="trkband" style="background:${c.g}"><span class="tile glass">${ico(c.i,26)}</span><div style="flex:1;min-width:0"><h3>${t.name}</h3><small>${t.sub}</small></div><span class="trkpct">${Math.round(s.d/s.n*100)}%</span></div><div class="trkbody"><div class="icorow">${t.titles.map((_,i)=>{const id=mid(t.id,i),dn=(state.progress[id]||{}).status==='completed';return`<span class="mini ${dn?'on':''} ${M[id]?'':'off'}" data-tip="${i+1}. ${esc(M[id]?M[id].title:t.titles[i])}${dn?' ✓':''}" role="link" aria-label="Mission ${i+1}: ${esc(t.titles[i])}" ${M[id]?`onclick="event.stopPropagation();go('#/m/${id}')"`:''}>${mico(id,15)}</span>`}).join('')}</div><div class="prog"><i style="width:${s.d/s.n*100}%"></i></div><small class="muted">${s.d} of ${s.n} missions${avail?'':' · coming soon'}</small></div></div>`}
-function vTracks(){view().innerHTML=`<h1>Tracks</h1><p class="note">Each mission: concept cards → a working lab → a self-test → a reflection. Concepts then join your spaced-review deck.</p><div class="grid g2">${TRACKS.map(trackCard).join('')}</div>`}
+function vTracks(){view().innerHTML=`<h1>Tracks</h1><p class="note">Each mission: concept cards → a working lab → a self-test → a reflection. Concepts then join your spaced-review deck.</p>${trackGroups()}`}
 function vTrack(t){const tr=TRACKS.find(x=>x.id===t);if(!tr)return vTracks();const s=trackStats(t);
-  const c=tcol(t);view().innerHTML=`<div style="--tc:${c.c}"><div class="trackhead" style="background:${c.g};border:0"><div class="row" style="flex-wrap:nowrap"><span class="tile glass" style="width:52px;height:52px">${ico(c.i,30)}</span><div><div class="eyebrow" style="color:rgba(255,255,255,.8)">Track</div><h1 style="margin:0">${tr.name}</h1></div></div><p style="margin-top:8px">${tr.sub}</p><div class="prog" style="background:rgba(255,255,255,.2)"><i style="width:${s.d/s.n*100}%;background:#fff"></i></div><small style="color:rgba(255,255,255,.85)">${s.d} of ${s.n} complete</small></div>
+  const c=tcol(t);view().innerHTML=`<div style="--tc:${c.c}"><div class="trackhead" style="background:${c.g};border:0"><div class="row" style="flex-wrap:nowrap"><span class="tile glass" style="width:52px;height:52px">${ico(c.i,30)}</span><div><div class="eyebrow" style="color:rgba(255,255,255,.8)">Track</div><h1 style="margin:0">${tr.name}</h1></div></div><p style="margin-top:8px">${tr.sub}</p><div class="prog" style="background:rgba(255,255,255,.2)"><i style="width:${s.d/s.n*100}%;background:#fff"></i></div><small style="color:rgba(255,255,255,.85)">${s.d} of ${s.n} complete</small>${tr.group==='cfa'&&typeof EXAMS!=='undefined'&&EXAMS[t]?`<div class="ctl" style="margin-bottom:0"><button class="sbtn" style="background:#fff;color:${c.c};border-color:#fff" onclick="go('#/exam/${t}')">Exam simulator</button></div>`:''}</div>
   <div class="mlist">${tr.titles.map((ti,i)=>{const id=mid(t,i),m=M[id],p=state.progress[id]||{};const dn=p.status==='completed';
     return`<button class="mitem ${dn?'done':''} ${m?'':'lock'}" ${m?`onclick="go('#/m/${id}')"`:'disabled'}><span class="tile ${dn?'':'soft'}">${mico(id,22)}</span><span class="t"><small class="mnum">Mission ${i+1}${dn?' · ✓ done':''}</small><b>${esc(m?m.title:ti)}</b><small class="muted">${m?esc(m.lab.name):'Coming in batch '+tr.batch}</small></span>${dn?`<span class="pill done">${Math.round((p.best||0)*100)}%</span>`:p.status==='started'?'<span class="pill gold">In progress</span>':''}</button>`}).join('')}</div></div>`}
 
@@ -558,7 +567,7 @@ function vSettings(){view().innerHTML=`<a href="#/more" class="note">← More</a
 function renderParent(){const L=level(state.xp||0);const w=weekProgress();const last=(state.log||[]).slice(-1)[0];const r=state.settings.shareRefl?state.refl:{};
   view().innerHTML=`<div class="chips" style="margin-bottom:10px">${USERS.map(u=>`<button class="chip ${u.id===USER?'on':''}" data-fu="${u.id}">${u.name}</button>`).join('')}</div><div class="followbar">Read-only view of ${esc(profName(USER))}'s progress · ${state.savedAt?'last synced '+new Date(state.savedAt).toLocaleString('en-GB'):'waiting for data'} · <span id="syncStat"></span></div>
   <h1>${esc(profName(USER))}'s Launchpad</h1>
-  <div class="grid g4 g2m" style="margin:12px 0"><div class="stat"><small>Level</small><b>${L.name}</b><small>${fmt(state.xp)} XP</small></div><div class="stat"><small>Streak</small><b>${streak()}</b><small>days</small></div><div class="stat"><small>Missions</small><b>${done().length}/62</b><small>completed</small></div><div class="stat"><small>Last active</small><b style="font-size:1.05rem">${last?new Date(last.t).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—'}</b><small>${last?new Date(last.t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):''}</small></div></div>
+  <div class="grid g4 g2m" style="margin:12px 0"><div class="stat"><small>Level</small><b>${L.name}</b><small>${fmt(state.xp)} XP</small></div><div class="stat"><small>Streak</small><b>${streak()}</b><small>days</small></div><div class="stat"><small>Missions</small><b>${done().length}/${TOTAL()}</b><small>completed</small></div><div class="stat"><small>Last active</small><b style="font-size:1.05rem">${last?new Date(last.t).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—'}</b><small>${last?new Date(last.t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):''}</small></div></div>
   <div class="grid g2"><div class="card"><h3>This week</h3>${goalBars(w)}${w.g.items.length?'<ul>'+w.g.items.map(x=>`<li>${x.done?'✅':'⬜'} ${esc(x.t)}</li>`).join('')+'</ul>':''}</div>
   <div class="card"><h3>Tracks</h3>${TRACKS.map(t=>{const s=trackStats(t.id);return`<div style="margin:8px 0"><div class="row" style="font-size:.9rem"><span>${t.ico} ${t.name}</span><span class="spacer"></span><b>${s.d}/${s.n}</b></div><div class="prog"><i style="width:${s.d/s.n*100}%"></i></div></div>`}).join('')}</div></div>
   <div class="card"><h3>Missions</h3><div class="tablewrap"><table class="t"><tr><th>Mission</th><th>Status</th><th>Test</th><th>Confidence</th><th>Minutes</th></tr>${Object.keys(state.progress).filter(id=>M[id]).sort().map(id=>{const p=state.progress[id];return`<tr><td>${esc(M[id].title)}</td><td>${p.status==='completed'?'✅':'…'}</td><td>${p.steps&&p.steps.test?Math.round((p.best||0)*100)+'%':'—'}</td><td>${state.conf[id]?state.conf[id]+'/5':'—'}</td><td>${Math.round((state.time[id]||0)/60)}</td></tr>`}).join('')||'<tr><td colspan=5>No missions started yet.</td></tr>'}</table></div></div>
@@ -581,6 +590,90 @@ function boot(){applyTheme();
   addEventListener('hashchange',route);route();renderTop();
   if(SYNC.url){setSyncStatus('busy','');pullState()}else setSyncStatus('off','Cloud sync is off');
   addEventListener('visibilitychange',()=>{if(!document.hidden&&SYNC.url)pullState()})}
+
+/* ================= Icons and track colours ================= */
+/* 24×24 stroke icons (drawn for this app) */
+const IC={
+ briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+ split:'<path d="M12 3v6M12 9l-6 6M12 9l6 6M6 15v5M18 15v5"/>',
+ tree:'<rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/><path d="M12 7v4M5 16v-3h14v3"/>',
+ bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V17h5v-1.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>',
+ coins:'<ellipse cx="9" cy="7" rx="6" ry="3"/><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"/><path d="M9 15v3c0 1.7 2.7 3 6 3s6-1.3 6-3v-5c0-1.6-2.4-2.9-5.5-3"/>',
+ ruler:'<path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+ merge:'<circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="12" r="2"/><path d="M6 7v10M6 7c0 5 6 5 10 5"/>',
+ wrench:'<path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.1 2.1 0 0 1-3-3l9.4-9.4a4 4 0 0 0-2-2z"/>',
+ tag:'<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/>',
+ barchart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ pyramid:'<path d="M12 3L2 20h20z"/><path d="M7 12h10M4.5 16h15"/>',
+ slides:'<rect x="2" y="3" width="20" height="13" rx="1.5"/><path d="M12 16v4M8 20h8M6 12l3-3 3 2 5-4"/>',
+ chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 14h5"/>',
+ mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/>',
+ doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/>',
+ cycle:'<path d="M21 12a9 9 0 0 1-15.5 6.2M3 12A9 9 0 0 1 18.5 5.8"/><path d="M18 2v4h-4M6 22v-4h4"/>',
+ pie:'<path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>',
+ scale:'<path d="M12 3v18M7 21h10M4 7h16M4 7l-2 6a3 3 0 0 0 4 0zM20 7l-2 6a3 3 0 0 0 4 0z"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ percent:'<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>',
+ trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+ curve:'<path d="M3 21V3M3 21h18"/><path d="M6 18c3-1 4-11 7-11s4 8 7 9"/>',
+ landmark:'<path d="M3 21h18M5 18v-7M9.5 18v-7M14.5 18v-7M19 18v-7M2 9l10-6 10 6z"/>',
+ target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+ shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+ grid:'<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/>',
+ flow:'<rect x="2" y="9" width="5" height="6" rx="1"/><rect x="9.5" y="9" width="5" height="6" rx="1"/><rect x="17" y="9" width="5" height="6" rx="1"/><path d="M7 12h2.5M14.5 12H17"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c3 0 5 2 5 5"/>',
+ scatter:'<path d="M3 3v18h18"/><circle cx="8" cy="15" r="1.3"/><circle cx="11" cy="11" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="18" cy="7" r="1.3"/><path d="M6 17L20 6" stroke-dasharray="2 2"/>',
+ factory:'<path d="M2 21V10l6 4V10l6 4V6l8 4v11z"/><path d="M6 17h2M11 17h2M16 17h2"/>',
+ gauge:'<path d="M4 18a9 9 0 1 1 16 0"/><path d="M12 13l4-5"/><circle cx="12" cy="14" r="1.5"/>',
+ sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+ map:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+ kanban:'<rect x="3" y="3" width="5" height="15" rx="1"/><rect x="10" y="3" width="5" height="10" rx="1"/><rect x="17" y="3" width="4" height="7" rx="1"/>',
+ activity:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+ crosshair:'<circle cx="12" cy="12" r="8"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>',
+ linechart:'<path d="M3 3v18h18"/><path d="M6 12h14" stroke-dasharray="2 2"/><path d="M6 15l3-4 3 2 3-6 3 3"/>',
+ alert:'<path d="M12 3L2 20h20z"/><path d="M12 10v4M12 17h0"/>',
+ forecast:'<path d="M3 3v18h18"/><path d="M6 16l4-4 3 2 3-4"/><path d="M16 10l4-3" stroke-dasharray="2 2"/>',
+ boxes:'<rect x="3" y="12" width="8" height="8" rx="1"/><rect x="13" y="12" width="8" height="8" rx="1"/><rect x="8" y="3" width="8" height="8" rx="1"/>',
+ truck:'<path d="M2 6h12v10H2zM14 10h4l4 3v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
+ sigma:'<path d="M18 4H6l6 8-6 8h12"/>',
+ queue:'<circle cx="5" cy="9" r="2"/><circle cx="11" cy="9" r="2"/><circle cx="17" cy="9" r="2"/><path d="M3 17h4M9 17h4M15 17h4M20 5v14"/>',
+ cpu:'<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
+ calendar:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4M7 17h8"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>',
+ puzzle:'<path d="M10 3h4v3a2 2 0 1 0 4 0V3h3v7h-3a2 2 0 1 0 0 4h3v7h-7v-3a2 2 0 1 0-4 0v3H3v-7h3a2 2 0 1 0 0-4H3V3z"/>',
+ layout:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 9v12M15 9v12"/>',
+ layers:'<path d="M12 2l10 5-10 5L2 7z"/><path d="M2 12l10 5 10-5M2 17l10 5 10-5"/>',
+ calculator:'<rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4"/><path d="M8 13h0M12 13h0M16 13h0M8 17h0M12 17h0M16 17h0"/>',
+ flask:'<path d="M9 3h6M10 3v6L4 19a2 2 0 0 0 1.7 3h12.6A2 2 0 0 0 20 19l-6-10V3"/><path d="M7 15h10"/>',
+ megaphone:'<path d="M3 10v4h4l8 5V5L7 10z"/><path d="M18 9a4 4 0 0 1 0 6M7 14l1 6h3l-1-5"/>',
+ hourglass:'<path d="M6 2h12M6 22h12M7 2c0 5 10 5 10 10S7 17 7 22M17 2c0 5-10 5-10 10s10 5 10 10"/>',
+ handshake:'<path d="M2 12l4-4 4 2 3-2 3 1 6 3-4 5-3-2-2 2-3-1-3-2z"/><path d="M10 10l3 3"/>',
+ table:'<rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 10h18M3 15h18M9 4v16"/>',
+ signature:'<path d="M3 17c3 0 4-6 6-6s1 6 3 6 3-4 4-4 1 3 5 3"/><path d="M3 21h18"/>',
+ pin:'<path d="M12 22s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',
+ rocket:'<path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M9 15l-3-3c1-4 4-8 10-9 1 6-3 9-9 12z"/><circle cx="15" cy="9" r="1.5"/>',
+ home:'<path d="M3 11l9-8 9 8M5 9v12h14V9"/><path d="M10 21v-6h4v6"/>',
+ tracks:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+ review:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+ casebook:'<path d="M4 4a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/><path d="M4 20a2 2 0 0 1 2-2h13M8 7h7M8 11h5"/>',
+ more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+ book:'<path d="M2 4h7a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H2zM22 4h-7a3 3 0 0 0-3 3v14a2 2 0 0 1 2-2h8z"/>',
+ check:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l3 3 5-6"/>',
+ pen:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+ library:'<path d="M4 3v18M8 3v18M12 5l4 15M16 4l4 16"/>'
+};
+const ico=(k,sz,sw)=>`<svg class="ic" width="${sz||22}" height="${sz||22}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw||1.8}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||IC.target}</svg>`;
+/* track colours: [main, soft background (light), soft background (dark)] */
+const TC={consult:{c:'#0E8C8C',g:'linear-gradient(135deg,#0B5E63,#0E8C8C)',i:'briefcase'},mba:{c:'#3C5FD0',g:'linear-gradient(135deg,#22378A,#3C5FD0)',i:'landmark'},eng:{c:'#D9711E',g:'linear-gradient(135deg,#9A4A0E,#D9711E)',i:'factory'},startup:{c:'#B4367A',g:'linear-gradient(135deg,#7A1F55,#B4367A)',i:'rocket'},cfa1:{c:'#2F8A4E',g:'linear-gradient(135deg,#1C5A32,#2F8A4E)',i:'scale'},cfa2:{c:'#6A4FC9',g:'linear-gradient(135deg,#3F2C8C,#6A4FC9)',i:'trend'},cfa3:{c:'#A9821C',g:'linear-gradient(135deg,#0B1F3A,#A9821C)',i:'pie'}};
+/* one icon per mission */
+const MICON={c01:'briefcase',c02:'split',c03:'tree',c04:'bulb',c05:'coins',c06:'ruler',c07:'globe',c08:'merge',c09:'wrench',c10:'tag',c11:'barchart',c12:'pyramid',c13:'slides',c14:'chat',c15:'mic',
+ m01:'doc',m02:'cycle',m03:'pie',m04:'scale',m05:'clock',m06:'percent',m07:'trend',m08:'curve',m09:'landmark',m10:'tag',m11:'target',m12:'shield',m13:'grid',m14:'flow',m15:'users',m16:'scatter',
+ e01:'factory',e02:'gauge',e03:'sliders',e04:'map',e05:'kanban',e06:'activity',e07:'crosshair',e08:'linechart',e09:'alert',e10:'forecast',e11:'boxes',e12:'truck',e13:'sigma',e14:'queue',e15:'cpu',e16:'calendar',
+ s01:'search',s02:'mic',s03:'puzzle',s04:'layout',s05:'target',s06:'layers',s07:'calculator',s08:'flask',s09:'megaphone',s10:'hourglass',s11:'handshake',s12:'table',s13:'signature',s14:'pin',s15:'rocket'};
+const tcol=t=>TC[t]||TC.consult;
+const mico=(id,sz)=>ico(MICON[id]||'target',sz);
+const STEPICO={learn:'book',lab:'flask',test:'check',reflect:'pen',read:'library'};
 
 /* ================= case simulator, drills, online rooms ================= */
 function runSim(el,sim,o={}){let i=0,pts=0,max=0;const t0=Date.now();let tick=null;const log=[];
@@ -1337,6 +1430,452 @@ CASES.push(
   {q:'How should they plan for Sara and future hires?',note:'Reserve an option pool (e.g., 10–15%) now. If Sara joins as a co-founder-level hire, her equity should come with vesting and reflect stage and risk at joining (typically lower than the original founders). Don\'t promise percentages casually over dinner.',pts:['Option pool planned early','Later joiners get vested equity','Equity reflects risk at joining time','Avoid informal promises']},
   {q:'What should they agree before Bader resigns?',note:'A written founders\' agreement: equity split with vesting, roles (CEO/CTO), decision rules and deadlock resolution, Omar\'s commitment date, IP assignment, how they will fund the first months, and what happens if the pilot fails. Have the hard conversation now — friendship survives honesty more easily than resentment.',pts:['Written founders\' agreement','Roles and decision rules','Commitment dates and funding plan','Have the conversation before, not after']}]}
 );
+
+/* ================= CFA Level I: missions (original content aligned to CFA Institute's topic outline) ================= */
+const CFAI='https://www.cfainstitute.org/programs/cfa-program';
+const CFAS='https://www.cfainstitute.org/standards/professionals/code-ethics-standards';
+Object.assign(MICON,{a01:'shield',a02:'shield',a03:'scale',a04:'clock',a05:'scatter',a06:'landmark',a07:'globe',a08:'doc',a09:'cycle',a10:'boxes',a11:'alert',a12:'users',a13:'barchart',a14:'trend',a15:'percent',a16:'curve',a17:'layers',a18:'split',a19:'grid',a20:'pie'});
+addMissions([
+{id:'a01',track:'cfa1',topic:'eth',title:'Ethics: Code and Standards I–III',mins:45,blurb:'The Code of Ethics and Standards I to III: professionalism, market integrity and duties to clients.',
+ lab:{key:'ethstd',name:'Which standard applies?',intro:'Eight original scenarios. Name the standard most directly involved.'},
+ cards:[
+  {h:'The Code of Ethics',b:`<p>Members and candidates must act with integrity, competence, diligence and respect; put clients' interests and the integrity of the profession above their own; use reasonable care and independent judgement; practise in a professional manner; promote the integrity of capital markets; and maintain and develop their competence.</p>`},
+  {h:'Standard I: Professionalism',b:`<ul><li><b>I(A) Knowledge of the Law:</b> follow the stricter of the law or the Code and Standards; dissociate from violations.</li><li><b>I(B) Independence and Objectivity:</b> no gifts or pressure that compromise judgement (modest gifts fine; disclose client gifts to employer).</li><li><b>I(C) Misrepresentation:</b> no false statements, no plagiarism.</li><li><b>I(D) Misconduct:</b> no dishonesty, fraud or deceit.</li><li><b>I(E) Competence:</b> act with and maintain the competence your responsibilities require (added effective 2024).</li></ul>`},
+  {h:'Standard II: Integrity of Capital Markets',b:`<p><b>II(A) Material Nonpublic Information:</b> do not act or cause others to act on it. The <b>mosaic theory</b> allows conclusions from public information plus non-material nonpublic information.</p><p><b>II(B) Market Manipulation:</b> no transactions or information that distort prices or volume to mislead.</p>`},
+  {h:'Standard III: Duties to Clients',b:`<ul><li><b>III(A) Loyalty, Prudence and Care:</b> clients first; for pooled funds the duty is to the mandate.</li><li><b>III(B) Fair Dealing:</b> fair, not necessarily equal, treatment in recommendations and actions.</li><li><b>III(C) Suitability:</b> know the client, document an IPS, review it.</li><li><b>III(D) Performance Presentation:</b> fair, accurate, complete.</li><li><b>III(E) Preservation of Confidentiality.</b></li></ul>`},
+  {h:'How ethics is examined',b:`<p>Questions are short scenarios: decide whether a standard is violated, which one, and the correct action. Typical traps: "the law allows it" (apply the stricter rule), "everyone at my firm does it", and partial disclosure.</p>`}],
+ quiz:[
+  {q:'Local law permits an action that the Standards prohibit. A member should:',o:['Follow local law','Follow the Code and Standards, as the stricter requirement','Ask the client to decide'],a:1,w:'Apply the stricter of applicable law and the Code and Standards (I(A)).'},
+  {q:'Under the mosaic theory, an analyst may reach a conclusion using:',o:['Material nonpublic information if it is combined with public data','Public information and non-material nonpublic information','Any information obtained legally'],a:1,w:'Material nonpublic information may never be used, even as one piece.'},
+  {q:'An analyst receives an expensive watch from a company she covers. The standard most at risk is:',o:['I(B) Independence and Objectivity','III(B) Fair Dealing','IV(A) Loyalty'],a:0,w:'Gifts from issuers can compromise objectivity.'},
+  {q:'Fair dealing requires that clients be treated:',o:['Equally in all respects','Fairly, so no client is disadvantaged; different service levels are allowed if disclosed','According to account size'],a:1,w:'Fair, not identical; premium services are permitted when disclosed and available to all who pay.'},
+  {q:'Which action satisfies III(C) Suitability for an individual client?',o:['Selling the firm\'s best-performing fund','Documenting objectives and constraints in an IPS and reviewing it regularly','Asking the client to sign a risk waiver'],a:1,w:'Know the client and keep the IPS current.'},
+  {q:'Copying another analyst\'s research without attribution violates:',o:['I(C) Misrepresentation','II(B) Market Manipulation','V(C) Record Retention'],a:0,w:'Plagiarism is misrepresentation.'},
+  {q:'Spreading false positive rumours about a stock before selling it is:',o:['Permitted if the analyst holds no position','Market manipulation under II(B)','Only a firm-policy matter'],a:1,w:'Information-based manipulation.'},
+  {q:'The Competence standard I(E) became effective in:',o:['2014','2024','It does not exist'],a:1,w:'Added in the 2023 revisions, effective 1 January 2024.'},
+  {q:'When managing a fund to a stated mandate, the duty of loyalty is owed primarily to:',o:['Each individual investor\'s personal needs','The fund\'s stated mandate and its investors as a group','The employer'],a:1,w:'For pooled vehicles, follow the mandate.'},
+  {q:'A member discovers her employer is breaking the law. Under I(A), the minimum action is to:',o:['Report to regulators immediately in all cases','Dissociate from the activity, often by raising it with compliance and, if needed, resigning','Ignore it if she is not involved'],a:1,w:'Dissociation is required; reporting to authorities may be advisable or required by law.'}],
+ srs:[{q:'Seven Standards headings?',a:'I Professionalism, II Integrity of Capital Markets, III Duties to Clients, IV Duties to Employers, V Investment Analysis/Recommendations/Actions, VI Conflicts of Interest, VII Responsibilities as Member/Candidate.'},{q:'Mosaic theory?',a:'Public + non-material nonpublic information may be combined; material nonpublic may not be used.'},{q:'Standard I sub-standards?',a:'(A) Knowledge of the Law, (B) Independence and Objectivity, (C) Misrepresentation, (D) Misconduct, (E) Competence.'},{q:'Stricter rule?',a:'Follow the stricter of law and the Code and Standards.'}],
+ read:[{t:'Code of Ethics and Standards of Professional Conduct',s:'CFA Institute',u:CFAS},{t:'CFA Program overview and curriculum access',s:'CFA Institute',u:CFAI},{t:'Summary of the 2023 revisions to the Code and Standards',s:'CFA Institute (PDF)',u:'https://www.cfainstitute.org/-/media/documents/support/ethics/summary-of-the-2023-revisions-to-the-cfa-institute-code-and-standards.pdf'}]},
+
+{id:'a02',track:'cfa1',topic:'eth',title:'Ethics: Standards IV–VII and GIPS',mins:45,blurb:'Duties to employers, investment analysis, conflicts, CFA responsibilities, and the GIPS standards.',
+ lab:{key:'ethstd',name:'Which standard applies?',intro:'Nine more original scenarios covering Standards IV to VII.'},
+ cards:[
+  {h:'Standard IV: Duties to Employers',b:`<ul><li><b>IV(A) Loyalty:</b> act for the employer's benefit; preparing to compete is allowed, misappropriating clients or records is not.</li><li><b>IV(B) Additional Compensation Arrangements:</b> get written consent from all parties before accepting outside compensation that conflicts.</li><li><b>IV(C) Responsibilities of Supervisors:</b> make reasonable efforts to ensure compliance by those you supervise.</li></ul>`},
+  {h:'Standard V: Investment Analysis, Recommendations and Actions',b:`<ul><li><b>V(A) Diligence and Reasonable Basis.</b></li><li><b>V(B) Communication with Clients:</b> disclose the investment process, significant limitations and risks, and (since 2024) the nature of services and their costs; distinguish fact from opinion.</li><li><b>V(C) Record Retention:</b> keep records supporting analysis (seven years is the guidance absent other rules).</li></ul>`},
+  {h:'Standard VI: Conflicts of Interest',b:`<ul><li><b>VI(A) Avoid or Disclose Conflicts</b> (renamed in 2024, now emphasising avoidance first).</li><li><b>VI(B) Priority of Transactions:</b> clients and employer before personal trades.</li><li><b>VI(C) Referral Fees:</b> disclose to employer, clients and prospects.</li></ul>`},
+  {h:'Standard VII: Responsibilities as Member or Candidate',b:`<p><b>VII(A)</b> no conduct that compromises the reputation or integrity of CFA Institute, the designation or exams (no sharing exam content). <b>VII(B)</b> no misrepresenting the designation: no "partial" CFA, no "expected" charter; you may state you passed levels.</p>`},
+  {h:'GIPS standards',b:`<p>The Global Investment Performance Standards are voluntary, ethical standards for presenting investment performance fairly and with full disclosure. Firms claim compliance firm-wide; they present composites of all fee-paying discretionary portfolios with similar strategies. Verification by a third party is recommended, not required.</p>`}],
+ quiz:[
+  {q:'An employee may, before leaving, do which of the following without violating IV(A)?',o:['Take client contact lists for later use','Make preparations such as registering a new company, on her own time','Solicit current clients while still employed'],a:1,w:'Preparation is allowed; misappropriation and solicitation are not.'},
+  {q:'Additional compensation that could conflict with the employer requires:',o:['Oral notice to a colleague','Written consent from all parties involved','No action if under USD 1,000'],a:1,w:'IV(B).'},
+  {q:'A supervisor who learns of a possible violation should first:',o:['Wait for compliance to notice','Promptly investigate and take steps to prevent recurrence','Report to the press'],a:1,w:'IV(C) reasonable efforts.'},
+  {q:'The 2024 revision to V(B) added a requirement to disclose:',o:['The analyst\'s salary','The nature of services provided and their costs to the client','All proprietary models'],a:1,w:'Disclosure of services and associated costs.'},
+  {q:'Absent regulatory guidance, CFA Institute recommends retaining records for at least:',o:['3 years','7 years','20 years'],a:1,w:'Seven years.'},
+  {q:'A portfolio manager trades for himself before a client block order. This violates:',o:['VI(B) Priority of Transactions','III(D) Performance Presentation','VII(A)'],a:0,w:'Clients and employer come first.'},
+  {q:'Which statement about the designation is permitted?',o:['"John Smith, CFA Level III"','"I passed Level II of the CFA Program on my first attempt"','"CFA (expected 2027)"'],a:1,w:'Factual statements about passed levels are allowed.'},
+  {q:'GIPS compliance is claimed:',o:['Per product','On a firm-wide basis','Only after verification'],a:1,w:'Firm-wide.'},
+  {q:'A GIPS composite includes:',o:['Only the best-performing accounts','All actual fee-paying discretionary portfolios managed to a similar strategy','Model portfolios'],a:1,w:'No cherry-picking.'},
+  {q:'Third-party verification under GIPS is:',o:['Required','Recommended but voluntary','Prohibited'],a:1,w:'Recommended.'}],
+ srs:[{q:'Standard IV sub-standards?',a:'(A) Loyalty, (B) Additional Compensation Arrangements, (C) Responsibilities of Supervisors.'},{q:'Standard VI sub-standards?',a:'(A) Avoid or Disclose Conflicts, (B) Priority of Transactions, (C) Referral Fees.'},{q:'V(B) 2024 addition?',a:'Disclose nature of services and their costs to the client.'},{q:'GIPS basics?',a:'Voluntary, firm-wide claim; composites of all fee-paying discretionary portfolios; verification recommended.'}],
+ read:[{t:'Code of Ethics and Standards of Professional Conduct',s:'CFA Institute',u:CFAS},{t:'GIPS standards',s:'CFA Institute',u:'https://www.gipsstandards.org/'},{t:'Standards of Practice Handbook (12th edition)',s:'CFA Institute (PDF)',u:'https://www.cfainstitute.org/-/media/documents/code/code-ethics-standards/standards-practice-handbook-12th-edition.pdf'}]},
+
+{id:'a03',track:'cfa1',topic:'eth',title:'Ethics case drill',mins:35,blurb:'Practise the judgement calls that decide ethics questions.',
+ lab:{key:'ethcase',name:'Violation or not?',intro:'Nine scenarios. Decide, then read the reason.'},
+ cards:[
+  {h:'A decision routine',b:`<ol><li>Who is the member, and in what role?</li><li>What duty applies (client, employer, market, profession)?</li><li>Is there a conflict, a misstatement, or information misuse?</li><li>Was it disclosed, consented to or documented?</li><li>What is the required or recommended action?</li></ol>`},
+  {h:'Disclosure often cures',b:`<p>Many conflicts (referral fees, holdings, outside work) are acceptable when properly disclosed or consented to. Disclosure does <b>not</b> cure misuse of material nonpublic information, misrepresentation or manipulation.</p>`},
+  {h:'Recommended procedures',b:`<p>The Standards include recommended procedures for compliance: written policies, blackout periods, restricted lists, information barriers ("firewalls"), and pre-clearance of personal trades. Exams test which procedure best addresses a situation.</p>`},
+  {h:'Common traps',b:`<ul><li>"It was legal" — the stricter rule still applies.</li><li>"The client agreed" — clients cannot waive suitability or fair dealing for others.</li><li>"Small gift" — fine from clients if disclosed; risky from issuers.</li></ul>`},
+  {h:'Weight matters',b:`<p>Ethics is 15–20% of Level I and is studied by many candidates last; it repays early, regular practice. Re-read the Standards' text itself, not only summaries.</p>`}],
+ quiz:[
+  {q:'An analyst learns of an unannounced merger from a friend at the target company. She should:',o:['Trade but not tell clients','Not trade or cause others to trade, and encourage public dissemination where appropriate','Trade only if she believes the information is already rumoured'],a:1,w:'II(A).'},
+  {q:'Information barriers (firewalls) primarily help prevent:',o:['Misuse of material nonpublic information','Poor performance','High fees'],a:0,w:'Separating research from investment banking.'},
+  {q:'A client asks to be excluded from an IPO allocation so others get more. The manager:',o:['Must refuse','May honour the client\'s documented instruction','Must allocate pro rata anyway'],a:1,w:'Clients can decline; fair dealing concerns are about the firm\'s choices.'},
+  {q:'A referral fee arrangement is acceptable if:',o:['It is under 1% of assets','It is disclosed to the employer, clients and prospects before engagement','The broker is reputable'],a:1,w:'VI(C).'},
+  {q:'A member gives an opinion as if it were a certain fact. This violates:',o:['V(B)','IV(C)','II(B)'],a:0,w:'Distinguish fact from opinion.'},
+  {q:'Personal trading pre-clearance is a recommended procedure mainly for:',o:['VI(B) Priority of Transactions','III(E) Confidentiality','VII(B)'],a:0,w:'Prevents front-running.'},
+  {q:'A candidate discusses broad topic areas of the exam after sitting it. This is:',o:['A violation','Not a violation if no specific questions or answers are disclosed','A violation only for Level III'],a:1,w:'Broad topics are fine; specific content is not.'},
+  {q:'Using a client\'s confidential information to defend against a legal claim by the client is:',o:['A violation','Permitted','Permitted only with CFA Institute approval'],a:1,w:'Confidentiality exceptions include legal requirements and the member\'s defence.'},
+  {q:'Which does disclosure NOT cure?',o:['Holding shares in a covered company','Acting on material nonpublic information','Receiving a referral fee'],a:1,w:'MNPI misuse is never acceptable.'},
+  {q:'A manager deviates from a client\'s IPS to chase returns without consulting the client. Most directly:',o:['III(C) Suitability','IV(B)','VII(A)'],a:0,w:'Actions must fit the client\'s IPS.'}],
+ srs:[{q:'What can disclosure cure?',a:'Conflicts like holdings, referral fees, outside work — not MNPI misuse, misrepresentation or manipulation.'},{q:'Firewalls address?',a:'Flow of material nonpublic information between departments.'},{q:'Pre-clearance addresses?',a:'Priority of transactions (front-running).'},{q:'Five-step ethics routine?',a:'Role → duty → conflict/misstatement/info → disclosure/consent → required action.'}],
+ read:[{t:'Ethics in Practice resources',s:'CFA Institute',u:'https://www.cfainstitute.org/standards/professionals/code-ethics-standards'},{t:'Standards of Practice Handbook',s:'CFA Institute (PDF)',u:'https://www.cfainstitute.org/-/media/documents/code/code-ethics-standards/standards-practice-handbook-12th-edition.pdf'},{t:'CFA Program',s:'CFA Institute',u:CFAI}]},
+
+{id:'a04',track:'cfa1',topic:'qm',title:'Rates, returns and time value of money',mins:40,blurb:'Interest rates, return measures, compounding and annuities.',
+ lab:{key:'tvm',name:'TVM calculator',intro:'PV, FV, annuities and effective annual rates.'},
+ cards:[
+  {h:'Interest rate components',b:`<div class="formula">r ≈ real risk-free rate + expected inflation + default risk + liquidity + maturity premiums</div>`},
+  {h:'Compounding',b:`<div class="formula">FV = PV(1 + r/m)^(mN) · EAR = (1 + APR/m)^m − 1 · Continuous: FV = PV·e^(rN)</div>`},
+  {h:'Annuities and perpetuities',b:`<div class="formula">PV(ordinary annuity) = A[1 − (1 + r)^−N] ÷ r · PV(perpetuity) = A ÷ r · Annuity due = ordinary × (1 + r)</div>`},
+  {h:'Return measures',b:`<ul><li>Holding period return = (P₁ − P₀ + D) ÷ P₀</li><li>Arithmetic mean ≥ geometric mean ≥ harmonic mean</li><li>Money-weighted return = IRR of investor cash flows; time-weighted return removes the effect of flows (used for manager evaluation)</li><li>Annualised: (1 + r_period)^(periods per year) − 1</li></ul>`},
+  {h:'Calculator discipline',b:`<p>Set P/Y = 1, use periodic rates, and keep sign conventions consistent (outflows negative). Most TVM errors on exam day are keystrokes, not concepts.</p>`}],
+ quiz:[
+  {q:'APR 12% compounded monthly. EAR is closest to:',o:['12.00%','12.68%','12.36%'],a:1,w:'1.01¹² − 1 = 12.68%.'},
+  {q:'PV of a perpetuity paying 50 a year at 8%:',o:['400','625','4,000'],a:1,w:'50 ÷ 0.08.'},
+  {q:'An annuity due is worth more than an ordinary annuity because:',o:['Payments are larger','Each payment arrives one period earlier','It has more payments'],a:1,w:'Multiply by (1 + r).'},
+  {q:'Returns of +50% and −50%. Geometric mean return:',o:['0%','about −13.4%','−25%'],a:1,w:'√(1.5 × 0.5) − 1 = −13.4%.'},
+  {q:'To evaluate a manager who does not control client cash flows, use:',o:['Money-weighted return','Time-weighted return','Arithmetic mean only'],a:1,w:'TWR removes flow timing effects.'},
+  {q:'FV of 1,000 after 3 years at 5% compounded annually:',o:['1,150.00','1,157.63','1,161.83'],a:1,w:'1.05³ × 1,000.'},
+  {q:'Which premium compensates for the risk of selling quickly at a fair price?',o:['Maturity premium','Liquidity premium','Default premium'],a:1,w:'Liquidity.'},
+  {q:'A 2% monthly return annualises to:',o:['24.00%','26.82%','25.34%'],a:1,w:'1.02¹² − 1.'},
+  {q:'Continuous compounding at 6% for 2 years turns 100 into:',o:['112.36','112.75','112.00'],a:1,w:'100e^0.12.'},
+  {q:'Harmonic mean is most associated with:',o:['Cost averaging (buying a fixed amount at varying prices)','Bond duration','Portfolio variance'],a:0,w:'Average price paid in cost averaging.'}],
+ srs:[{q:'EAR?',a:'(1 + APR/m)^m − 1.'},{q:'PV of perpetuity?',a:'A ÷ r.'},{q:'TWR vs MWR?',a:'TWR removes cash-flow timing (manager evaluation); MWR = IRR (investor experience).'},{q:'Mean ordering?',a:'Arithmetic ≥ geometric ≥ harmonic.'}],
+ read:[{t:'Time value of money',s:'Investopedia',u:INV('t/timevalueofmoney.asp')},{t:'Time-weighted vs money-weighted return',s:'Investopedia',u:INV('t/time-weightedror.asp')},{t:'CFA Program curriculum (Quantitative Methods)',s:'CFA Institute',u:CFAI}]},
+
+{id:'a05',track:'cfa1',topic:'qm',title:'Statistics, hypothesis tests and regression',mins:45,blurb:'Distributions, sampling, hypothesis testing and simple linear regression.',
+ lab:{key:'ttest',name:'Hypothesis test of a mean',intro:'Compute t, compare with the critical value, decide.'},
+ cards:[
+  {h:'Describing data',b:`<p>Central tendency (mean, median, mode), dispersion (range, variance, standard deviation, coefficient of variation = σ ÷ mean), shape (skewness, kurtosis). Positive skew: mean > median > mode. Fat tails = excess kurtosis > 0.</p>`},
+  {h:'Probability tools',b:`<div class="formula">E(X) = Σ p·x · Var(aX + bY) = a²σ²_X + b²σ²_Y + 2ab·Cov(X, Y) · Bayes: P(A|B) = P(B|A)P(A) ÷ P(B)</div>`},
+  {h:'Normal distribution',b:`<p>~68% within ±1σ, ~95% within ±1.96σ, ~99% within ±2.58σ. Standardise with z = (x − μ) ÷ σ. Lognormal is used for prices (cannot go below zero).</p>`},
+  {h:'Hypothesis testing',b:`<ol><li>State H₀ and Hₐ</li><li>Choose the test statistic (z, t, χ², F)</li><li>Set α (Type I error)</li><li>Decision rule (critical value or p-value)</li><li>Decide and interpret</li></ol><p>Power = 1 − P(Type II error).</p>`},
+  {h:'Simple linear regression',b:`<div class="formula">Y = b₀ + b₁X + ε · b₁ = Cov(X, Y) ÷ Var(X) · R² = explained ÷ total variation</div><p>Assumptions: linearity, homoskedasticity, independent and normal residuals. Test slope with t = b̂₁ ÷ s(b̂₁).</p>`}],
+ quiz:[
+  {q:'Positively skewed distribution: which is typically true?',o:['Mean < median','Mean > median > mode','Mode > mean'],a:1,w:'Tail to the right pulls the mean up.'},
+  {q:'Rejecting a true null hypothesis is a:',o:['Type I error','Type II error','Power failure'],a:0,w:'Probability = α.'},
+  {q:'Sample mean 1.4, H₀ mean 0, s 4.2, n 36. t-statistic:',o:['0.33','2.00','1.40'],a:1,w:'1.4 ÷ (4.2 ÷ 6) = 2.0.'},
+  {q:'With n = 36, degrees of freedom for a t-test of the mean:',o:['36','35','34'],a:1,w:'n − 1.'},
+  {q:'Coefficient of variation is useful to compare:',o:['Risk per unit of return across assets','Skewness','Correlation'],a:0,w:'CV = σ ÷ mean.'},
+  {q:'About what share of a normal distribution lies within ±1.96σ?',o:['68%','95%','99%'],a:1,w:'Two-tailed 5%.'},
+  {q:'Slope b₁ in simple regression equals:',o:['Cov(X,Y) ÷ Var(X)','Cov(X,Y) ÷ Var(Y)','Corr(X,Y)'],a:0,w:'OLS slope.'},
+  {q:'Variance of residuals that changes with X indicates:',o:['Multicollinearity','Heteroskedasticity','Normality'],a:1,w:'Violates homoskedasticity.'},
+  {q:'Increasing α from 1% to 5% (other things equal):',o:['Raises the chance of a Type I error and raises power','Lowers both','Has no effect'],a:0,w:'Trade-off between Type I and Type II.'},
+  {q:'Excess kurtosis > 0 means:',o:['Thinner tails than normal','Fatter tails than normal','No skew'],a:1,w:'Leptokurtic.'}],
+ srs:[{q:'Type I vs Type II?',a:'Type I: reject true H₀ (α). Type II: fail to reject false H₀ (β). Power = 1 − β.'},{q:'t-stat for mean?',a:'(x̄ − μ₀) ÷ (s ÷ √n), df = n − 1.'},{q:'OLS slope?',a:'Cov(X,Y) ÷ Var(X).'},{q:'Normal coverage?',a:'±1σ 68%, ±1.96σ 95%, ±2.58σ 99%.'}],
+ read:[{t:'Hypothesis testing',s:'Investopedia',u:INV('h/hypothesistesting.asp')},{t:'NIST e-Handbook of Statistical Methods',s:'NIST',u:'https://www.itl.nist.gov/div898/handbook/'},{t:'A Refresher on Regression Analysis',s:'Harvard Business Review',u:'https://hbr.org/2015/11/a-refresher-on-regression-analysis'}]},
+
+{id:'a06',track:'cfa1',topic:'eco',title:'Markets, business cycles and policy',mins:40,blurb:'Market structures, the business cycle, and fiscal and monetary policy.',
+ lab:{key:'taylor',name:'Taylor rule and policy stance',intro:'Compute a rule-based policy rate and judge the stance.'},
+ cards:[
+  {h:'Market structures',b:`<p>Perfect competition (price = MC, no long-run economic profit) · monopolistic competition (differentiation) · oligopoly (interdependence: Cournot, Stackelberg, kinked demand) · monopoly (MR = MC, price above MC). Concentration measures: N-firm ratio, Herfindahl-Hirschman Index.</p>`},
+  {h:'Business cycle',b:`<p>Phases: recovery → expansion → slowdown → contraction. Leading indicators (new orders, building permits, yield curve) turn before the economy; coincident and lagging follow. Inventory and capex swings drive much of the cycle.</p>`},
+  {h:'Monetary policy',b:`<p>Tools: policy rate, open-market operations, reserve requirements. Transmission: rates → asset prices → expectations → exchange rate → spending. Policy is expansionary when the policy rate is below the neutral rate. Limits: liquidity traps, deflation, credibility.</p>`},
+  {h:'Fiscal policy',b:`<p>Government spending and taxes. Fiscal multiplier = 1 ÷ [1 − c(1 − t)]. Automatic stabilisers (progressive taxes, transfers) vs discretionary policy. Lags: recognition, action, impact. Crowding out when deficits raise rates.</p>`},
+  {h:'Policy mix',b:`<p>Loose fiscal + tight monetary → higher rates, larger public sector share. Tight fiscal + loose monetary → lower rates, private sector grows. Pegged currencies (like the riyal) import monetary policy, leaving fiscal policy as the main tool.</p>`}],
+ quiz:[
+  {q:'A firm in perfect competition in the long run earns:',o:['Positive economic profit','Zero economic profit','Losses'],a:1,w:'Entry drives profit to zero.'},
+  {q:'Monopolists maximise profit where:',o:['P = MC','MR = MC','P = ATC'],a:1,w:'Then price from demand.'},
+  {q:'Which is a leading indicator?',o:['Unemployment rate','Building permits','Average duration of unemployment'],a:1,w:'Turns before activity.'},
+  {q:'Marginal propensity to consume 0.8, tax rate 25%. Fiscal multiplier:',o:['2.5','5.0','1.67'],a:0,w:'1 ÷ [1 − 0.8 × 0.75] = 2.5.'},
+  {q:'Policy rate below the neutral rate means policy is:',o:['Contractionary','Expansionary','Neutral'],a:1,w:'Stimulative.'},
+  {q:'Taylor rule with neutral real 1%, inflation 4%, target 2%, output gap −1%:',o:['5.5%','6.0%','4.5%'],a:0,w:'1 + 4 + 1 − 0.5 = 5.5.'},
+  {q:'Crowding out occurs when:',o:['Government borrowing raises rates and reduces private investment','Taxes fall','Exports rise'],a:0,w:'Competition for funds.'},
+  {q:'A high Herfindahl-Hirschman Index indicates:',o:['Many small firms','High concentration','Perfect competition'],a:1,w:'Sum of squared market shares.'},
+  {q:'With a currency peg to the dollar, domestic interest rates are mainly set by:',o:['Domestic inflation targeting','The anchor currency\'s policy rates','Fiscal policy'],a:1,w:'To defend the peg.'},
+  {q:'Kinked demand curve model explains:',o:['Price stickiness in oligopoly','Monopoly pricing','Perfect competition'],a:0,w:'Rivals match cuts but not increases.'}],
+ srs:[{q:'Fiscal multiplier?',a:'1 ÷ [1 − c(1 − t)].'},{q:'Taylor rule?',a:'i = r_n + π + 0.5(π − π*) + 0.5(output gap).'},{q:'Expansionary monetary stance?',a:'Policy rate below neutral rate.'},{q:'Four market structures?',a:'Perfect competition, monopolistic competition, oligopoly, monopoly.'}],
+ read:[{t:'IMF: Saudi Arabia',s:'International Monetary Fund',u:'https://www.imf.org/en/Countries/SAU'},{t:'Taylor rule',s:'Wikipedia',u:WIKI('Taylor_rule')},{t:'Herfindahl–Hirschman index',s:'Wikipedia',u:WIKI('Herfindahl%E2%80%93Hirschman_index')}]},
+
+{id:'a07',track:'cfa1',topic:'eco',title:'International trade and exchange rates',mins:40,blurb:'Trade, balance of payments, exchange-rate regimes, cross rates and forwards.',
+ lab:{key:'fxfwd',name:'Forward and cross-rate calculator',intro:'Covered interest parity in practice, with SAR, USD and EUR.'},
+ cards:[
+  {h:'Gains from trade',b:`<p>Comparative advantage (lower opportunity cost) drives trade. Restrictions: tariffs, quotas, export subsidies, voluntary export restraints — each creates deadweight losses for the importing country overall.</p>`},
+  {h:'Balance of payments',b:`<p>Current account (goods, services, income, transfers) + capital account + financial account = 0 (with errors). A current-account deficit must be financed by financial inflows.</p><div class="formula">CA = (S − I) + (T − G)</div>`},
+  {h:'Quotes and cross rates',b:`<p>Quote "price/base": SAR/USD 3.75 means 3.75 SAR per USD. Cross rate: EUR/SAR = EUR/USD × USD/SAR, with care over which currency is base.</p>`},
+  {h:'Forwards',b:`<div class="formula">F(p/b) = S(p/b) × (1 + i_p·t) ÷ (1 + i_b·t)</div><p>Higher-interest currency trades at a forward discount. Forward points = (F − S) × scale.</p>`},
+  {h:'Regimes',b:`<p>From hard pegs (currency board, dollarisation) through conventional pegs (the riyal at 3.75 per USD since 1986), crawling pegs and managed floats to independent floats. Pegs import the anchor's monetary policy.</p>`}],
+ quiz:[
+  {q:'SAR/USD spot 3.75, SAR rate 5.5%, USD rate 5.0%, 180 days (360-day year). Forward is closest to:',o:['3.7591','3.7409','3.7500'],a:0,w:'3.75 × 1.0275 ÷ 1.025 ≈ 3.7591.'},
+  {q:'The currency with the higher interest rate trades at a forward:',o:['Premium','Discount','Par'],a:1,w:'Covered interest parity.'},
+  {q:'A country with a current-account deficit must have:',o:['A financial-account surplus (net inflows)','A budget surplus','A floating currency'],a:0,w:'BOP identity.'},
+  {q:'A tariff on imports typically:',o:['Benefits domestic consumers','Benefits domestic producers and government, with an overall deadweight loss','Has no effect on prices'],a:1,w:'Classic trade analysis.'},
+  {q:'USD per EUR 1.08 and SAR per USD 3.75. SAR per EUR:',o:['4.05','3.47','2.67'],a:0,w:'1.08 × 3.75.'},
+  {q:'Comparative advantage depends on:',o:['Absolute productivity','Opportunity cost','Exchange rate only'],a:1,w:'Ricardo.'},
+  {q:'The Saudi riyal regime is best described as:',o:['Independent float','Conventional fixed peg to the US dollar','Currency board with the euro'],a:1,w:'Pegged at 3.75 since 1986.'},
+  {q:'CA = (S − I) + (T − G). A larger fiscal deficit, other things equal, tends to:',o:['Increase the current-account balance','Reduce the current-account balance','Not affect it'],a:1,w:'Twin-deficits logic.'},
+  {q:'If the base currency appreciates, the quote (price/base):',o:['Falls','Rises','Stays the same'],a:1,w:'More price currency per base unit.'},
+  {q:'Forward rates are best described as:',o:['Unbiased forecasts of future spot','No-arbitrage prices reflecting interest differentials','Central bank targets'],a:1,w:'Not forecasts.'}],
+ srs:[{q:'Forward formula?',a:'F = S × (1 + i_price·t) ÷ (1 + i_base·t).'},{q:'BOP identity link?',a:'CA = (S − I) + (T − G); CA deficit financed by financial inflows.'},{q:'Higher-rate currency forward?',a:'Trades at a forward discount.'},{q:'Riyal regime?',a:'Conventional peg, 3.75 SAR per USD since 1986.'}],
+ read:[{t:'Saudi Central Bank (SAMA)',s:'SAMA',u:'https://www.sama.gov.sa/'},{t:'Interest rate parity',s:'Investopedia',u:INV('i/interestrateparity.asp')},{t:'Balance of payments',s:'Wikipedia',u:WIKI('Balance_of_payments')}]},
+
+{id:'a08',track:'cfa1',topic:'fsa',title:'Income statement and balance sheet',mins:45,blurb:'Revenue recognition, expenses, EPS, and balance-sheet classification under IFRS and US GAAP.',
+ lab:{key:'ratios',name:'Ratio calculator',intro:'Build the key ratios from a simple set of statements.'},
+ cards:[
+  {h:'Revenue recognition',b:`<p>IFRS 15 / ASC 606 five steps: identify the contract → identify performance obligations → determine price → allocate price → recognise revenue when (or as) obligations are satisfied.</p>`},
+  {h:'Expenses and EPS',b:`<div class="formula">Basic EPS = (NI − preferred dividends) ÷ weighted average shares · Diluted EPS adds potentially dilutive securities (if-converted, treasury stock methods)</div><p>Antidilutive securities are excluded.</p>`},
+  {h:'Balance sheet',b:`<p>Current vs non-current classification; measurement bases (historical cost, amortised cost, fair value). Equity includes contributed capital, retained earnings, treasury shares, and accumulated other comprehensive income.</p>`},
+  {h:'Other comprehensive income',b:`<p>Items bypassing profit or loss: some fair-value changes, translation adjustments, certain pension remeasurements, cash-flow hedge effects. Comprehensive income = NI + OCI.</p>`},
+  {h:'Common-size analysis',b:`<p>Express the income statement as % of revenue and the balance sheet as % of total assets to compare companies of different size and spot trends.</p>`}],
+ quiz:[
+  {q:'Under IFRS 15, revenue is recognised when:',o:['Cash is received','Performance obligations are satisfied','The contract is signed'],a:1,w:'Transfer of control.'},
+  {q:'Basic EPS: NI 500, preferred dividends 50, weighted shares 150:',o:['3.33','3.00','3.67'],a:1,w:'450 ÷ 150.'},
+  {q:'A convertible whose conversion would raise diluted EPS is:',o:['Included','Antidilutive and excluded','Counted twice'],a:1,w:'Exclude antidilutive securities.'},
+  {q:'Which flows through other comprehensive income?',o:['Foreign currency translation adjustments','Cost of goods sold','Interest expense'],a:0,w:'Classic OCI item.'},
+  {q:'Comprehensive income equals:',o:['Net income','Net income + OCI','Revenue − expenses'],a:1,w:'Definition.'},
+  {q:'Treasury shares appear:',o:['As an asset','As a reduction of equity','As a liability'],a:1,w:'Contra-equity.'},
+  {q:'A common-size income statement expresses items as a percentage of:',o:['Total assets','Revenue','Net income'],a:1,w:'Vertical analysis.'},
+  {q:'The treasury stock method applies to:',o:['Convertible bonds','Options and warrants','Preferred stock'],a:1,w:'Assumed exercise proceeds buy back shares.'},
+  {q:'Current ratio 1.6 with current liabilities 250 implies current assets of:',o:['400','156','640'],a:0,w:'1.6 × 250.'},
+  {q:'Revenue from a 3-year software support contract paid upfront is recognised:',o:['All at signing','Over the service period','At the end'],a:1,w:'Over time as obligation is satisfied.'}],
+ srs:[{q:'IFRS 15 five steps?',a:'Contract, performance obligations, price, allocation, recognise when satisfied.'},{q:'Basic EPS?',a:'(NI − preferred dividends) ÷ weighted average shares.'},{q:'Diluted EPS methods?',a:'If-converted (convertibles), treasury stock (options/warrants); exclude antidilutive.'},{q:'Comprehensive income?',a:'NI + OCI.'}],
+ read:[{t:'IFRS 15 Revenue from Contracts with Customers',s:'IFRS Foundation',u:'https://www.ifrs.org/issued-standards/list-of-standards/ifrs-15-revenue-from-contracts-with-customers/'},{t:'Earnings per share',s:'Investopedia',u:INV('e/eps.asp')},{t:'Financial statements',s:'Investopedia',u:INV('f/financial-statements.asp')}]},
+
+{id:'a09',track:'cfa1',topic:'fsa',title:'Cash flows and analysis tools',mins:40,blurb:'The cash flow statement, direct and indirect methods, free cash flow and ratio analysis.',
+ lab:{key:'cfo',name:'Indirect-method CFO builder',intro:'Reconcile net income to operating cash flow.'},
+ cards:[
+  {h:'Three sections',b:`<p>Operating, investing, financing. IFRS lets interest and dividends received be operating or investing, and interest and dividends paid be operating or financing; US GAAP fixes interest paid and received and dividends received in operating, and dividends paid in financing.</p>`},
+  {h:'Indirect method',b:`<div class="formula">CFO = NI + non-cash charges − gains + losses − increases in operating assets + increases in operating liabilities</div>`},
+  {h:'Free cash flow',b:`<div class="formula">FCFF = CFO + interest × (1 − t) − FCInv · FCFE = CFO − FCInv + net borrowing</div>`},
+  {h:'Ratio families',b:`<p>Activity (turnover), liquidity, solvency, profitability, valuation. DuPont: ROE = net margin × asset turnover × leverage (and the five-way version adds tax and interest burdens).</p>`},
+  {h:'Cash vs accrual quality',b:`<p>Persistent gaps where net income exceeds CFO, or rising accruals ratios, are warning signs. Look at the sources of cash: operations, asset sales or borrowing?</p>`}],
+ quiz:[
+  {q:'NI 120, D&A 40, gain on sale 10, receivables +25, inventory −8, payables +12. CFO:',o:['145','165','125'],a:0,w:'120 + 40 − 10 − 25 + 8 + 12 = 145.'},
+  {q:'Under US GAAP, dividends paid are classified as:',o:['Operating','Financing','Investing'],a:1,w:'Fixed classification.'},
+  {q:'Under IFRS, interest paid may be classified as:',o:['Operating or financing','Investing only','Financing only'],a:0,w:'Choice under IFRS.'},
+  {q:'A gain on sale of equipment is subtracted in the indirect method because:',o:['It is non-recurring','The cash proceeds belong in investing activities','It is taxable'],a:1,w:'Avoid double counting.'},
+  {q:'An increase in accounts payable:',o:['Reduces CFO','Increases CFO','Does not affect CFO'],a:1,w:'Cash not yet paid.'},
+  {q:'FCFE equals:',o:['CFO − FCInv + net borrowing','CFO + interest(1 − t) − FCInv','NI + D&A'],a:0,w:'Cash available to shareholders.'},
+  {q:'Five-way DuPont adds:',o:['Tax burden and interest burden','Dividend payout','Cash conversion'],a:0,w:'NI/EBT and EBT/EBIT.'},
+  {q:'NI consistently above CFO for several years suggests:',o:['High earnings quality','Possible aggressive accruals','Conservative accounting'],a:1,w:'Watch accruals.'},
+  {q:'Buying equipment for cash appears in:',o:['Operating','Investing','Financing'],a:1,w:'Capex.'},
+  {q:'Inventory turnover 8× implies days of inventory of about:',o:['46 days','8 days','365 days'],a:0,w:'365 ÷ 8.'}],
+ srs:[{q:'Indirect CFO?',a:'NI + non-cash − gains + losses − ↑operating assets + ↑operating liabilities.'},{q:'FCFF?',a:'CFO + interest(1 − t) − FCInv.'},{q:'IFRS vs US GAAP interest paid?',a:'IFRS: operating or financing; US GAAP: operating.'},{q:'Five-way DuPont?',a:'Tax burden × interest burden × EBIT margin × asset turnover × leverage.'}],
+ read:[{t:'Cash flow statement',s:'Investopedia',u:INV('c/cashflowstatement.asp')},{t:'IAS 7 Statement of Cash Flows',s:'IFRS Foundation',u:'https://www.ifrs.org/issued-standards/list-of-standards/ias-7-statement-of-cash-flows/'},{t:'DuPont analysis',s:'Investopedia',u:INV('d/dupontanalysis.asp')}]},
+
+{id:'a10',track:'cfa1',topic:'fsa',title:'Inventories, long-lived assets, taxes and liabilities',mins:45,blurb:'Inventory methods, capitalisation, impairment, deferred taxes, leases and bonds payable.',
+ lab:{key:'inventory',name:'FIFO, weighted average and LIFO',intro:'Same units, three methods, three different profits.'},
+ cards:[
+  {h:'Inventory',b:`<p>FIFO, weighted average, specific identification; LIFO allowed only under US GAAP. In rising prices LIFO → higher COGS, lower inventory and taxes. LIFO reserve converts LIFO to FIFO: Inventory_FIFO = Inventory_LIFO + LIFO reserve. Measurement: lower of cost and NRV (IFRS; reversals allowed).</p>`},
+  {h:'Long-lived assets',b:`<p>Capitalising costs raises assets and CFO (cost moves to investing) and smooths earnings. Depreciation methods: straight-line, declining balance, units of production. IFRS allows revaluation and impairment reversals; US GAAP generally does not for assets held for use.</p>`},
+  {h:'Income taxes',b:`<p>Temporary differences create deferred tax liabilities (tax base < carrying amount of assets, e.g. accelerated tax depreciation) or deferred tax assets (e.g. warranty provisions, loss carryforwards). Permanent differences change the effective tax rate.</p>`},
+  {h:'Leases',b:`<p>IFRS 16: lessees put almost all leases on balance sheet (right-of-use asset and lease liability), with depreciation plus interest expense. US GAAP distinguishes finance and operating leases for the lessee's income statement (operating: single straight-line lease cost).</p>`},
+  {h:'Bonds payable',b:`<p>Issued at a discount: interest expense (market rate × carrying amount) exceeds coupon; carrying value rises to par. Effective interest method is required under IFRS.</p>`}],
+ quiz:[
+  {q:'In a period of rising prices, LIFO compared with FIFO gives:',o:['Higher COGS and lower ending inventory','Lower COGS','Higher taxes'],a:0,w:'Latest (higher) costs expensed.'},
+  {q:'LIFO inventory 500, LIFO reserve 80. FIFO inventory:',o:['420','580','500'],a:1,w:'Add the reserve.'},
+  {q:'Which framework prohibits LIFO?',o:['US GAAP','IFRS','Both'],a:1,w:'IFRS prohibits.'},
+  {q:'Capitalising rather than expensing a cost, in the first year:',o:['Raises CFO and net income','Lowers CFO','Lowers total assets'],a:0,w:'Cost moves to investing; expense spread.'},
+  {q:'Accelerated tax depreciation with straight-line book depreciation creates a:',o:['Deferred tax asset','Deferred tax liability','Permanent difference'],a:1,w:'Taxes deferred to later.'},
+  {q:'Under IFRS 16, a lessee\'s income statement shows:',o:['A single lease expense','Depreciation and interest expense','No expense'],a:1,w:'Right-of-use model.'},
+  {q:'A bond issued at a discount: interest expense compared with coupon paid is:',o:['Higher','Lower','Equal'],a:0,w:'Discount amortises.'},
+  {q:'Impairment reversals for assets held for use are permitted under:',o:['IFRS','US GAAP','Neither'],a:0,w:'IFRS allows within limits.'},
+  {q:'A warranty provision expensed for books but deductible for tax only when paid creates a:',o:['Deferred tax asset','Deferred tax liability','No difference'],a:0,w:'Future deduction.'},
+  {q:'Inventory is written down under IFRS to:',o:['Lower of cost and net realisable value','Replacement cost always','Market value only'],a:0,w:'LCNRV.'}],
+ srs:[{q:'LIFO reserve conversion?',a:'FIFO inventory = LIFO inventory + LIFO reserve.'},{q:'DTL arises when?',a:'Taxable income < accounting profit now due to temporary differences (e.g., accelerated tax depreciation).'},{q:'IFRS 16 lessee?',a:'Right-of-use asset + lease liability; depreciation + interest.'},{q:'Capitalise vs expense effect?',a:'Capitalising raises assets, CFO and early earnings; lowers CFI.'}],
+ read:[{t:'IFRS 16 Leases',s:'IFRS Foundation',u:'https://www.ifrs.org/issued-standards/list-of-standards/ifrs-16-leases/'},{t:'IAS 2 Inventories',s:'IFRS Foundation',u:'https://www.ifrs.org/issued-standards/list-of-standards/ias-2-inventories/'},{t:'Deferred tax liability',s:'Investopedia',u:INV('d/deferredtaxliability.asp')}]},
+
+{id:'a11',track:'cfa1',topic:'fsa',title:'Reporting quality and ratio applications',mins:35,blurb:'Earnings quality, red flags, and using ratios in credit and equity analysis.',
+ lab:{key:'quality',name:'Aggressive or conservative?',intro:'Classify eight accounting choices.'},
+ cards:[
+  {h:'Quality spectrum',b:`<p>From high-quality, decision-useful reporting with sustainable earnings, down through biased choices (aggressive or conservative), to departures from GAAP and outright fiction. Conservative bias is still bias.</p>`},
+  {h:'Motivations and conditions',b:`<p>Fraud triangle: motivation (meeting targets, compensation), opportunity (weak controls), rationalisation. Watch for management pressure around covenant tests and equity issuance.</p>`},
+  {h:'Red flags',b:`<ul><li>Revenue growing faster than receivables collection (rising DSO)</li><li>NI persistently above CFO</li><li>Frequent "non-recurring" charges</li><li>Changes in estimates (useful lives, allowances)</li><li>Related-party transactions</li></ul>`},
+  {h:'Ratios in credit analysis',b:`<p>The four Cs (capacity, collateral, covenants, character); leverage (debt/EBITDA), coverage (EBITDA/interest), liquidity and cash-flow ratios. Ratings agencies adjust for leases and pensions.</p>`},
+  {h:'Ratios in equity screening',b:`<p>Screens combine valuation (P/E, P/B), quality (ROE, accruals) and momentum. Beware look-ahead and survivorship bias when backtesting screens.</p>`}],
+ quiz:[
+  {q:'Lengthening the depreciable life of assets is:',o:['Conservative','Aggressive','Neutral'],a:1,w:'Lower expense now.'},
+  {q:'Rising DSO while revenue grows fast may signal:',o:['Better collections','Aggressive revenue recognition','Conservative accounting'],a:1,w:'Possible channel stuffing.'},
+  {q:'The three elements of the fraud triangle:',o:['Motivation, opportunity, rationalisation','Revenue, cost, profit','Audit, control, risk'],a:0,w:'Classic framework.'},
+  {q:'Over-reserving in good years to release later is:',o:['"Cookie jar" earnings management','Conservative and acceptable','A cash-flow technique'],a:0,w:'Smoothing via reserves.'},
+  {q:'Which ratio is most relevant to debt capacity?',o:['Debt/EBITDA','P/E','Dividend yield'],a:0,w:'Leverage.'},
+  {q:'Survivorship bias in backtesting arises when:',o:['Delisted companies are excluded from the historical sample','Data are too recent','Ratios are averaged'],a:0,w:'Inflates results.'},
+  {q:'Excluding recurring restructuring costs from "adjusted earnings" every year suggests:',o:['High earnings quality','Questionable non-GAAP reporting','Conservatism'],a:1,w:'Recurring is not one-off.'},
+  {q:'Conservative accounting choices:',o:['Are always high quality','Are still a form of bias','Raise current earnings'],a:1,w:'Can shift earnings to later.'},
+  {q:'In credit analysis, "covenants" refers to:',o:['Terms that protect lenders','Collateral value','Management character'],a:0,w:'One of the four Cs.'},
+  {q:'Accruals much larger than peers\' typically indicate:',o:['Higher earnings quality','Lower earnings quality','No signal'],a:1,w:'Accrual-heavy earnings persist less.'}],
+ srs:[{q:'Fraud triangle?',a:'Motivation, opportunity, rationalisation.'},{q:'Four Cs of credit?',a:'Capacity, collateral, covenants, character.'},{q:'Three red flags?',a:'NI > CFO persistently, rising DSO, frequent non-recurring charges (also estimate changes, related parties).'},{q:'Is conservatism high quality?',a:'No: it is still biased reporting.'}],
+ read:[{t:'Quality of earnings',s:'Investopedia',u:INV('q/qualityofearnings.asp')},{t:'Earnings management',s:'HBR search',u:HBRS('earnings management')},{t:'CFA Program curriculum (FSA)',s:'CFA Institute',u:CFAI}]},
+
+{id:'a12',track:'cfa1',topic:'ci',title:'Corporate issuers: governance, investment, capital structure',mins:40,blurb:'Stakeholders and governance, capital budgeting, cost of capital, capital structure and working capital.',
+ lab:{key:'wacc',name:'WACC and capital-structure builder',intro:'Reused from MBA Core: relever beta and find the WACC-minimising mix.'},
+ cards:[
+  {h:'Business structures and stakeholders',b:`<p>Sole proprietorship, partnership, corporation (limited liability, separation of ownership and control). Stakeholders: shareholders, creditors, managers, employees, customers, suppliers, government. Principal–agent conflicts arise between them.</p>`},
+  {h:'Governance mechanisms',b:`<p>Board independence and committees (audit, compensation, nomination), shareholder voting (proxy, cumulative voting), debt covenants, executive pay aligned to long-term value, ESG considerations and disclosure.</p>`},
+  {h:'Capital investments',b:`<p>NPV is the primary rule; IRR can conflict with NPV for mutually exclusive projects (scale, timing). Real options (expand, abandon, delay) add value. Avoid sunk costs; include opportunity costs and externalities (cannibalisation).</p>`},
+  {h:'Capital structure',b:`<p>MM without taxes: value independent of leverage. With taxes: debt adds value via the tax shield, offset by financial distress costs (static trade-off). Pecking order: internal funds → debt → equity, because of information asymmetry.</p>`},
+  {h:'Working capital and liquidity',b:`<p>Cash conversion cycle, primary and secondary sources of liquidity, trade credit cost: cost of forgoing a 2/10 net 30 discount = (1 + 2/98)^(365/20) − 1 ≈ 44.6%.</p>`}],
+ quiz:[
+  {q:'For mutually exclusive projects where NPV and IRR conflict, choose by:',o:['Highest IRR','Highest NPV','Shortest payback'],a:1,w:'NPV measures value.'},
+  {q:'A sunk cost should be:',o:['Included in project cash flows','Ignored','Depreciated'],a:1,w:'Irrelevant to the decision.'},
+  {q:'MM with corporate taxes implies firm value:',o:['Is independent of leverage','Rises with debt due to the tax shield','Falls with debt'],a:1,w:'V_L = V_U + tD.'},
+  {q:'Pecking order theory: firms prefer first:',o:['New equity','Internal funds','Debt'],a:1,w:'Then debt, then equity.'},
+  {q:'Annual cost of forgoing 2/10 net 30 terms is closest to:',o:['2%','24%','45%'],a:2,w:'(1 + 2/98)^(365/20) − 1 ≈ 44.6%.'},
+  {q:'An independent audit committee mainly addresses:',o:['Integrity of financial reporting','Marketing','Product pricing'],a:0,w:'Oversees reporting and auditors.'},
+  {q:'Cumulative voting helps:',o:['Minority shareholders elect board representation','Management avoid votes','Creditors'],a:0,w:'Concentrates votes.'},
+  {q:'A new product cannibalising existing sales: the lost sales should be:',o:['Ignored','Included as a cost','Counted as revenue'],a:1,w:'Incremental cash flows.'},
+  {q:'Static trade-off theory balances:',o:['Tax shield benefits against financial distress costs','Dividends against buybacks','Debt against cash'],a:0,w:'Optimal leverage.'},
+  {q:'A secondary source of liquidity is:',o:['Cash on hand','Renegotiating debt or selling assets','Short-term investments'],a:1,w:'Used when primary sources are insufficient.'}],
+ srs:[{q:'MM with taxes?',a:'V_L = V_U + tD; offset by distress costs in trade-off theory.'},{q:'Pecking order?',a:'Internal funds → debt → equity.'},{q:'Cost of forgoing trade discount?',a:'(1 + d/(1 − d))^(365/(net − discount days)) − 1.'},{q:'NPV vs IRR conflict?',a:'Choose highest NPV.'}],
+ read:[{t:'Modigliani–Miller theorem',s:'Wikipedia',u:WIKI('Modigliani%E2%80%93Miller_theorem')},{t:'G20/OECD Principles of Corporate Governance',s:'OECD',u:'https://www.oecd.org/en/publications/2023/09/g20-oecd-principles-of-corporate-governance-2023_60836fcb.html'},{t:'A Refresher on Net Present Value',s:'Harvard Business Review',u:'https://hbr.org/2014/11/a-refresher-on-net-present-value'}]},
+
+{id:'a13',track:'cfa1',topic:'eq',title:'Equity markets, indices and efficiency',mins:40,blurb:'Market organisation, orders, margin, index construction and market efficiency.',
+ lab:{key:'margin',name:'Margin and leverage calculator',intro:'Leverage, returns and the margin-call price.'},
+ cards:[
+  {h:'Market organisation',b:`<p>Primary vs secondary markets; quote-driven (dealers), order-driven (exchanges like Tadawul) and brokered markets. Orders: market, limit, stop; execution, validity and clearing instructions.</p>`},
+  {h:'Margin',b:`<div class="formula">Leverage ratio = 1 ÷ initial margin · Margin call price = P₀(1 − IM) ÷ (1 − MM)</div>`},
+  {h:'Index construction',b:`<p>Price-weighted (high-priced stocks dominate), equal-weighted (rebalancing, small-cap tilt), market-cap and float-adjusted (most common), fundamental weighting. Price return vs total return index.</p>`},
+  {h:'Market efficiency',b:`<p>Weak form (past prices), semi-strong (all public information), strong (all information, including private). Anomalies: calendar effects, momentum, value — many fade once known or after costs.</p>`},
+  {h:'Equity securities',b:`<p>Common vs preference shares; voting rights; callable and convertible preference; depository receipts; private vs public equity. Book value vs market value of equity; ROE as a key profitability measure.</p>`}],
+ quiz:[
+  {q:'Initial margin 40%, maintenance 25%, purchase price 50. Margin call price:',o:['40.00','37.50','33.33'],a:0,w:'50 × 0.6 ÷ 0.75.'},
+  {q:'Initial margin 50% implies a leverage ratio of:',o:['1.5×','2×','0.5×'],a:1,w:'1 ÷ 0.5.'},
+  {q:'In a price-weighted index, the biggest influence comes from:',o:['Largest companies by market cap','Highest-priced shares','Most liquid shares'],a:1,w:'Price weighting.'},
+  {q:'If markets are semi-strong efficient, which cannot earn abnormal returns consistently?',o:['Technical analysis and fundamental analysis of public data','Insider trading','Neither'],a:0,w:'Public info is priced.'},
+  {q:'A buy limit order:',o:['Executes at any price','Executes only at the limit price or lower','Executes at the stop price'],a:1,w:'Price protection.'},
+  {q:'Float-adjusted market-cap weighting excludes:',o:['Shares not available to the public (e.g., strategic holdings)','All foreign shares','Dividends'],a:0,w:'Investable float.'},
+  {q:'Equal-weighted indices tend to tilt toward:',o:['Large caps','Small caps','Bonds'],a:1,w:'Small stocks get the same weight as large.'},
+  {q:'A stock that gives priority over common in dividends:',o:['Preference share','Depository receipt','Treasury share'],a:0,w:'Preferred.'},
+  {q:'Buy at 50 on 40% margin, sell at 56, dividend 1, ignore interest. Return on equity:',o:['35%','14%','56%'],a:0,w:'(56 + 1 − 50) ÷ 20.'},
+  {q:'Strong-form efficiency implies:',o:['Even insiders cannot earn abnormal returns','Only public info is priced','Prices follow trends'],a:0,w:'All information priced.'}],
+ srs:[{q:'Margin call price?',a:'P₀(1 − IM) ÷ (1 − MM).'},{q:'Three forms of efficiency?',a:'Weak (prices), semi-strong (public info), strong (all info).'},{q:'Index weighting methods?',a:'Price, equal, market-cap (float-adjusted), fundamental.'},{q:'Leverage ratio?',a:'1 ÷ initial margin.'}],
+ read:[{t:'Saudi Exchange (Tadawul)',s:'Saudi Exchange',u:'https://www.saudiexchange.sa/'},{t:'Efficient-market hypothesis',s:'Wikipedia',u:WIKI('Efficient-market_hypothesis')},{t:'Buying on margin',s:'Investopedia',u:INV('b/buyingonmargin.asp')}]},
+
+{id:'a14',track:'cfa1',topic:'eq',title:'Industry analysis and equity valuation',mins:45,blurb:'Industry and company analysis, dividend discount models and multiples.',
+ lab:{key:'ddm',name:'Two-stage DDM and justified P/E',intro:'Value a share with high growth then stable growth.'},
+ cards:[
+  {h:'Industry analysis',b:`<p>Classify (GICS-like sectors), assess life cycle (embryonic → growth → shakeout → mature → decline), competitive forces, and external influences (technology, demographics, government, social). Forecast company revenue from industry growth and share.</p>`},
+  {h:'Dividend discount models',b:`<div class="formula">Gordon: V₀ = D₁ ÷ (r − g) · g = b × ROE (sustainable growth) · Multi-stage: discount explicit dividends + terminal value</div>`},
+  {h:'Preferred stock',b:`<div class="formula">V = D ÷ r (non-callable, non-convertible perpetual preferred)</div>`},
+  {h:'Multiples',b:`<p>P/E, P/B, P/S, P/CF, EV/EBITDA. Justified forward P/E = (D₁/E₁) ÷ (r − g). Use comparables (relative value) or fundamentals. EV/EBITDA is useful across different capital structures.</p>`},
+  {h:'Intrinsic vs market value',b:`<p>If intrinsic value > market price, the share is undervalued — subject to model and input uncertainty. Use several methods and sensitivity ranges.</p>`}],
+ quiz:[
+  {q:'D₀ 2.00, g 4%, r 10%. Gordon value:',o:['33.33','34.67','20.80'],a:1,w:'2.08 ÷ 0.06.'},
+  {q:'Retention ratio 60%, ROE 15%. Sustainable growth:',o:['9%','6%','15%'],a:0,w:'0.6 × 15%.'},
+  {q:'Preferred paying 5 a year, required return 8%:',o:['62.50','40.00','5.40'],a:0,w:'5 ÷ 0.08.'},
+  {q:'Payout 40%, r 10%, g 6%. Justified forward P/E:',o:['10×','6.7×','4×'],a:0,w:'0.4 ÷ 0.04.'},
+  {q:'EV/EBITDA is preferred over P/E when comparing companies with:',o:['Different capital structures','Same leverage','No debt'],a:0,w:'Capital-structure neutral.'},
+  {q:'The Gordon model requires:',o:['r > g','g > r','g = 0'],a:0,w:'Otherwise value is infinite or negative.'},
+  {q:'An industry with consolidation and slowing growth is in:',o:['Embryonic stage','Shakeout stage','Decline stage'],a:1,w:'Shakeout follows growth.'},
+  {q:'Intrinsic value 48, market price 40. The share appears:',o:['Overvalued','Undervalued','Fairly valued'],a:1,w:'Value > price.'},
+  {q:'Raising required return, other things equal, makes DDM value:',o:['Rise','Fall','Unchanged'],a:1,w:'Higher discount rate.'},
+  {q:'P/B is especially useful for:',o:['Banks and asset-heavy firms','Early-stage software','Companies with negative book value'],a:0,w:'Book values meaningful.'}],
+ srs:[{q:'Gordon growth model?',a:'V₀ = D₁ ÷ (r − g).'},{q:'Sustainable growth?',a:'g = retention × ROE.'},{q:'Justified forward P/E?',a:'Payout ÷ (r − g).'},{q:'Industry life cycle?',a:'Embryonic, growth, shakeout, mature, decline.'}],
+ read:[{t:'Damodaran Online: valuation',s:'NYU Stern',u:DAMO},{t:'Dividend discount model',s:'Investopedia',u:INV('d/ddm.asp')},{t:'The Five Competitive Forces That Shape Strategy',s:'Harvard Business Review',u:'https://hbr.org/2008/01/the-five-competitive-forces-that-shape-strategy'}]},
+
+{id:'a15',track:'cfa1',topic:'fi',title:'Fixed income: instruments, pricing and yields',mins:45,blurb:'Bond features, markets, pricing, yield measures and the yield curve.',
+ lab:{key:'bond',name:'Bond price–yield calculator',intro:'Price a bond, see premium vs discount, and the convex price–yield curve.'},
+ cards:[
+  {h:'Bond features',b:`<p>Issuer, maturity, par, coupon, currency, seniority, covenants, collateral, embedded options (callable benefits the issuer; putable and convertible benefit the investor). Sukuk are Sharia-compliant certificates structured around assets.</p>`},
+  {h:'Pricing',b:`<div class="formula">P = Σ CPN ÷ (1 + r)^t + Par ÷ (1 + r)^N</div><p>Coupon > YTM → premium; coupon < YTM → discount. Prices converge to par at maturity ("pull to par").</p>`},
+  {h:'Yield measures',b:`<p>Current yield = coupon ÷ price; YTM (IRR of cash flows); yield to call / yield to worst; street vs true yield; bond-equivalent yield for semi-annual bonds. Full price = flat (clean) price + accrued interest.</p>`},
+  {h:'Spot, forward and par curves',b:`<p>Spot rates discount single cash flows; forward rates are implied future rates; par curve gives coupon rates that price bonds at par. Spreads: G-spread (over government), I-spread (over swaps), Z-spread (constant over the spot curve), OAS (removes option value).</p>`},
+  {h:'Floating-rate notes',b:`<p>Coupon = reference rate + quoted margin; priced near par when the required margin equals the quoted margin. Money-market instruments use discount or add-on yields.</p>`}],
+ quiz:[
+  {q:'Coupon 5%, YTM 6%. The bond trades at:',o:['A premium','A discount','Par'],a:1,w:'Coupon below required yield.'},
+  {q:'A callable bond compared with an otherwise identical option-free bond has:',o:['Higher price','Lower price (higher yield)','Same price'],a:1,w:'Investor is short the call.'},
+  {q:'Full price equals:',o:['Flat price − accrued interest','Flat price + accrued interest','Par + coupon'],a:1,w:'Dirty = clean + accrued.'},
+  {q:'Annual 6% coupon, 3 years, YTM 6%. Price per 100:',o:['100.00','97.33','102.67'],a:0,w:'Coupon = yield.'},
+  {q:'The spread that is constant over the whole government spot curve is the:',o:['G-spread','Z-spread','I-spread'],a:1,w:'Zero-volatility spread.'},
+  {q:'OAS for a callable bond compared with its Z-spread is:',o:['Higher','Lower','Equal'],a:1,w:'OAS = Z-spread − option cost (for callables).'},
+  {q:'Current yield on a bond priced at 95 with a 4.75 coupon:',o:['5.00%','4.75%','4.51%'],a:0,w:'4.75 ÷ 95.'},
+  {q:'A putable bond benefits:',o:['The issuer','The investor','Neither'],a:1,w:'Investor can sell back.'},
+  {q:'If the yield curve is upward sloping, forward rates are generally:',o:['Above spot rates','Below spot rates','Equal'],a:0,w:'Forwards exceed spots when curve rises.'},
+  {q:'Sukuk are:',o:['Conventional bonds with Arabic documentation','Sharia-compliant certificates structured around underlying assets or ventures','Equity shares'],a:1,w:'Asset-linked returns rather than interest.'}],
+ srs:[{q:'Premium vs discount?',a:'Coupon > YTM → premium; coupon < YTM → discount.'},{q:'Full price?',a:'Flat price + accrued interest.'},{q:'Z-spread vs OAS?',a:'Z: constant spread over spot curve; OAS removes embedded option value.'},{q:'Callable bond yield?',a:'Higher yield/lower price vs option-free (investor short call).'}],
+ read:[{t:'Bond pricing and yields',s:'Investopedia',u:INV('y/yieldtomaturity.asp')},{t:'Sukuk',s:'Wikipedia',u:WIKI('Sukuk')},{t:'MIT 15.401 Finance Theory I',s:'MIT OpenCourseWare',u:OCW('finance theory')}]},
+
+{id:'a16',track:'cfa1',topic:'fi',title:'Term structure, duration and convexity',mins:45,blurb:'Interest-rate risk: Macaulay and modified duration, convexity and yield-curve risk.',
+ lab:{key:'duration',name:'Duration and convexity calculator',intro:'Estimate price changes and compare with the exact change.'},
+ cards:[
+  {h:'Duration family',b:`<ul><li><b>Macaulay:</b> weighted average time to cash flows.</li><li><b>Modified:</b> MacD ÷ (1 + y); % price change per 1% yield change.</li><li><b>Effective:</b> (P₋ − P₊) ÷ (2 × P₀ × Δy), used for bonds with embedded options.</li><li><b>Money duration / PVBP:</b> currency change per basis point.</li></ul>`},
+  {h:'Convexity',b:`<div class="formula">%ΔP ≈ −ModDur × Δy + ½ × Convexity × (Δy)²</div><p>Positive convexity helps the holder: gains exceed losses for equal yield moves. Callable bonds show negative convexity at low yields.</p>`},
+  {h:'What raises duration',b:`<p>Longer maturity, lower coupon, lower yield → higher duration. Zero-coupon bond: Macaulay duration = maturity.</p>`},
+  {h:'Investment horizon',b:`<p>When the investment horizon equals Macaulay duration, coupon reinvestment risk and price risk roughly offset for a parallel shift (immunisation).</p>`},
+  {h:'Yield-curve risk',b:`<p>Duration assumes parallel shifts. Key rate durations measure sensitivity to specific maturities (steepening, flattening, twists).</p>`}],
+ quiz:[
+  {q:'Modified duration 7, yields rise 50 bp. Approximate price change:',o:['−3.5%','−7%','+3.5%'],a:0,w:'−7 × 0.005.'},
+  {q:'Macaulay duration of a 5-year zero-coupon bond:',o:['5','Less than 5','More than 5'],a:0,w:'Single cash flow at maturity.'},
+  {q:'Which bond has the highest duration?',o:['10-year, 8% coupon','10-year, 2% coupon','5-year, 2% coupon'],a:1,w:'Long maturity, low coupon.'},
+  {q:'MacD 4.5, yield 5% (annual). ModDur:',o:['4.29','4.73','4.50'],a:0,w:'4.5 ÷ 1.05.'},
+  {q:'Effective duration is required for:',o:['Option-free bonds only','Bonds with embedded options','Zero-coupon bonds'],a:1,w:'Cash flows change with rates.'},
+  {q:'Positive convexity means for equal yield moves up and down:',o:['Price gain exceeds price loss','Loss exceeds gain','They are equal'],a:0,w:'Curvature benefit.'},
+  {q:'Callable bonds at low yields exhibit:',o:['Positive convexity','Negative convexity','Zero duration'],a:1,w:'Price capped near call price.'},
+  {q:'ModDur 6, convexity 50, yields fall 100 bp. Estimated price change:',o:['+6.25%','+5.75%','+6.00%'],a:0,w:'6% + 0.5 × 50 × 0.0001 = 6.25%.'},
+  {q:'Immunisation of a single liability matches the liability\'s horizon with the portfolio\'s:',o:['Maturity','Macaulay duration','Coupon'],a:1,w:'Offsets price and reinvestment risk.'},
+  {q:'Key rate durations measure sensitivity to:',o:['Parallel shifts only','Changes at specific points on the curve','Credit spreads'],a:1,w:'Shape risk.'}],
+ srs:[{q:'Approximate %ΔP?',a:'−ModDur × Δy + ½ Convexity × Δy².'},{q:'ModDur?',a:'MacDur ÷ (1 + y per period).'},{q:'Duration drivers?',a:'Longer maturity, lower coupon, lower yield → higher duration.'},{q:'Effective duration formula?',a:'(P₋ − P₊) ÷ (2P₀Δy).'}],
+ read:[{t:'Bond duration',s:'Wikipedia',u:WIKI('Bond_duration')},{t:'Convexity (finance)',s:'Wikipedia',u:WIKI('Bond_convexity')},{t:'Duration',s:'Investopedia',u:INV('d/duration.asp')}]},
+
+{id:'a17',track:'cfa1',topic:'fi',title:'Credit risk and securitisation',mins:40,blurb:'Default risk, ratings, spreads, and asset-backed securities.',
+ lab:{key:'credit',name:'Expected loss and tranche waterfall',intro:'Compute expected loss and see how pool losses hit each tranche.'},
+ cards:[
+  {h:'Credit risk components',b:`<div class="formula">Expected loss = PD × LGD (× exposure) · LGD = 1 − recovery rate</div><p>Also spread risk, downgrade risk and market liquidity risk.</p>`},
+  {h:'Ratings and seniority',b:`<p>Investment grade (BBB−/Baa3 and above) vs high yield. Priority of claims: secured debt before unsecured, senior before subordinated. Notching: issue ratings can differ from issuer ratings.</p>`},
+  {h:'Credit analysis',b:`<p>The four Cs plus industry, leverage (debt/EBITDA), coverage, and cash-flow measures. Sovereign analysis adds institutional, economic, fiscal, monetary and external factors.</p>`},
+  {h:'Securitisation',b:`<p>A special purpose entity buys assets (mortgages, auto loans, receivables) and issues tranches. Credit enhancement: subordination (waterfall), overcollateralisation, reserve accounts, excess spread. Benefits: funding diversification, risk transfer.</p>`},
+  {h:'Mortgage-backed securities',b:`<p>Prepayment risk: contraction risk when rates fall, extension risk when rates rise. CMOs redistribute prepayment risk across tranches (sequential pay, PAC/support).</p>`}],
+ quiz:[
+  {q:'PD 2%, recovery 40%. Expected loss as % of exposure:',o:['1.2%','0.8%','2.0%'],a:0,w:'2% × 60%.'},
+  {q:'The lowest investment-grade rating (S&P scale) is:',o:['BBB−','BB+','A−'],a:0,w:'Below is high yield.'},
+  {q:'In a securitisation waterfall, losses first hit the:',o:['Senior tranche','Equity (first-loss) tranche','All tranches equally'],a:1,w:'Subordination.'},
+  {q:'Pool loss 18%, equity tranche 10%, mezzanine 20%. Mezzanine tranche loses:',o:['8% of the pool (40% of the tranche)','18%','None'],a:0,w:'Equity absorbs 10, mezz absorbs 8 of 20.'},
+  {q:'When rates fall, MBS holders face:',o:['Extension risk','Contraction (prepayment) risk','No risk'],a:1,w:'Borrowers refinance.'},
+  {q:'Overcollateralisation means:',o:['Collateral value exceeds the securities issued','Insurance from a third party','A cash reserve'],a:0,w:'Internal credit enhancement.'},
+  {q:'Approximate credit spread ≈',o:['PD × LGD','PD + LGD','Recovery rate'],a:0,w:'Compensation for expected loss (plus premia).'},
+  {q:'Secured debt ranks:',o:['Below unsubordinated unsecured','Above unsecured in the priority of claims','Equal to equity'],a:1,w:'Claim on collateral.'},
+  {q:'A key benefit of securitisation to banks is:',o:['Higher leverage on the same assets','Funding and risk transfer, freeing capital','Avoiding all regulation'],a:1,w:'Originate-to-distribute.'},
+  {q:'Downgrade risk refers to:',o:['Loss from a rating cut and wider spreads','Default with zero recovery','Prepayment'],a:0,w:'Credit migration.'}],
+ srs:[{q:'Expected loss?',a:'PD × LGD × exposure; LGD = 1 − recovery.'},{q:'Credit enhancements?',a:'Subordination, overcollateralisation, reserve accounts, excess spread (external: guarantees).'},{q:'MBS prepayment risks?',a:'Contraction (rates fall), extension (rates rise).'},{q:'IG cut-off?',a:'BBB−/Baa3.'}],
+ read:[{t:'Expected loss',s:'Wikipedia',u:WIKI('Expected_loss')},{t:'Securitization',s:'Wikipedia',u:WIKI('Securitization')},{t:'Credit ratings',s:'Investopedia',u:INV('c/creditrating.asp')}]},
+
+{id:'a18',track:'cfa1',topic:'der',title:'Derivatives: forwards, futures, swaps and options',mins:45,blurb:'Instruments, no-arbitrage pricing, put–call parity and the binomial model.',
+ lab:{key:'options',name:'Option payoffs and one-period binomial',intro:'Payoff diagrams, risk-neutral valuation and parity.'},
+ cards:[
+  {h:'Instruments',b:`<p>Forward commitments (forwards, futures, swaps) vs contingent claims (options, credit derivatives). Futures are standardised, exchange-traded and marked to market daily; forwards are OTC with counterparty risk.</p>`},
+  {h:'No-arbitrage pricing',b:`<div class="formula">F₀ = S₀(1 + r)^T (no income or costs) · adjust for income (−) and storage costs (+)</div><p>The value of a forward at inception is zero; later it depends on the change in forward price.</p>`},
+  {h:'Options',b:`<p>Call payoff max(0, S_T − K); put payoff max(0, K − S_T). Moneyness, intrinsic and time value. Factors: S, K, volatility, time, rates, income.</p>`},
+  {h:'Put–call parity',b:`<div class="formula">S₀ + p₀ = c₀ + PV(K) · Put–call–forward parity: F₀/(1 + r)^T + p₀ = c₀ + PV(K)</div>`},
+  {h:'Binomial model',b:`<div class="formula">q = (1 + r − d) ÷ (u − d) · c₀ = [q·c_u + (1 − q)·c_d] ÷ (1 + r)</div><p>Risk-neutral probability, not real-world probability.</p>`}],
+ quiz:[
+  {q:'Futures differ from forwards mainly in being:',o:['OTC and customised','Exchange-traded, standardised and marked to market','Free of margin'],a:1,w:'Clearing house.'},
+  {q:'S₀ 100, r 5% for 1 year, no income. Forward price:',o:['105','100','95.24'],a:0,w:'100 × 1.05.'},
+  {q:'The value of a forward contract at initiation is:',o:['The forward price','Zero','The spot price'],a:1,w:'Priced so no value changes hands.'},
+  {q:'Put–call parity: S + p =',o:['c + PV(K)','c − PV(K)','K + c'],a:0,w:'Fiduciary call = protective put.'},
+  {q:'u 1.2, d 0.8, r 5%. Risk-neutral up probability:',o:['0.625','0.500','0.600'],a:0,w:'(1.05 − 0.8) ÷ 0.4.'},
+  {q:'S 100, K 100, u 1.2, d 0.8, r 5%. One-period call value:',o:['11.90','12.50','10.00'],a:0,w:'0.625 × 20 ÷ 1.05.'},
+  {q:'Higher volatility makes both calls and puts:',o:['Less valuable','More valuable','Unaffected'],a:1,w:'More upside optionality.'},
+  {q:'A swap can be viewed as a series of:',o:['Options','Forward contracts','Bonds only'],a:1,w:'Off-market forwards.'},
+  {q:'A call with S < K is:',o:['In the money','Out of the money','At the money'],a:1,w:'No intrinsic value.'},
+  {q:'Long put payoff at expiry with K 100 and S_T 80:',o:['20','0','80'],a:0,w:'max(0, 100 − 80).'}],
+ srs:[{q:'Forward price (no income)?',a:'F₀ = S₀(1 + r)^T.'},{q:'Put–call parity?',a:'S + p = c + PV(K).'},{q:'Risk-neutral probability?',a:'q = (1 + r − d) ÷ (u − d).'},{q:'Forward commitments vs contingent claims?',a:'Forwards/futures/swaps vs options/credit derivatives.'}],
+ read:[{t:'Put–call parity',s:'Investopedia',u:INV('p/putcallparity.asp')},{t:'Binomial options pricing model',s:'Wikipedia',u:WIKI('Binomial_options_pricing_model')},{t:'Futures contract',s:'Wikipedia',u:WIKI('Futures_contract')}]},
+
+{id:'a19',track:'cfa1',topic:'alt',title:'Alternative investments',mins:40,blurb:'Private capital, real estate, infrastructure, natural resources, hedge funds and digital assets.',
+ lab:{key:'altfees',name:'Hedge-fund fees and cap-rate valuation',intro:'Net returns after "2 and 20", and property value from NOI.'},
+ cards:[
+  {h:'Features and methods',b:`<p>Alternatives offer diversification and return potential but bring illiquidity, leverage, opacity, high fees and difficult performance measurement. Access: direct, co-investment, fund investing.</p>`},
+  {h:'Fees and structures',b:`<p>Limited partnerships with management fees (on committed or invested capital) and incentive fees (carried interest) above a hurdle, with high-water marks and clawbacks. Waterfalls can be whole-of-fund (European) or deal-by-deal (American).</p>`},
+  {h:'Private capital and real estate',b:`<p>Private equity (LBO, venture, growth), private debt (direct lending, mezzanine, distressed). Real estate valuation: income approach (NOI ÷ cap rate), cost approach, sales comparison. REITs offer liquid exposure.</p>`},
+  {h:'Infrastructure and natural resources',b:`<p>Infrastructure: long-lived, often regulated, stable cash flows (brownfield vs greenfield). Natural resources: commodities, farmland, timberland. Commodity futures returns = spot + roll + collateral yield.</p>`},
+  {h:'Hedge funds and digital assets',b:`<p>Strategies: equity long/short, event-driven, relative value, macro. Digital assets: cryptocurrencies, tokens and stablecoins built on distributed ledgers; high volatility and evolving regulation.</p>`}],
+ quiz:[
+  {q:'Fund starts at 100m, gross return 15%, 2% management fee on start assets, 20% incentive above high-water mark of 100m, incentive net of management fee. Net return:',o:['10.40%','12.00%','11.00%'],a:0,w:'115 − 2 = 113; incentive 20% × 13 = 2.6; 110.4 → 10.4%.'},
+  {q:'NOI 12m, cap rate 7.5%. Property value:',o:['160m','90m','120m'],a:0,w:'12 ÷ 0.075.'},
+  {q:'A high-water mark ensures incentive fees are paid only:',o:['On gains above the previous peak value','On all gains','After 5 years'],a:0,w:'No fees on recouping losses.'},
+  {q:'A European (whole-of-fund) waterfall pays carry:',o:['Deal by deal','After LPs receive their capital and hurdle across the fund','Never'],a:1,w:'More LP-friendly.'},
+  {q:'Commodity futures total return components:',o:['Spot, roll and collateral returns','Dividends and coupons','Only spot changes'],a:0,w:'Three parts.'},
+  {q:'Brownfield infrastructure refers to:',o:['New projects to be built','Existing operating assets','Contaminated land only'],a:1,w:'Lower construction risk.'},
+  {q:'Which is NOT a typical feature of alternatives?',o:['Illiquidity','High transparency and daily pricing','Higher fees'],a:1,w:'Usually opaque and infrequently priced.'},
+  {q:'An equity long/short fund mainly seeks to:',o:['Profit from stock selection while reducing market exposure','Hold only bonds','Track an index'],a:0,w:'Alpha from longs and shorts.'},
+  {q:'Appraisal-based real estate indices tend to:',o:['Overstate volatility','Understate volatility and correlation (smoothing)','Be identical to REIT indices'],a:1,w:'Infrequent appraisals smooth returns.'},
+  {q:'Clawback provisions protect:',o:['The general partner','Limited partners if the GP was overpaid carry','Lenders'],a:1,w:'Return of excess carry.'}],
+ srs:[{q:'Cap-rate valuation?',a:'Value = NOI ÷ cap rate.'},{q:'High-water mark?',a:'Incentive fee only on gains above prior peak NAV.'},{q:'Commodity futures return?',a:'Spot + roll + collateral yield.'},{q:'European vs American waterfall?',a:'Whole-of-fund (LP-friendly) vs deal-by-deal.'}],
+ read:[{t:'CAIA Association',s:'CAIA',u:'https://caia.org/'},{t:'Capitalization rate',s:'Investopedia',u:INV('c/capitalizationrate.asp')},{t:'Hedge fund',s:'Wikipedia',u:WIKI('Hedge_fund')}]},
+
+{id:'a20',track:'cfa1',topic:'pm',title:'Portfolio management and risk',mins:45,blurb:'Risk and return, diversification, CAPM, the IPS, behavioural biases and risk management.',
+ lab:{key:'frontier',name:'Two-asset frontier and CAPM',intro:'See diversification bend the frontier; compute CAPM returns.'},
+ cards:[
+  {h:'Diversification',b:`<div class="formula">σ²_p = w₁²σ₁² + w₂²σ₂² + 2w₁w₂ρσ₁σ₂</div><p>Lower correlation → more risk reduction. Efficient frontier: highest return for each level of risk. With a risk-free asset, the capital allocation line touches the optimal risky portfolio.</p>`},
+  {h:'CAPM and the SML',b:`<div class="formula">E(R) = R_f + β[E(R_m) − R_f] · β = Cov(R_i, R_m) ÷ σ²_m</div><p>Only systematic risk is priced. Performance: Sharpe (total risk), Treynor (beta), M², Jensen's alpha.</p>`},
+  {h:'The investment policy statement',b:`<p>Return and risk objectives (ability and willingness to take risk) plus constraints: liquidity, time horizon, tax, legal and regulatory, unique circumstances. Then strategic asset allocation.</p>`},
+  {h:'Behavioural finance',b:`<p>Cognitive errors (conservatism, confirmation, representativeness, illusion of control, hindsight, anchoring, mental accounting, framing, availability) vs emotional biases (loss aversion, overconfidence, self-control, status quo, endowment, regret aversion).</p>`},
+  {h:'Risk management',b:`<p>Identify, measure, modify (avoid, accept, transfer, shift) and monitor risk within a risk budget. Measures: standard deviation, beta, duration, VaR, scenario and stress tests. Fintech and big data increasingly support it.</p>`}],
+ quiz:[
+  {q:'R_f 4%, β 1.3, E(R_m) 10%. CAPM required return:',o:['11.8%','13.0%','10.0%'],a:0,w:'4 + 1.3 × 6.'},
+  {q:'Which risk is priced in CAPM?',o:['Total risk','Systematic risk','Unsystematic risk'],a:1,w:'Diversifiable risk earns no premium.'},
+  {q:'Sharpe ratio uses:',o:['Beta','Total standard deviation','Tracking error'],a:1,w:'(R_p − R_f) ÷ σ_p.'},
+  {q:'Correlation of +1 between two assets means diversification:',o:['Reduces risk the most','Gives no risk reduction','Eliminates all risk'],a:1,w:'Portfolio σ is a weighted average.'},
+  {q:'A client\'s large liquidity need within a year mainly reduces:',o:['Willingness to take risk','Ability to take risk','Tax constraints'],a:1,w:'Capacity constraint.'},
+  {q:'Loss aversion is a(n):',o:['Cognitive error','Emotional bias','Information-processing error'],a:1,w:'Emotional.'},
+  {q:'Anchoring is a(n):',o:['Emotional bias','Cognitive error','Rational choice'],a:1,w:'Belief-perseverance/processing error.'},
+  {q:'Treynor ratio divides excess return by:',o:['Standard deviation','Beta','VaR'],a:1,w:'Systematic risk.'},
+  {q:'A stock plotting above the SML is:',o:['Overvalued','Undervalued (positive alpha)','Fairly priced'],a:1,w:'Expected return exceeds required.'},
+  {q:'Buying insurance is an example of risk:',o:['Avoidance','Transfer','Acceptance'],a:1,w:'Shift to another party.'}],
+ srs:[{q:'CAPM?',a:'E(R) = R_f + β(E(R_m) − R_f).'},{q:'Sharpe vs Treynor?',a:'Sharpe: excess return ÷ σ. Treynor: excess return ÷ β.'},{q:'IPS constraints?',a:'Liquidity, time horizon, tax, legal/regulatory, unique circumstances.'},{q:'Cognitive vs emotional bias examples?',a:'Cognitive: anchoring, confirmation. Emotional: loss aversion, overconfidence.'}],
+ read:[{t:'Modern portfolio theory',s:'Wikipedia',u:WIKI('Modern_portfolio_theory')},{t:'Capital asset pricing model',s:'Investopedia',u:INV('c/capm.asp')},{t:'Behavioral finance',s:'Wikipedia',u:WIKI('Behavioral_economics')}]}
+]);
 
 /* ================= Engineering Refresher track: missions ================= */
 addMissions([
@@ -2193,89 +2732,184 @@ addMissions([
  read:[{t:'How to pitch your startup',s:'Y Combinator Startup Library',u:'https://www.ycombinator.com/library'},{t:'The Necessary Art of Persuasion',s:'Harvard Business Review',u:'https://hbr.org/1998/05/the-necessary-art-of-persuasion'},{t:'Pitch decks',s:'HBR search',u:HBRS('pitch deck investors')}]}
 ]);
 
-/* ================= Icons and track colours ================= */
-/* 24×24 stroke icons (drawn for this app) */
-const IC={
- briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
- split:'<path d="M12 3v6M12 9l-6 6M12 9l6 6M6 15v5M18 15v5"/>',
- tree:'<rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/><path d="M12 7v4M5 16v-3h14v3"/>',
- bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V17h5v-1.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/>',
- coins:'<ellipse cx="9" cy="7" rx="6" ry="3"/><path d="M3 7v5c0 1.7 2.7 3 6 3s6-1.3 6-3V7"/><path d="M9 15v3c0 1.7 2.7 3 6 3s6-1.3 6-3v-5c0-1.6-2.4-2.9-5.5-3"/>',
- ruler:'<path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>',
- globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
- merge:'<circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="12" r="2"/><path d="M6 7v10M6 7c0 5 6 5 10 5"/>',
- wrench:'<path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.1 2.1 0 0 1-3-3l9.4-9.4a4 4 0 0 0-2-2z"/>',
- tag:'<path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.5"/>',
- barchart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
- pyramid:'<path d="M12 3L2 20h20z"/><path d="M7 12h10M4.5 16h15"/>',
- slides:'<rect x="2" y="3" width="20" height="13" rx="1.5"/><path d="M12 16v4M8 20h8M6 12l3-3 3 2 5-4"/>',
- chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 14h5"/>',
- mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/>',
- doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/>',
- cycle:'<path d="M21 12a9 9 0 0 1-15.5 6.2M3 12A9 9 0 0 1 18.5 5.8"/><path d="M18 2v4h-4M6 22v-4h4"/>',
- pie:'<path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>',
- scale:'<path d="M12 3v18M7 21h10M4 7h16M4 7l-2 6a3 3 0 0 0 4 0zM20 7l-2 6a3 3 0 0 0 4 0z"/>',
- clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
- percent:'<path d="M19 5L5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>',
- trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
- curve:'<path d="M3 21V3M3 21h18"/><path d="M6 18c3-1 4-11 7-11s4 8 7 9"/>',
- landmark:'<path d="M3 21h18M5 18v-7M9.5 18v-7M14.5 18v-7M19 18v-7M2 9l10-6 10 6z"/>',
- target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
- shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
- grid:'<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/>',
- flow:'<rect x="2" y="9" width="5" height="6" rx="1"/><rect x="9.5" y="9" width="5" height="6" rx="1"/><rect x="17" y="9" width="5" height="6" rx="1"/><path d="M7 12h2.5M14.5 12H17"/>',
- users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c3 0 5 2 5 5"/>',
- scatter:'<path d="M3 3v18h18"/><circle cx="8" cy="15" r="1.3"/><circle cx="11" cy="11" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="18" cy="7" r="1.3"/><path d="M6 17L20 6" stroke-dasharray="2 2"/>',
- factory:'<path d="M2 21V10l6 4V10l6 4V6l8 4v11z"/><path d="M6 17h2M11 17h2M16 17h2"/>',
- gauge:'<path d="M4 18a9 9 0 1 1 16 0"/><path d="M12 13l4-5"/><circle cx="12" cy="14" r="1.5"/>',
- sliders:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
- map:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
- kanban:'<rect x="3" y="3" width="5" height="15" rx="1"/><rect x="10" y="3" width="5" height="10" rx="1"/><rect x="17" y="3" width="4" height="7" rx="1"/>',
- activity:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
- crosshair:'<circle cx="12" cy="12" r="8"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>',
- linechart:'<path d="M3 3v18h18"/><path d="M6 12h14" stroke-dasharray="2 2"/><path d="M6 15l3-4 3 2 3-6 3 3"/>',
- alert:'<path d="M12 3L2 20h20z"/><path d="M12 10v4M12 17h0"/>',
- forecast:'<path d="M3 3v18h18"/><path d="M6 16l4-4 3 2 3-4"/><path d="M16 10l4-3" stroke-dasharray="2 2"/>',
- boxes:'<rect x="3" y="12" width="8" height="8" rx="1"/><rect x="13" y="12" width="8" height="8" rx="1"/><rect x="8" y="3" width="8" height="8" rx="1"/>',
- truck:'<path d="M2 6h12v10H2zM14 10h4l4 3v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
- sigma:'<path d="M18 4H6l6 8-6 8h12"/>',
- queue:'<circle cx="5" cy="9" r="2"/><circle cx="11" cy="9" r="2"/><circle cx="17" cy="9" r="2"/><path d="M3 17h4M9 17h4M15 17h4M20 5v14"/>',
- cpu:'<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
- calendar:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4M7 17h8"/>',
- search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>',
- puzzle:'<path d="M10 3h4v3a2 2 0 1 0 4 0V3h3v7h-3a2 2 0 1 0 0 4h3v7h-7v-3a2 2 0 1 0-4 0v3H3v-7h3a2 2 0 1 0 0-4H3V3z"/>',
- layout:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 9v12M15 9v12"/>',
- layers:'<path d="M12 2l10 5-10 5L2 7z"/><path d="M2 12l10 5 10-5M2 17l10 5 10-5"/>',
- calculator:'<rect x="4" y="2" width="16" height="20" rx="2"/><rect x="7" y="5" width="10" height="4"/><path d="M8 13h0M12 13h0M16 13h0M8 17h0M12 17h0M16 17h0"/>',
- flask:'<path d="M9 3h6M10 3v6L4 19a2 2 0 0 0 1.7 3h12.6A2 2 0 0 0 20 19l-6-10V3"/><path d="M7 15h10"/>',
- megaphone:'<path d="M3 10v4h4l8 5V5L7 10z"/><path d="M18 9a4 4 0 0 1 0 6M7 14l1 6h3l-1-5"/>',
- hourglass:'<path d="M6 2h12M6 22h12M7 2c0 5 10 5 10 10S7 17 7 22M17 2c0 5-10 5-10 10s10 5 10 10"/>',
- handshake:'<path d="M2 12l4-4 4 2 3-2 3 1 6 3-4 5-3-2-2 2-3-1-3-2z"/><path d="M10 10l3 3"/>',
- table:'<rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 10h18M3 15h18M9 4v16"/>',
- signature:'<path d="M3 17c3 0 4-6 6-6s1 6 3 6 3-4 4-4 1 3 5 3"/><path d="M3 21h18"/>',
- pin:'<path d="M12 22s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',
- rocket:'<path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M9 15l-3-3c1-4 4-8 10-9 1 6-3 9-9 12z"/><circle cx="15" cy="9" r="1.5"/>',
- home:'<path d="M3 11l9-8 9 8M5 9v12h14V9"/><path d="M10 21v-6h4v6"/>',
- tracks:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
- review:'<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
- casebook:'<path d="M4 4a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/><path d="M4 20a2 2 0 0 1 2-2h13M8 7h7M8 11h5"/>',
- more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
- book:'<path d="M2 4h7a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H2zM22 4h-7a3 3 0 0 0-3 3v14a2 2 0 0 1 2-2h8z"/>',
- check:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l3 3 5-6"/>',
- pen:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
- library:'<path d="M4 3v18M8 3v18M12 5l4 15M16 4l4 16"/>'
+/* ================= CFA exam simulator =================
+   Items come from mission data:
+   - multiple choice: each mission's quiz items (topic = mission.topic)
+   - item sets: mission.sets = [{t:title, v:'vignette html', qs:[{q,o,a,w}...]}]
+   - constructed response: mission.cr = [{q, model, pts:[...]}]
+*/
+const EXAMS={
+ cfa1:{name:'CFA Level I',kind:'mcq',per:90,modes:[{id:'q30',n:30,label:'Quick: 30 questions · 45 min'},{id:'q90',n:90,label:'Half exam: 90 questions · 135 min'},{id:'q180',n:180,label:'Full length: 180 questions · 270 min'}],
+  topics:{eth:['Ethical and Professional Standards',15,20],qm:['Quantitative Methods',6,9],eco:['Economics',6,9],fsa:['Financial Statement Analysis',11,14],ci:['Corporate Issuers',6,9],eq:['Equity Investments',11,14],fi:['Fixed Income',11,14],der:['Derivatives',5,8],alt:['Alternative Investments',7,10],pm:['Portfolio Management',8,12]}},
+ cfa2:{name:'CFA Level II',kind:'sets',per:90,modes:[{id:'s5',n:5,label:'Short: 5 item sets (20 questions) · 30 min'},{id:'s11',n:11,label:'Half session: 11 item sets (44 questions) · 66 min'}],
+  topics:{eth:['Ethical and Professional Standards',10,15],qm:['Quantitative Methods',5,10],eco:['Economics',5,10],fsa:['Financial Statement Analysis',10,15],ci:['Corporate Issuers',5,10],eq:['Equity Valuation',10,15],fi:['Fixed Income',10,15],der:['Derivatives',5,10],alt:['Alternative Investments',5,10],pm:['Portfolio Management',10,15]}},
+ cfa3:{name:'CFA Level III',kind:'mixed',per:90,modes:[{id:'m4',n:4,label:'Short: 2 item sets + 2 constructed responses · 40 min'},{id:'m8',n:8,label:'Session: 4 item sets + 4 constructed responses · 90 min'}],
+  topics:{aa:['Asset Allocation',15,20],pc:['Portfolio Construction',15,20],perf:['Performance Measurement',5,10],der:['Derivatives and Risk Management',10,15],eth:['Ethical and Professional Standards',10,15],path:['Pathway',30,35]}}
 };
-const ico=(k,sz,sw)=>`<svg class="ic" width="${sz||22}" height="${sz||22}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw||1.8}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]||IC.target}</svg>`;
-/* track colours: [main, soft background (light), soft background (dark)] */
-const TC={consult:{c:'#0E8C8C',g:'linear-gradient(135deg,#0B5E63,#0E8C8C)',i:'briefcase'},mba:{c:'#3C5FD0',g:'linear-gradient(135deg,#22378A,#3C5FD0)',i:'landmark'},eng:{c:'#D9711E',g:'linear-gradient(135deg,#9A4A0E,#D9711E)',i:'factory'},startup:{c:'#B4367A',g:'linear-gradient(135deg,#7A1F55,#B4367A)',i:'rocket'}};
-/* one icon per mission */
-const MICON={c01:'briefcase',c02:'split',c03:'tree',c04:'bulb',c05:'coins',c06:'ruler',c07:'globe',c08:'merge',c09:'wrench',c10:'tag',c11:'barchart',c12:'pyramid',c13:'slides',c14:'chat',c15:'mic',
- m01:'doc',m02:'cycle',m03:'pie',m04:'scale',m05:'clock',m06:'percent',m07:'trend',m08:'curve',m09:'landmark',m10:'tag',m11:'target',m12:'shield',m13:'grid',m14:'flow',m15:'users',m16:'scatter',
- e01:'factory',e02:'gauge',e03:'sliders',e04:'map',e05:'kanban',e06:'activity',e07:'crosshair',e08:'linechart',e09:'alert',e10:'forecast',e11:'boxes',e12:'truck',e13:'sigma',e14:'queue',e15:'cpu',e16:'calendar',
- s01:'search',s02:'mic',s03:'puzzle',s04:'layout',s05:'target',s06:'layers',s07:'calculator',s08:'flask',s09:'megaphone',s10:'hourglass',s11:'handshake',s12:'table',s13:'signature',s14:'pin',s15:'rocket'};
-const tcol=t=>TC[t]||TC.consult;
-const mico=(id,sz)=>ico(MICON[id]||'target',sz);
-const STEPICO={learn:'book',lab:'flask',test:'check',reflect:'pen',read:'library'};
+function examPool(tr){const ms=TRACKS.find(t=>t.id===tr).titles.map((_,i)=>M[mid(tr,i)]).filter(Boolean);
+  const mcq=[],sets=[],cr=[];ms.forEach(m=>{(m.quiz||[]).forEach((q,i)=>mcq.push(Object.assign({kind:'mcq',topic:m.topic,src:m.id+'-'+i,mt:m.title},q)));(m.sets||[]).forEach((s,i)=>sets.push(Object.assign({topic:m.topic,src:m.id+'-s'+i,mt:m.title},s)));(m.cr||[]).forEach((c,i)=>cr.push(Object.assign({kind:'cr',topic:m.topic,src:m.id+'-c'+i,mt:m.title},c)))});return{mcq,sets,cr}}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildExam(tr,mode){const E=EXAMS[tr],P=examPool(tr),md=E.modes.find(x=>x.id===mode);let items=[];
+  if(E.kind==='mcq'){const tk=Object.keys(E.topics),mid_=k=>(E.topics[k][1]+E.topics[k][2])/2,tot=tk.reduce((s,k)=>s+mid_(k),0);const by={};P.mcq.forEach(q=>(by[q.topic]=by[q.topic]||[]).push(q));
+    const rest=[];tk.forEach(k=>{const want=Math.round(md.n*mid_(k)/tot),sh=shuffle(by[k]||[]);items.push(...sh.slice(0,want));rest.push(...sh.slice(want))});if(items.length<md.n)items.push(...shuffle(rest).slice(0,md.n-items.length));items=shuffle(items).slice(0,md.n)}
+  else if(E.kind==='sets'){shuffle(P.sets).slice(0,md.n).forEach(s=>s.qs.forEach((q,i)=>items.push(Object.assign({kind:'mcq',topic:s.topic,src:s.src+'-'+i,stem:s.v,setT:s.t,mt:s.mt},q))))}
+  else{const half=md.n/2;shuffle(P.sets).slice(0,half).forEach(s=>s.qs.forEach((q,i)=>items.push(Object.assign({kind:'mcq',topic:s.topic,src:s.src+'-'+i,stem:s.v,setT:s.t,mt:s.mt},q))));items.push(...shuffle(P.cr).slice(0,half))}
+  return items.map(it=>{if(it.kind!=='mcq')return it;const pm=perm(it.o.length);return Object.assign({},it,{o:pm.map(k=>it.o[k]),a:pm.indexOf(it.a)})})}
+let EX=null;
+function vExam(tr,mode){if(!tr||!EXAMS[tr]){view().innerHTML=`<h1>CFA exam simulator</h1><p class="note">Timed practice drawn from the CFA tracks' question banks, weighted like the real exam. Original questions; not CFA Institute material.</p><div class="grid g3">${Object.keys(EXAMS).map(k=>{const c=tcol(k);return`<div class="card tcard" style="--tc:${c.c};border-top:4px solid ${c.c}" onclick="go('#/exam/${k}')"><div class="row"><span class="tile">${ico(c.i,24)}</span><h3 style="margin:0">${EXAMS[k].name}</h3></div><p class="note">${examHist(k)}</p></div>`}).join('')}</div>`;return}
+  const E=EXAMS[tr],c=tcol(tr),P=examPool(tr);
+  if(EX&&EX.tr===tr&&!EX.done){return examRun()}
+  const avail=E.kind==='mcq'?P.mcq.length+' questions in the bank':E.kind==='sets'?P.sets.length+' item sets in the bank':P.sets.length+' item sets and '+P.cr.length+' constructed responses in the bank';
+  view().innerHTML=`<div style="--tc:${c.c}"><a href="#/exam" class="note">← Exam simulator</a><div class="mhead"><span class="tile">${ico(c.i,28)}</span><div><div class="eyebrow">Exam simulator</div><h1 style="margin:2px 0">${E.name}</h1><p class="note" style="margin:0">${avail}. Questions are drawn in proportion to the published topic weights.</p></div></div>
+  <div class="card"><h3>Choose a format</h3>${E.modes.map(md=>`<button class="qopt" data-m="${md.id}"><b>${md.label}</b></button>`).join('')}<p class="note">Timing follows the real exam pace of about 90 seconds per question. You can flag questions and move freely before submitting.</p></div>
+  <div class="card"><h3>Your history</h3>${examTable(tr)}</div>
+  <div class="card"><h3>Topic weights</h3><div class="tablewrap"><table class="t"><tr><th>Topic</th><th>Weight</th></tr>${Object.values(E.topics).map(t=>`<tr><td>${t[0]}</td><td>${t[1]}–${t[2]}%</td></tr>`).join('')}</table></div><p class="note">Source: CFA Institute topic outlines as published for 2026 exams.</p></div></div>`;
+  $$('[data-m]').forEach(b=>b.onclick=()=>{const items=buildExam(tr,b.dataset.m);if(!items.length){toast('The question bank for this level is not built yet');return}const secs=items.reduce((s,it)=>s+(it.kind==='cr'?600:E.per),0);EX={tr,mode:b.dataset.m,items,ans:{},flag:{},cr:{},i:0,t0:Date.now(),secs,done:false};examRun()})}
+function examHist(tr){const h=(state.exams||[]).filter(e=>e.tr===tr);return h.length?`${h.length} attempt${h.length>1?'s':''} · best ${Math.round(Math.max(...h.map(e=>e.score))*100)}%`:'No attempts yet'}
+function examTable(tr){const h=(state.exams||[]).filter(e=>e.tr===tr).slice(-8).reverse();return h.length?`<div class="tablewrap"><table class="t"><tr><th>Date</th><th>Format</th><th>Score</th><th>Time</th></tr>${h.map(e=>`<tr><td>${new Date(e.t).toLocaleDateString('en-GB')}</td><td>${e.n} items</td><td><b>${Math.round(e.score*100)}%</b></td><td>${Math.round(e.secs/60)} min</td></tr>`).join('')}</table></div>`:'<p class="note">No attempts yet.</p>'}
+let exTick=null;
+function examRun(){const E=EXAMS[EX.tr],c=tcol(EX.tr),it=EX.items[EX.i],n=EX.items.length;clearInterval(exTick);
+  const left=()=>EX.secs-Math.floor((Date.now()-EX.t0)/1000);const fmtT=s=>`${s<0?'-':''}${Math.floor(Math.abs(s)/3600)}:${String(Math.floor(Math.abs(s)%3600/60)).padStart(2,'0')}:${String(Math.abs(s)%60).padStart(2,'0')}`;
+  view().innerHTML=`<div style="--tc:${c.c}"><div class="row" style="position:sticky;top:58px;z-index:5;background:var(--bg);padding:6px 0"><b>${E.name}</b><span class="spacer"></span><span class="timer" id="et">${fmtT(left())}</span><button class="sbtn sm" id="fin">Submit</button></div>
+  <div class="prog"><i style="width:${Object.keys(EX.ans).length/n*100}%"></i></div>
+  <div class="card">${it.setT?`<div class="eyebrow">Item set: ${esc(it.setT)}</div>`:''}${it.stem?`<details ${EX.i===0||EX.items[EX.i-1].stem!==it.stem?'open':''} class="exhibit"><summary><b>Vignette</b> (tap to show or hide)</summary><div class="casebody" style="margin-top:6px">${it.stem}</div></details>`:''}
+   <div class="row"><div class="eyebrow">Question ${EX.i+1} of ${n}</div><span class="spacer"></span><label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="fl" ${EX.flag[EX.i]?'checked':''}> Flag</label></div>
+   <h3 style="font-family:var(--sans);font-size:1.02rem;margin-top:6px">${it.q}</h3>
+   ${it.kind==='cr'?`<textarea id="cra" style="min-height:180px" placeholder="Write your answer as you would on the exam: concise, justified, using the requested format.">${esc(EX.cr[EX.i]||'')}</textarea>`:it.o.map((o,j)=>`<button class="qopt ${EX.ans[EX.i]===j?'right':''}" data-j="${j}">${'ABC'[j]||''}. ${o}</button>`).join('')}
+  </div>
+  <div class="ctl"><button class="sbtn alt" id="pv" ${EX.i?'':'disabled'}>← Previous</button><span class="spacer"></span><button class="sbtn" id="nx">${EX.i<n-1?'Next →':'Review & submit'}</button></div>
+  <details class="card"><summary><b>All questions</b> <span class="note">· answered ${Object.keys(EX.ans).length+Object.keys(EX.cr).filter(k=>EX.cr[k].trim()).length} of ${n}, flagged ${Object.values(EX.flag).filter(Boolean).length}</span></summary><div class="chips" style="margin-top:8px">${EX.items.map((x,k)=>`<button class="chip ${k===EX.i?'on':''}" data-go="${k}" style="${EX.flag[k]?'border-color:var(--bad)':''}">${k+1}${EX.ans[k]!=null||(EX.cr[k]||'').trim()?'·':''}</button>`).join('')}</div></details></div>`;
+  $$('.qopt[data-j]').forEach(b=>b.onclick=()=>{EX.ans[EX.i]=+b.dataset.j;$$('.qopt').forEach(x=>x.classList.toggle('right',x===b))});
+  const cra=$('#cra');if(cra)cra.oninput=()=>{EX.cr[EX.i]=cra.value};
+  $('#fl').onchange=e=>{EX.flag[EX.i]=e.target.checked};
+  $('#pv').onclick=()=>{EX.i--;examRun();scrollTo(0,0)};$('#nx').onclick=()=>{if(EX.i<n-1){EX.i++;examRun();scrollTo(0,0)}else examSubmit()};
+  $$('[data-go]').forEach(b=>b.onclick=()=>{EX.i=+b.dataset.go;examRun();scrollTo(0,0)});
+  $('#fin').onclick=examSubmit;
+  exTick=setInterval(()=>{const e=$('#et');if(!e||!EX){clearInterval(exTick);return}const l=left();e.textContent=fmtT(l);e.classList.toggle('over',l<0)},1000)}
+function examSubmit(){const n=EX.items.length,un=EX.items.filter((it,k)=>it.kind==='cr'?!(EX.cr[k]||'').trim():EX.ans[k]==null).length;if(un&&!EX.confirm){EX.confirm=true;toast(`${un} unanswered. Press Submit again to finish.`);return}
+  clearInterval(exTick);EX.done=true;EX.secs=Math.floor((Date.now()-EX.t0)/1000);examReport()}
+function examReport(){const E=EXAMS[EX.tr],c=tcol(EX.tr);const by={};let got=0,max=0;
+  EX.items.forEach((it,k)=>{const b=by[it.topic]=by[it.topic]||{g:0,m:0};if(it.kind==='cr'){const pts=it.pts.length,s=(EX.crs&&EX.crs[k])||0;b.g+=s;b.m+=pts;got+=s;max+=pts}else{const ok=EX.ans[k]===it.a;b.g+=ok?1:0;b.m+=1;got+=ok?1:0;max+=1}});
+  const sc=max?got/max:0;
+  view().innerHTML=`<div style="--tc:${c.c}"><div class="mhead"><span class="tile">${ico(c.i,28)}</span><div><div class="eyebrow">${E.name} · result</div><h1 style="margin:2px 0">${Math.round(sc*100)}%</h1><p class="note" style="margin:0">${got} of ${max} points · ${Math.round(EX.secs/60)} min${EX.items.some(i=>i.kind==='cr')?' · constructed responses count once you self-grade them below':''}</p></div></div>
+  <div class="readout">CFA Institute does not publish a minimum passing score, so treat this as a diagnostic, not a pass prediction. Many candidates aim for 70%+ on quality mocks; focus your time on the weakest high-weight topics.</div>
+  <div class="card"><h3>By topic</h3><div class="tablewrap"><table class="t"><tr><th>Topic</th><th>Exam weight</th><th>Your score</th><th></th></tr>${Object.keys(E.topics).filter(k=>by[k]).map(k=>{const b=by[k],p=b.g/b.m;return`<tr><td>${E.topics[k][0]}</td><td>${E.topics[k][1]}–${E.topics[k][2]}%</td><td><b>${Math.round(p*100)}%</b> <span class="note">(${b.g}/${b.m})</span></td><td style="width:30%"><div class="prog" style="margin:0"><i style="width:${p*100}%;background:${p>=.7?'var(--ok)':p>=.5?'var(--gold2)':'var(--bad)'}"></i></div></td></tr>`}).join('')}</table></div></div>
+  <div class="card"><h3>Review</h3>${EX.items.map((it,k)=>{if(it.kind==='cr')return`<div style="margin:14px 0;padding-top:10px;border-top:1px solid var(--line)"><div class="eyebrow">Q${k+1} · constructed response · ${esc(it.mt)}</div><p><b>${it.q}</b></p><div class="exhibit" style="white-space:pre-wrap">${esc(EX.cr[k]||'(no answer)')}</div><div class="model"><b>Model answer.</b> ${it.model}</div><p class="note">Tick each point your answer earned:</p><div class="rubric">${it.pts.map((p,j)=>`<label><input type="checkbox" data-cr="${k}" data-p="${j}" ${EX.crp&&EX.crp[k+'-'+j]?'checked':''}><span>${p}</span></label>`).join('')}</div></div>`;
+    const ok=EX.ans[k]===it.a;return`<div style="margin:14px 0;padding-top:10px;border-top:1px solid var(--line)"><div class="eyebrow">Q${k+1} · ${ok?'✓ correct':'✗ incorrect'} · ${esc(it.mt)}</div><p><b>${it.q}</b></p>${it.o.map((o,j)=>`<div class="qopt ${j===it.a?'right':j===EX.ans[k]?'wrong':''}" style="cursor:default">${'ABC'[j]}. ${o}</div>`).join('')}<div class="readout">${it.w}</div></div>`}).join('')}</div>
+  <div class="ctl"><button class="sbtn" id="sv">Save result</button><button class="sbtn alt" onclick="EX=null;go('#/exam/${EX.tr}')">Back to simulator</button></div></div>`;
+  $$('[data-cr]').forEach(x=>x.onchange=()=>{EX.crp=EX.crp||{};EX.crp[x.dataset.cr+'-'+x.dataset.p]=x.checked;EX.crs={};Object.keys(EX.crp).forEach(k=>{if(EX.crp[k]){const i=k.split('-')[0];EX.crs[i]=(EX.crs[i]||0)+1}});const y=scrollY;examReport();scrollTo(0,y)});
+  $('#sv').onclick=()=>{if(EX.saved){toast('Already saved');return}EX.saved=true;state.exams=state.exams||[];state.exams.push({t:Date.now(),tr:EX.tr,mode:EX.mode,n:EX.items.length,score:sc,secs:EX.secs,by:Object.fromEntries(Object.entries(by).map(([k,b])=>[k,Math.round(b.g/b.m*100)]))});if(state.exams.length>60)state.exams=state.exams.slice(-60);logEvent('exam',EX.tr,E.name+' mock: '+Math.round(sc*100)+'% ('+EX.items.length+' items)');addXP(Math.round(20+40*sc));save();checkBadges();toast('Result saved');$('#sv').textContent='Saved ✓'};
+  if(EX.saved)$('#sv').textContent='Saved ✓';else if(!EX.items.some(i=>i.kind==='cr'))$('#sv').click()}
+
+/* ================= CFA Level I labs (original exercises) ================= */
+const STD=['I Professionalism','II Integrity of Capital Markets','III Duties to Clients','IV Duties to Employers','V Investment Analysis & Recommendations','VI Conflicts of Interest','VII Responsibilities as a Member/Candidate'];
+LABS.ethstd=(el,m,done)=>{const sets={
+ a01:[['An analyst copies large parts of another firm\'s report into her own without credit.','I Professionalism','I(C) Misrepresentation: plagiarism'],['A portfolio manager accepts an expensive trip from a company whose bonds he rates, then upgrades it.','I Professionalism','I(B) Independence and Objectivity'],['A trader acts on a tip from a friend at a bank about an unannounced takeover.','II Integrity of Capital Markets','II(A) Material Nonpublic Information'],['An analyst spreads false rumours online to push a thinly traded stock up before selling.','II Integrity of Capital Markets','II(B) Market Manipulation'],['A manager allocates a hot IPO only to his largest clients, ignoring others with the same mandate.','III Duties to Clients','III(B) Fair Dealing'],['An adviser puts a retired client with low risk tolerance into leveraged crypto funds.','III Duties to Clients','III(C) Suitability'],['A firm shows only its best-performing accounts as "our composite".','III Duties to Clients','III(D) Performance Presentation'],['A member keeps practising credit analysis on a complex structured product without understanding its mechanics.','I Professionalism','I(E) Competence (added 2024)']],
+ a02:[['An employee secretly copies the client list before resigning to join a competitor.','IV Duties to Employers','IV(A) Loyalty'],['An analyst accepts a bonus from a client for outperformance without telling his employer.','IV Duties to Employers','IV(B) Additional Compensation Arrangements'],['A department head ignores repeated signs that a junior trader is front-running.','IV Duties to Employers','IV(C) Responsibilities of Supervisors'],['A "buy" recommendation is issued after one phone call with management and no analysis.','V Investment Analysis & Recommendations','V(A) Diligence and Reasonable Basis'],['A research note presents a forecast as fact and does not explain the key risks or the costs of the service.','V Investment Analysis & Recommendations','V(B) Communication with Clients and Prospective Clients'],['An analyst holds shares in a company she covers and does not disclose it.','VI Conflicts of Interest','VI(A) Avoid or Disclose Conflicts'],['A portfolio manager buys a stock for his own account before executing a large client order.','VI Conflicts of Interest','VI(B) Priority of Transactions'],['A candidate posts specific exam questions on social media after the exam.','VII Responsibilities as a Member/Candidate','VII(A) Conduct as Participants in CFA Institute Programs'],['A Level II candidate writes "CFA Level II" on her CV as if it were a designation.','VII Responsibilities as a Member/Candidate','VII(B) Reference to CFA Institute, the Designation and the Program']]};
+ classifyLab(el,done,{intro:'Which Standard of Professional Conduct is most directly involved? (Original scenarios.)',cats:STD,items:sets[m.id]||sets.a01,why:'Learn the seven headings first; then the sub-standards. Exam questions often hinge on the "most directly" violated standard.'})};
+LABS.ethcase=(el,m,done)=>classifyLab(el,done,{intro:'Violation or not? Decide, then read why.',cats:['Violation','No violation'],
+ items:[['An analyst uses public information plus her own channel checks with suppliers to conclude a company will miss earnings, and recommends selling.','No violation','mosaic theory: public + non-material nonpublic pieces'],['A manager discloses to clients that he will receive a referral fee from a broker, then uses that broker.','No violation','VI(C) satisfied by disclosure'],['A member who is not yet a charterholder writes "CFA (expected 2027)".','Violation','VII(B): no partial or expected designation'],['A firm uses a client\'s confidential holdings in a marketing presentation without consent.','Violation','III(E) Preservation of Confidentiality'],['An employee starts setting up a competing business on weekends, without using employer time or client lists, and has not yet solicited clients.','No violation','IV(A) allows preparations if no breach of duty'],['A research analyst changes a rating after pressure from the investment-banking team.','Violation','I(B) Independence and Objectivity'],['An adviser keeps records of the analysis behind recommendations for seven years in electronic form.','No violation','V(C) Record Retention satisfied'],['A portfolio manager trades ahead of a scheduled index rebalancing using information the market already knows.','No violation','public information, no manipulation'],['A member is convicted of repeated fraud unrelated to her job.','Violation','I(D) Misconduct: dishonesty reflects on professional integrity']],pass:7,
+ why:'Ethics is the highest-weighted Level I topic and can tip a borderline result. Practise "violation or not" with a reason, every time.'});
+
+/* a04 — time value of money */
+LABS.tvm=(el,m,done)=>calcLab(el,m,done,{inputs:[['apr','Stated annual rate (%)',6,.1],['mf','Compounding periods per year',12],['yrs','Years',10],['pmt','Payment per period',500],['fv','Lump sum at end',0],['due','Annuity due? (1 = yes)',0]],
+ compute:v=>{const i=v.apr/100/v.mf,N=Math.round(v.yrs*v.mf),af=i?(1-Math.pow(1+i,-N))/i:N,pv=v.pmt*af*(v.due>=1?(1+i):1)+v.fv*Math.pow(1+i,-N),fvA=v.pmt*(i?(Math.pow(1+i,N)-1)/i:N)*(v.due>=1?(1+i):1)+v.fv,ear=Math.pow(1+i,v.mf)-1;
+  return{out:{pv},html:`<div class="grid g3"><div class="stat"><small>Present value</small><b>${fmt(pv,2)}</b></div><div class="stat"><small>Future value of payments</small><b>${fmt(fvA,2)}</b></div><div class="stat"><small>Effective annual rate</small><b>${pct(ear,3)}</b></div></div><div class="formula">PV(annuity) = PMT × [1 − (1 + r)^−N] ÷ r · EAR = (1 + APR/m)^m − 1 · Annuity due = ordinary × (1 + r)</div>`}},
+ challenge:{text:'What is the <b>present value</b> at the current inputs (to 2 decimals)?',ask:{ans:(v,o)=>o.pv,tol:.5,dp:2,why:()=>'On exam day, set your calculator\'s P/Y to 1 and enter the periodic rate and number of periods yourself — it avoids the most common TVM error.'}}});
+
+/* a05 — hypothesis test of a mean (t-test) */
+function lgam(x){const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,.1208650973866179e-2,-.5395239384953e-5];let y=x,t=x+5.5;t-=(x+.5)*Math.log(t);let s=1.000000000190015;for(const k of c)s+=k/++y;return-t+Math.log(2.5066282746310005*s/x)}
+function tcdf(t,df){const pdf=x=>Math.exp(lgam((df+1)/2)-lgam(df/2)-.5*Math.log(df*Math.PI)-(df+1)/2*Math.log(1+x*x/df));const n=400,h=Math.abs(t)/n;let s=pdf(0)+pdf(Math.abs(t));for(let i=1;i<n;i++)s+=(i%2?4:2)*pdf(i*h);const half=s*h/3;return t>=0?.5+half:.5-half}
+LABS.ttest=(el,m,done)=>calcLab(el,m,done,{inputs:[['xb','Sample mean return (%)',1.4,.01],['mu','Hypothesised mean (%)',0,.01],['s','Sample standard deviation (%)',4.2,.01],['n','Sample size',36],['al','Significance level (%)',5]],
+ compute:v=>{const n=Math.max(2,Math.round(v.n)),se=v.s/Math.sqrt(n),t=(v.xb-v.mu)/se,df=n-1,p=2*(1-tcdf(Math.abs(t),df));let lo=0,hi=10;for(let k=0;k<60;k++){const mi=(lo+hi)/2;if(2*(1-tcdf(mi,df))>v.al/100)lo=mi;else hi=mi}const tc=(lo+hi)/2;
+  return{out:{t},html:`<div class="grid g4 g2m"><div class="stat"><small>Standard error</small><b>${fmt(se,3)}</b></div><div class="stat"><small>t-statistic (df ${df})</small><b>${fmt(t,3)}</b></div><div class="stat"><small>Critical t (two-tailed)</small><b>±${fmt(tc,3)}</b></div><div class="stat"><small>p-value</small><b>${fmt(p,4)}</b></div></div><div class="readout ${Math.abs(t)>tc?'ok':''}"><b>${Math.abs(t)>tc?'Reject H₀':'Fail to reject H₀'}</b> at ${v.al}%: ${Math.abs(t)>tc?'the mean return is significantly different from the hypothesised value.':'the evidence is not strong enough.'}</div><div class="formula">t = (x̄ − μ₀) ÷ (s ÷ √n), df = n − 1. Type I error: rejecting a true H₀ (probability = α). Type II: failing to reject a false H₀.</div>`}},
+ challenge:{text:'What is the <b>t-statistic</b> at the current inputs?',ask:{ans:(v,o)=>o.t,tol:.01,dp:3,why:()=>'Exam tip: state the hypotheses, the test statistic, the critical value and the decision — in that order.'}}});
+
+/* a06 — monetary policy: Taylor rule and real rates */
+LABS.taylor=(el,m,done)=>calcLab(el,m,done,{inputs:[['rn','Neutral real rate (%)',1,.1],['pi','Inflation (%)',4,.1],['pt','Inflation target (%)',2,.1],['gap','Output gap (% of potential)',-1,.1],['cur','Current policy rate (%)',4.5,.25]],
+ compute:v=>{const i=v.rn+v.pi+.5*(v.pi-v.pt)+.5*v.gap,real=v.cur-v.pi,neutralNom=v.rn+v.pt;const stance=v.cur>neutralNom+.25?'contractionary (above the neutral nominal rate)':v.cur<neutralNom-.25?'expansionary (below the neutral nominal rate)':'roughly neutral';
+  return{out:{i},html:`<div class="grid g3"><div class="stat"><small>Taylor-rule policy rate</small><b>${fmt(i,2)}%</b></div><div class="stat"><small>Neutral nominal rate</small><b>${fmt(neutralNom,2)}%</b><small>neutral real + target inflation</small></div><div class="stat"><small>Current real policy rate</small><b>${fmt(real,2)}%</b></div></div><div class="readout">Current stance: <b>${stance}</b>.</div><div class="formula">Taylor rule: i = r_neutral + π + 0.5(π − π*) + 0.5(output gap) · Fisher: nominal ≈ real + expected inflation</div>`}},
+ challenge:{text:'What policy rate does the Taylor rule suggest at the current inputs?',ask:{ans:(v,o)=>o.i,tol:.05,dp:2,unit:'%',why:()=>'For pegged currencies like the riyal, domestic policy rates largely follow the anchor currency instead of a Taylor rule — a good discussion point.'}}});
+
+/* a07 — exchange rates: forwards and cross rates */
+LABS.fxfwd=(el,m,done)=>calcLab(el,m,done,{inputs:[['s','Spot (SAR per USD)',3.75,.0001],['ip','SAR interest rate (%/yr)',5.5,.05],['ib','USD interest rate (%/yr)',5,.05],['days','Days to forward',180],['eur','USD per EUR spot',1.08,.0001]],
+ compute:v=>{const t=v.days/360,F=v.s*(1+v.ip/100*t)/(1+v.ib/100*t),pts=(F-v.s)*1e4,cross=v.eur*v.s;
+  return{out:{F},html:`<div class="grid g3"><div class="stat"><small>Forward (SAR/USD)</small><b>${F.toFixed(4)}</b></div><div class="stat"><small>Forward points</small><b>${fmt(pts,1)}</b><small>${pts>0?'USD at a forward premium':'USD at a forward discount'}</small></div><div class="stat"><small>Cross rate SAR per EUR</small><b>${cross.toFixed(4)}</b></div></div><div class="formula">Covered interest parity: F(price/base) = S × (1 + i_price × t) ÷ (1 + i_base × t). The currency with the higher interest rate trades at a forward discount.</div>`}},
+ challenge:{text:'What is the 180-day <b>forward rate</b> (4 decimals)?',ask:{ans:(v,o)=>o.F,tol:.0005,dp:4,why:()=>'Forward rates are not forecasts; they simply reflect interest-rate differentials (no arbitrage).'}}});
+
+/* a08 — ratios from financial statements */
+LABS.ratios=(el,m,done)=>calcLab(el,m,done,{inputs:[['rev','Revenue',1000],['cogs','Cost of sales',620],['opex','Operating expenses',220],['int','Interest expense',20],['tax','Tax rate (%)',20],['ca','Current assets',400],['inv','of which inventory',150],['cl','Current liabilities',250],['ta','Total assets',1200],['debt','Total debt',400],['eq','Total equity',600]],
+ compute:v=>{const ebit=v.rev-v.cogs-v.opex,ni=(ebit-v.int)*(1-v.tax/100);const R=[['Gross margin',pct((v.rev-v.cogs)/v.rev)],['Operating margin',pct(ebit/v.rev)],['Net margin',pct(ni/v.rev)],['Current ratio',fmt(v.ca/v.cl,2)+'×'],['Quick ratio',fmt((v.ca-v.inv)/v.cl,2)+'×'],['Debt-to-equity',fmt(v.debt/v.eq,2)+'×'],['Interest coverage',fmt(ebit/v.int,1)+'×'],['ROA',pct(ni/v.ta)],['ROE',pct(ni/v.eq)],['Inventory turnover',fmt(v.cogs/v.inv,2)+'×']];
+  return{out:{roe:ni/v.eq*100},html:`<div class="tablewrap"><table class="t">${R.map(r=>`<tr><td>${r[0]}</td><td><b>${r[1]}</b></td></tr>`).join('')}</table></div><p class="note">Simplified: year-end balances used instead of averages. On the exam, check whether averages are required.</p>`}},
+ challenge:{text:'What is <b>ROE</b> at the current inputs (%)?',ask:{ans:(v,o)=>o.roe,tol:.1,dp:1,unit:'%'}}});
+
+/* a09 — cash flow from operations (indirect) */
+LABS.cfo=(el,m,done)=>calcLab(el,m,done,{inputs:[['ni','Net income',120],['da','Depreciation and amortisation',40],['gain','Gain on sale of equipment',10],['dar','Increase in receivables',25],['dinv','Decrease in inventory',8],['dap','Increase in payables',12],['capex','Capital expenditure',70],['div','Dividends paid',30]],
+ compute:v=>{const cfo=v.ni+v.da-v.gain-v.dar+v.dinv+v.dap,fcff=cfo-v.capex;
+  return{out:{cfo},html:kv([['Net income',fmt(v.ni)],['+ D&A (non-cash)',fmt(v.da)],['− Gain on sale (investing activity)',fmt(-v.gain)],['− Increase in receivables',fmt(-v.dar)],['+ Decrease in inventory',fmt(v.dinv)],['+ Increase in payables',fmt(v.dap)],['Cash flow from operations',fmt(cfo),1],['Free cash flow (CFO − capex, simplified)',fmt(fcff),1]])+`<p class="note">Dividends paid (${fmt(v.div)}) are financing under US GAAP; IFRS allows operating or financing classification for dividends paid and interest paid — a classic exam point.</p>`}},
+ challenge:{text:'What is <b>cash flow from operations</b>?',ask:{ans:(v,o)=>o.cfo,tol:.5,dp:0}}});
+
+/* a10 — inventory methods */
+LABS.inventory=(el,m,done)=>calcLab(el,m,done,{inputs:[['u0','Beginning units',100],['c0','Beginning cost per unit',10],['u1','Purchase 1 units',200],['c1','Purchase 1 cost',12],['u2','Purchase 2 units',150],['c2','Purchase 2 cost',14],['sold','Units sold',300],['p','Selling price per unit',20]],
+ compute:v=>{const lots=[[v.u0,v.c0],[v.u1,v.c1],[v.u2,v.c2]],tu=lots.reduce((a,l)=>a+l[0],0),tc=lots.reduce((a,l)=>a+l[0]*l[1],0),s=Math.min(v.sold,tu);
+  const take=ord=>{let r=s,c=0;for(const [u,k] of ord){const q=Math.min(u,r);c+=q*k;r-=q}return c};const fifo=take(lots),lifo=take(lots.slice().reverse()),wa=tc/tu*s,rev=s*v.p;
+  return{out:{fifo},html:`<div class="tablewrap"><table class="t"><tr><th>Method</th><th>COGS</th><th>Ending inventory</th><th>Gross profit</th></tr><tr><td>FIFO</td><td>${fmt(fifo)}</td><td>${fmt(tc-fifo)}</td><td>${fmt(rev-fifo)}</td></tr><tr><td>Weighted average</td><td>${fmt(wa,1)}</td><td>${fmt(tc-wa,1)}</td><td>${fmt(rev-wa,1)}</td></tr><tr><td>LIFO (US GAAP only)</td><td>${fmt(lifo)}</td><td>${fmt(tc-lifo)}</td><td>${fmt(rev-lifo)}</td></tr></table></div><p class="note">With rising prices, LIFO gives the highest COGS and lowest ending inventory; FIFO the reverse. IFRS does not permit LIFO.</p>`}},
+ challenge:{text:'What is <b>COGS under FIFO</b>?',ask:{ans:(v,o)=>o.fifo,tol:.5,dp:0}}});
+
+/* a11 — reporting quality red flags */
+LABS.quality=(el,m,done)=>classifyLab(el,done,{intro:'Does each choice make reported earnings look better now (aggressive) or worse now (conservative)?',cats:['Aggressive','Conservative'],
+ items:[['Extending the useful life of equipment from 8 to 12 years','Aggressive','lower annual depreciation'],['Recognising revenue on shipment to distributors with generous return rights','Aggressive','channel stuffing risk'],['Raising the allowance for doubtful accounts well above historical losses','Conservative','higher bad-debt expense now'],['Capitalising routine maintenance as an asset','Aggressive','expense deferred to the balance sheet'],['Writing down inventory at the first sign of obsolescence','Conservative','lower profit now'],['Lowering the assumed warranty claims rate without new evidence','Aggressive','lower provision'],['Expensing development costs that could qualify for capitalisation','Conservative','lower profit now'],['Classifying a recurring cost as "non-recurring" in adjusted earnings','Aggressive','flatters non-GAAP measures']],pass:6,
+ why:'Warning signs: profits growing faster than operating cash flow, rising receivables days, frequent "one-off" charges, and changes in estimates that always help earnings.'});
+
+/* a13 — buying on margin */
+LABS.margin=(el,m,done)=>calcLab(el,m,done,{inputs:[['p0','Purchase price per share',50],['im','Initial margin (%)',40],['mm','Maintenance margin (%)',25],['p1','Sale price per share',56],['d','Dividend per share',1],['r','Margin loan interest (% for the period)',6]],
+ compute:v=>{const call=v.p0*(1-v.im/100)/(1-v.mm/100),eq0=v.p0*v.im/100,loan=v.p0-eq0,ret=(v.p1+v.d-v.p0-loan*v.r/100)/eq0,unlev=(v.p1+v.d-v.p0)/v.p0;
+  return{out:{call},html:`<div class="grid g3"><div class="stat"><small>Margin call price</small><b>${fmt(call,2)}</b></div><div class="stat"><small>Leverage ratio</small><b>${fmt(1/(v.im/100),2)}×</b></div><div class="stat"><small>Return on equity invested</small><b>${pct(ret)}</b><small>vs ${pct(unlev)} unleveraged</small></div></div><div class="formula">Margin call price = P₀ × (1 − initial margin) ÷ (1 − maintenance margin)</div>`}},
+ challenge:{text:'At what price does the investor receive a <b>margin call</b>?',ask:{ans:(v,o)=>o.call,tol:.01,dp:2}}});
+
+/* a14 — dividend discount models */
+LABS.ddm=(el,m,done)=>calcLab(el,m,done,{inputs:[['d0','Last dividend D₀',2],['g1','High growth rate (%)',12,.1],['n','Years of high growth',3],['g2','Long-run growth (%)',4,.1],['r','Required return (%)',10,.1],['eps','Next year EPS',5]],
+ compute:v=>{const r=v.r/100,g1=v.g1/100,g2=v.g2/100,n=Math.max(0,Math.round(v.n));if(r<=g2)return{out:{},html:'<div class="readout bad">Required return must exceed long-run growth.</div>'};let pv=0,d=v.d0;for(let t=1;t<=n;t++){d*=1+g1;pv+=d/Math.pow(1+r,t)}const dn1=d*(1+g2),tv=dn1/(r-g2),val=pv+tv/Math.pow(1+r,n);const gordon=v.d0*(1+g2)/(r-g2);const d1=n?v.d0*(1+g1):v.d0*(1+g2);
+  return{out:{val},html:`<div class="grid g3"><div class="stat"><small>Two-stage DDM value</small><b>${fmt(val,2)}</b></div><div class="stat"><small>Gordon (constant g₂) value</small><b>${fmt(gordon,2)}</b></div><div class="stat"><small>Justified forward P/E</small><b>${fmt(val/v.eps,1)}×</b></div></div><div class="formula">Gordon: V₀ = D₁ ÷ (r − g) · Two-stage: PV of high-growth dividends + PV of [D_(n+1) ÷ (r − g₂)] · Justified forward P/E = payout ÷ (r − g)</div>`}},
+ challenge:{text:'What is the <b>two-stage DDM value</b> at the current inputs?',ask:{ans:(v,o)=>o.val,tol:.05,dp:2}}});
+
+/* a15 — bond price and yield */
+function bondPrice(face,c,yrs,y,f){const n=Math.round(yrs*f),cp=face*c/100/f,i=y/100/f;let p=0;for(let t=1;t<=n;t++)p+=cp/Math.pow(1+i,t);return p+face/Math.pow(1+i,n)}
+LABS.bond=(el,m,done)=>calcLab(el,m,done,{inputs:[['face','Par value',100],['c','Coupon rate (%)',5,.05],['yrs','Years to maturity',8],['y','Yield to maturity (%)',6,.05],['f','Coupons per year',2]],
+ compute:v=>{const p=bondPrice(v.face,v.c,v.yrs,v.y,v.f),cy=v.face*v.c/100/p;const pts=Array.from({length:41},(_,k)=>{const y=Math.max(.1,v.y-4+k*.2);return[y,bondPrice(v.face,v.c,v.yrs,y,v.f)]});
+  return{out:{p},html:`<div class="grid g3"><div class="stat"><small>Price</small><b>${fmt(p,3)}</b><small>${p>v.face?'premium':p<v.face?'discount':'par'}</small></div><div class="stat"><small>Current yield</small><b>${pct(cy,2)}</b></div><div class="stat"><small>Coupon vs YTM</small><b>${v.c>v.y?'coupon > YTM':'coupon < YTM'}</b></div></div>${plotXY({x0:pts[0][0],x1:pts[40][0],y0:Math.min(...pts.map(q=>q[1]))*.95,y1:Math.max(...pts.map(q=>q[1]))*1.02,h:200,fx:t=>fmt(t,1)+'%',fy:t=>fmt(t),series:[{pts,l:'price–yield'}],vlines:[[v.y,'var(--tc)','YTM']],xl:'yield'})}<p class="note">The curve is convex: prices rise more when yields fall than they drop when yields rise by the same amount.</p>`}},
+ challenge:{text:'What is the bond\'s <b>price</b> (3 decimals)?',ask:{ans:(v,o)=>o.p,tol:.01,dp:3}}});
+
+/* a16 — duration and convexity */
+LABS.duration=(el,m,done)=>calcLab(el,m,done,{inputs:[['c','Annual coupon (%)',6,.05],['yrs','Years to maturity',5],['y','Yield (%)',5,.05],['dy','Yield change (basis points)',100]],
+ compute:v=>{const n=Math.round(v.yrs),y=v.y/100;let p=0,mac=0;for(let t=1;t<=n;t++){const cf=v.c+(t===n?100:0),pv=cf/Math.pow(1+y,t);p+=pv;mac+=t*pv}mac/=p;const mod=mac/(1+y);const h=.0001,pu=bondPrice(100,v.c,n,(y+h)*100,1),pd=bondPrice(100,v.c,n,(y-h)*100,1);const conv=(pu+pd-2*p)/(p*h*h);const d=v.dy/1e4,est=-mod*d+.5*conv*d*d,act=bondPrice(100,v.c,n,(y+d)*100,1)/p-1;
+  return{out:{mod},html:`<div class="grid g4 g2m"><div class="stat"><small>Macaulay duration</small><b>${fmt(mac,3)}</b></div><div class="stat"><small>Modified duration</small><b>${fmt(mod,3)}</b></div><div class="stat"><small>Convexity</small><b>${fmt(conv,2)}</b></div><div class="stat"><small>Price change for ${v.dy} bp</small><b>${pct(est,2)}</b><small>actual ${pct(act,2)}</small></div></div><div class="formula">%ΔP ≈ −ModDur × Δy + ½ × Convexity × (Δy)² · ModDur = MacDur ÷ (1 + y)</div>`}},
+ challenge:{text:'What is the <b>modified duration</b> (3 decimals)?',ask:{ans:(v,o)=>o.mod,tol:.005,dp:3}}});
+
+/* a17 — credit: expected loss and tranching */
+LABS.credit=(el,m,done)=>calcLab(el,m,done,{inputs:[['pd','Probability of default (%/yr)',2,.1],['rr','Recovery rate (%)',40],['exp','Exposure (SAR m)',100],['loss','Collateral pool loss (%)',18,.5],['sen','Senior tranche (%)',70],['mez','Mezzanine tranche (%)',20]],
+ compute:v=>{const lgd=1-v.rr/100,el2=v.pd/100*lgd*v.exp,spread=v.pd*lgd;const eqT=100-v.sen-v.mez,L=v.loss;const eqL=Math.min(L,eqT),mzL=Math.min(Math.max(0,L-eqT),v.mez),snL=Math.max(0,L-eqT-v.mez);
+  return{out:{el:el2},html:`<div class="grid g3"><div class="stat"><small>Loss given default</small><b>${pct(lgd)}</b></div><div class="stat"><small>Expected loss</small><b>SAR ${fmt(el2,2)}m</b></div><div class="stat"><small>Approx. credit spread</small><b>${fmt(spread*100,0)} bp</b><small>≈ PD × LGD</small></div></div><h4 style="margin-top:10px">Securitisation waterfall: losses hit the junior tranche first</h4><div class="tablewrap"><table class="t"><tr><th>Tranche</th><th>Size</th><th>Loss absorbed</th><th>Tranche loss</th></tr><tr><td>Equity</td><td>${eqT}%</td><td>${fmt(eqL,1)}%</td><td>${pct(eqT?eqL/eqT:0)}</td></tr><tr><td>Mezzanine</td><td>${v.mez}%</td><td>${fmt(mzL,1)}%</td><td>${pct(v.mez?mzL/v.mez:0)}</td></tr><tr><td>Senior</td><td>${v.sen}%</td><td>${fmt(snL,1)}%</td><td>${pct(v.sen?snL/v.sen:0)}</td></tr></table></div>`}},
+ challenge:{text:'What is the <b>expected loss</b> in SAR millions?',ask:{ans:(v,o)=>o.el,tol:.01,dp:2,unit:'SAR m'}}});
+
+/* a18 — option payoffs, put-call parity, one-period binomial */
+LABS.options=(el,m,done)=>calcLab(el,m,done,{inputs:[['s','Underlying price S₀',100],['k','Strike K',100],['u','Up factor u',1.2,.01],['d','Down factor d',.8,.01],['r','Risk-free rate for the period (%)',5,.1],['prem','Call premium paid (for payoff chart)',8,.1]],
+ compute:v=>{const R=1+v.r/100,q=(R-v.d)/(v.u-v.d),cu=Math.max(0,v.s*v.u-v.k),cd=Math.max(0,v.s*v.d-v.k),c=(q*cu+(1-q)*cd)/R,pu=Math.max(0,v.k-v.s*v.u),pdn=Math.max(0,v.k-v.s*v.d),p=(q*pu+(1-q)*pdn)/R,parity=c+v.k/R-v.s;
+  const xs=Array.from({length:41},(_,i)=>v.s*.5+i*v.s/40);
+  return{out:{c},html:`<div class="grid g4 g2m"><div class="stat"><small>Risk-neutral prob. of up</small><b>${fmt(q,4)}</b></div><div class="stat"><small>Call value</small><b>${fmt(c,3)}</b></div><div class="stat"><small>Put value</small><b>${fmt(p,3)}</b></div><div class="stat"><small>Put via parity: c + PV(K) − S</small><b>${fmt(parity,3)}</b></div></div>${plotXY({x0:xs[0],x1:xs[40],y0:-v.prem*1.5,y1:v.s*.6,h:200,fx:t=>fmt(t),series:[{pts:xs.map(x=>[x,Math.max(0,x-v.k)-v.prem]),l:'long call profit'},{pts:xs.map(x=>[x,Math.max(0,v.k-x)-v.prem]),c:'var(--navy2)',dash:1,l:'long put profit'}],vlines:[[v.k,'var(--mut)','K']],xl:'price at expiry'})}<div class="formula">q = (1 + r − d) ÷ (u − d) · c₀ = [q·c_u + (1 − q)·c_d] ÷ (1 + r) · Put–call parity: S + p = c + PV(K)</div>`}},
+ challenge:{text:'What is the one-period binomial <b>call value</b>?',ask:{ans:(v,o)=>o.c,tol:.01,dp:3}}});
+
+/* a19 — hedge-fund fees and real-estate cap rates */
+LABS.altfees=(el,m,done)=>calcLab(el,m,done,{inputs:[['a0','Assets at start (USD m)',100],['g','Gross return (%)',15,.1],['mf','Management fee (% of start assets)',2,.1],['inc','Incentive fee (%)',20],['hwm','High-water mark (USD m)',100],['noi','Property NOI (SAR m)',12],['cap','Cap rate (%)',7.5,.1]],
+ compute:v=>{const end=v.a0*(1+v.g/100),mfee=v.a0*v.mf/100,afterM=end-mfee,inc=Math.max(0,afterM-Math.max(v.hwm,v.a0))*v.inc/100,net=(afterM-inc)/v.a0-1,valRE=v.noi/(v.cap/100);
+  return{out:{net:net*100},html:`<div class="grid g4 g2m"><div class="stat"><small>Management fee</small><b>${fmt(mfee,2)}</b></div><div class="stat"><small>Incentive fee</small><b>${fmt(inc,2)}</b></div><div class="stat"><small>Net return to investors</small><b>${pct(net,2)}</b></div><div class="stat"><small>Property value (NOI ÷ cap)</small><b>SAR ${fmt(valRE,1)}m</b></div></div><p class="note">Here the incentive fee is calculated net of the management fee, above the high-water mark, with no hurdle. Exam questions specify the basis — read it carefully.</p>`}},
+ challenge:{text:'What is the <b>net return</b> to investors (%)?',ask:{ans:(v,o)=>o.net,tol:.02,dp:2,unit:'%'}}});
+
+/* a20 — two-asset frontier and CAPM */
+LABS.frontier=(el,m,done)=>calcLab(el,m,done,{inputs:[['r1','Asset 1 expected return (%)',8,.1],['s1','Asset 1 std dev (%)',12,.1],['r2','Asset 2 expected return (%)',13,.1],['s2','Asset 2 std dev (%)',22,.1],['rho','Correlation',.2,.05],['rf','Risk-free rate (%)',4,.1],['beta','A stock\'s beta',1.3,.05],['rm','Market expected return (%)',10,.1]],
+ compute:v=>{const p=w=>{const r=w*v.r1+(1-w)*v.r2,s=Math.sqrt(w*w*v.s1*v.s1+(1-w)*(1-w)*v.s2*v.s2+2*w*(1-w)*v.rho*v.s1*v.s2);return[s,r]};const pts=Array.from({length:51},(_,i)=>p(i/50));const wmin=(v.s2*v.s2-v.rho*v.s1*v.s2)/(v.s1*v.s1+v.s2*v.s2-2*v.rho*v.s1*v.s2);const mv=p(Math.max(0,Math.min(1,wmin)));const capm=v.rf+v.beta*(v.rm-v.rf);
+  return{out:{w:wmin*100},html:`${plotXY({x0:0,x1:Math.max(v.s1,v.s2)*1.15,y0:Math.min(v.r1,v.r2,v.rf)*.8,y1:Math.max(v.r1,v.r2)*1.1,h:220,fx:t=>fmt(t)+'%',fy:t=>fmt(t,1)+'%',series:[{pts,l:'portfolios of 1 and 2'}],dots:[[v.s1,v.r1,'var(--navy2)',5,'1'],[v.s2,v.r2,'var(--navy2)',5,'2'],[mv[0],mv[1],'var(--ok)',6,'min-var']],xl:'risk (std dev)'})}<div class="grid g3"><div class="stat"><small>Min-variance weight in asset 1</small><b>${pct(wmin)}</b></div><div class="stat"><small>Min-variance risk / return</small><b>${fmt(mv[0],2)}% / ${fmt(mv[1],2)}%</b></div><div class="stat"><small>CAPM required return</small><b>${fmt(capm,2)}%</b></div></div><div class="formula">σ²_p = w₁²σ₁² + w₂²σ₂² + 2w₁w₂ρσ₁σ₂ · E(R) = R_f + β[E(R_m) − R_f]</div>`}},
+ challenge:{text:'What weight in asset 1 gives the <b>minimum-variance portfolio</b> (%)?',ask:{ans:(v,o)=>o.w,tol:.2,dp:1,unit:'%',why:()=>'Lower the correlation and watch the curve bend further left: diversification is the only free lunch in finance.'}}});
 
 /* ================= Engineering Refresher labs ================= */
 /* generic classification drill */
