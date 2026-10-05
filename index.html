@@ -168,6 +168,7 @@ table.t th{font-weight:600;color:var(--mut);background:var(--sur2)}
   <a class="brand" href="#/home">Majed's <b>Launchpad</b></a>
   <div class="lvl" id="lvlBox"><span id="lvlTxt">Associate · 0 XP</span><div class="bar"><i id="xpBar" style="width:0"></i></div></div>
   <span class="syncDot" id="syncDot" title="Cloud sync"></span>
+  <button class="iconbtn hide" id="meBtn" aria-label="Profile" style="border:0;width:auto;padding:0"></button>
   <button class="iconbtn" id="themeBtn" aria-label="Switch light or dark theme"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
 </header>
 <nav class="tabs" id="tabs">
@@ -190,9 +191,13 @@ table.t th{font-weight:600;color:var(--mut);background:var(--sur2)}
    Requirements: a global `state` object, save()/logEvent() helpers, and
    small DOM hooks: #syncStat, #syncDot (status), #photoIn/#photoBtn/#photoMsg/#thumbs (notebook).
    ============================================================ */
+/* ---------- profiles (one Sheet, one state per person) ---------- */
+const USERS=[{id:'majed',name:'Majed'},{id:'mohammed',name:'Mohammed'},{id:'lamess',name:'Lamess'},{id:'lena',name:'Lena'}];
+const USER=(()=>{try{const u=localStorage.getItem(window.FOLLOW?'launchpad-follow-user':'launchpad-user');if(USERS.some(x=>x.id===u))return u;return window.FOLLOW?'majed':null}catch(e){return window.FOLLOW?'majed':null}})();
+const LSKEY=USER==='majed'?'launchpad-state':'launchpad-state-'+(USER||'none');
 /* ---------- state helpers ---------- */
-let state={progress:{},custom:{},time:{},log:[]};try{state=Object.assign(state,JSON.parse(localStorage.getItem('launchpad-state')||'{}'))}catch(e){}
-function save(){state.savedAt=Date.now();try{localStorage.setItem('launchpad-state',JSON.stringify(state))}catch(e){}schedulePush()}
+let state={progress:{},custom:{},time:{},log:[]};try{state=Object.assign(state,JSON.parse(localStorage.getItem(LSKEY)||'{}'))}catch(e){}
+function save(){state.savedAt=Date.now();try{localStorage.setItem(LSKEY,JSON.stringify(state))}catch(e){}schedulePush()}
 function logEvent(type,mod,detail){state.log=state.log||[];state.log.push({t:Date.now(),type,mod,detail});if(state.log.length>200)state.log=state.log.slice(-200)}
 // App must define renderTop(), renderMap(), renderParent() (can be no-ops) and parentMode.
 /* ---------- cloud sync (Google Sheet via Apps Script) ---------- */
@@ -200,16 +205,16 @@ const SYNC_DEFAULT={url:'',key:''}; // paste Majed's Apps Script web-app URL and
 let SYNC=Object.assign({},SYNC_DEFAULT);try{const o=JSON.parse(localStorage.getItem('launchpad-sync')||'null');if(o&&o.url)SYNC=o}catch(e){}
 let pushT=null,syncStatus='off',parentMode=false;
 function setSyncStatus(s,msg){syncStatus=s;const el=document.getElementById('syncStat');if(el)el.innerHTML=msg;const dot=document.getElementById('syncDot');if(dot)dot.className='syncDot '+s}
-function schedulePush(){if(!SYNC.url)return;clearTimeout(pushT);pushT=setTimeout(pushState,1500)}
-async function pushState(){if(!SYNC.url)return;try{setSyncStatus('busy','Saving to Drive…');const r=await fetch(SYNC.url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({key:SYNC.key,state,device:navigator.platform})});const j=await r.json();if(j.error)throw new Error(j.error);setSyncStatus('ok','Saved to Drive '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}))}catch(e){setSyncStatus('err','Not saved to Drive: '+e.message)}}
-async function pullState(){if(!SYNC.url)return false;try{setSyncStatus('busy','Loading from Drive…');const r=await fetch(SYNC.url+'?key='+encodeURIComponent(SYNC.key)+'&t='+Date.now());const j=await r.json();if(j.error)throw new Error(j.error);
-  if(j.state&&(j.state.savedAt||0)>(state.savedAt||0)){state=Object.assign({progress:{},custom:{},time:{},log:[]},j.state);try{localStorage.setItem('launchpad-state',JSON.stringify(state))}catch(e){}renderTop();renderMap();if(parentMode)renderParent();setSyncStatus('ok','Loaded from Drive (saved '+new Date(state.savedAt).toLocaleString('en-GB')+')');return true}
+function schedulePush(){if(!SYNC.url||!USER)return;clearTimeout(pushT);pushT=setTimeout(pushState,1500)}
+async function pushState(){if(!SYNC.url)return;try{setSyncStatus('busy','Saving to Drive…');const r=await fetch(SYNC.url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({key:SYNC.key,state,device:navigator.platform,user:USER})});const j=await r.json();if(j.error)throw new Error(j.error);setSyncStatus('ok','Saved to Drive '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}))}catch(e){setSyncStatus('err','Not saved to Drive: '+e.message)}}
+async function pullState(){if(!SYNC.url||!USER)return false;try{setSyncStatus('busy','Loading from Drive…');const r=await fetch(SYNC.url+'?key='+encodeURIComponent(SYNC.key)+'&user='+USER+'&t='+Date.now());const j=await r.json();if(j.error)throw new Error(j.error);
+  if(j.state&&(j.state.savedAt||0)>(state.savedAt||0)){state=Object.assign({progress:{},custom:{},time:{},log:[]},j.state);try{localStorage.setItem(LSKEY,JSON.stringify(state))}catch(e){}renderTop();renderMap();if(parentMode)renderParent();setSyncStatus('ok','Loaded from Drive (saved '+new Date(state.savedAt).toLocaleString('en-GB')+')');return true}
   setSyncStatus('ok','Drive is up to date');if((state.savedAt||0)>(j.state?j.state.savedAt||0:0))pushState();return false}catch(e){setSyncStatus('err','Could not reach Drive: '+e.message);return false}}
 function saveSyncSettings(){SYNC={url:document.getElementById('syncUrl').value.trim(),key:document.getElementById('syncKey').value.trim()};try{localStorage.setItem('launchpad-sync',JSON.stringify(SYNC))}catch(e){}if(SYNC.url)pullState().then(()=>pushState());else setSyncStatus('off','Cloud sync is off')}
 
 /* ---------- lab notebook ---------- */
 function setupNotebook(m){const inp=document.getElementById('photoIn'),btn=document.getElementById('photoBtn'),msg=document.getElementById('photoMsg');const draw=()=>{document.getElementById('thumbs').innerHTML=(state.photos||[]).filter(p=>p.mod===m.id).map(p=>`<a href="${p.url}" target="_blank" rel="noopener" title="${new Date(p.t).toLocaleString('en-GB')}"><img src="${p.thumb||''}" alt=""></a>`).join('')};draw();
-  btn.onclick=()=>inp.click();inp.onchange=async()=>{const f=inp.files[0];if(!f)return;msg.textContent='Uploading…';try{const [big,thumb]=await Promise.all([shrink(f,1000,0.72),shrink(f,160,0.6)]);const r=await fetch(SYNC.url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({key:SYNC.key,photo:big,mission:m.id,name:m.title})});const j=await r.json();if(j.error)throw new Error(j.error);(state.photos=state.photos||[]).push({t:Date.now(),mod:m.id,url:j.url,thumb});if(state.photos.length>40)state.photos=state.photos.slice(-40);logEvent('photo',m.id,'Notebook photo');save();draw();msg.textContent='Saved to Drive ✓';toast('📷 Saved to your notebook on Drive')}catch(e){msg.textContent='Could not upload: '+e.message}inp.value=''}}
+  btn.onclick=()=>inp.click();inp.onchange=async()=>{const f=inp.files[0];if(!f)return;msg.textContent='Uploading…';try{const [big,thumb]=await Promise.all([shrink(f,1000,0.72),shrink(f,160,0.6)]);const r=await fetch(SYNC.url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({key:SYNC.key,photo:big,mission:m.id,name:(USER||'')+' '+m.title,user:USER})});const j=await r.json();if(j.error)throw new Error(j.error);(state.photos=state.photos||[]).push({t:Date.now(),mod:m.id,url:j.url,thumb});if(state.photos.length>40)state.photos=state.photos.slice(-40);logEvent('photo',m.id,'Notebook photo');save();draw();msg.textContent='Saved to Drive ✓';toast('📷 Saved to your notebook on Drive')}catch(e){msg.textContent='Could not upload: '+e.message}inp.value=''}}
 function shrink(file,max,q){return new Promise((res,rej)=>{const img=new Image();img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};img.onerror=rej;img.src=URL.createObjectURL(file)})}
 
 const SHUF=(a,r)=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -233,7 +238,7 @@ const DUEL={
       box.innerHTML=`${DUEL.board(D,me)}<div class="readout">${txt}</div><div class="ctl">${both?`<button class="sbtn alt" id="dAgain">Back</button>`:''}</div>`;const ag=box.querySelector('#dAgain');if(ag)ag.onclick=()=>{if(stop)stop();onAgain()};if(both&&stop){stop();stop=null}};draw();if(!(D.p[0].done&&D.p[1].done))stop=DUEL.poll(D,me,draw);return()=>{if(stop)stop()}}
 };
 
-const BUILD='v1 · 2026-10-05';
+const BUILD='v2 · 2026-10-05';
 /* ================= Majed's Launchpad — app shell ================= */
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -263,12 +268,13 @@ function addMissions(list){list.forEach(m=>{M[m.id]=m})}
 const mid=(t,i)=>PFX[t]+String(i+1).padStart(2,'0');
 
 /* ---------- state defaults ---------- */
-function ensure(){const d={progress:{},custom:{},time:{},log:[],xp:0,srs:{},goals:{},days:{},mins:{},conf:{},cow:{},settings:{shareRefl:false},refl:{},badges:{},reviews:0,name:'Majed'};for(const k in d)if(state[k]==null)state[k]=d[k];if(!state.settings)state.settings={shareRefl:false}}
+function ensure(){const d={progress:{},custom:{},time:{},log:[],xp:0,srs:{},goals:{},days:{},mins:{},conf:{},cow:{},settings:{shareRefl:false},refl:{},badges:{},reviews:0,name:profName(USER)};for(const k in d)if(state[k]==null)state[k]=d[k];if(USER)state.name=profName(USER);if(!state.settings)state.settings={shareRefl:false}}
+const profName=u=>(USERS.find(x=>x.id===u)||{}).name||'Majed';
 ensure();
 const P=id=>state.progress[id]||(state.progress[id]={status:'new',steps:{},best:0,attempts:0,xp:0});
 
 /* ---------- reflections: private (device) or shared (synced) ---------- */
-const RKEY='launchpad-refl';
+const RKEY=USER==='majed'?'launchpad-refl':'launchpad-refl-'+USER;
 function reflStore(){if(state.settings.shareRefl)return state.refl;try{return JSON.parse(localStorage.getItem(RKEY)||'{}')}catch(e){return{}}}
 function reflSave(id,obj){if(state.settings.shareRefl){state.refl[id]=obj}else{const r=reflStore();r[id]=obj;try{localStorage.setItem(RKEY,JSON.stringify(r))}catch(e){}}save()}
 function setShareRefl(on){const cur=reflStore();state.settings.shareRefl=on;if(on){state.refl=Object.assign({},cur,state.refl)}else{try{localStorage.setItem(RKEY,JSON.stringify(Object.assign({},state.refl,cur)))}catch(e){}state.refl={}}save()}
@@ -313,17 +319,40 @@ function toggleTheme(){const cur=document.documentElement.getAttribute('data-the
 
 /* ---------- time tracking ---------- */
 let current=null;
-setInterval(()=>{if(FOLLOW||document.hidden)return;const id=current&&current.id;const k=today();state.mins[k]=(state.mins[k]||0)+15;if(id)state.time[id]=(state.time[id]||0)+15;if(Object.keys(state.mins).length>120){const ks=Object.keys(state.mins).sort();ks.slice(0,ks.length-120).forEach(x=>delete state.mins[x])}save()},15000);
+setInterval(()=>{if(FOLLOW||!USER||document.hidden)return;const id=current&&current.id;const k=today();state.mins[k]=(state.mins[k]||0)+15;if(id)state.time[id]=(state.time[id]||0)+15;if(Object.keys(state.mins).length>120){const ks=Object.keys(state.mins).sort();ks.slice(0,ks.length-120).forEach(x=>delete state.mins[x])}save()},15000);
 
 /* ---------- header ---------- */
-function renderTop(){ensure();const L=level(state.xp||0);$('#lvlTxt').innerHTML=`${L.name} · ${fmt(state.xp||0)} XP${L.next?` <span class="nxtlvl" style="opacity:.7">→ ${L.next[1]} at ${fmt(L.next[0])}</span>`:''}`;$('#xpBar').style.width=Math.min(100,L.frac*100)+'%';const due=dueCards().length;const b=$('#dueBadge');if(b){b.textContent=due;b.classList.toggle('hide',!due||FOLLOW)}}
+function renderTop(){ensure();const br=$('.brand');if(br&&!FOLLOW&&!USER)br.innerHTML='<b>Launchpad</b>';if(br&&!FOLLOW&&USER)br.innerHTML=`${esc(profName(USER))}'s <b>Launchpad</b>`;const ab=$('#meBtn');if(ab&&USER&&!FOLLOW){ab.innerHTML=avatar(USER,30);ab.classList.remove('hide')}const L=level(state.xp||0);$('#lvlTxt').innerHTML=`${L.name} · ${fmt(state.xp||0)} XP${L.next?` <span class="nxtlvl" style="opacity:.7">→ ${L.next[1]} at ${fmt(L.next[0])}</span>`:''}`;$('#xpBar').style.width=Math.min(100,L.frac*100)+'%';const due=dueCards().length;const b=$('#dueBadge');if(b){b.textContent=due;b.classList.toggle('hide',!due||FOLLOW)}}
+
+/* ---------- profiles: picker, lock, family ---------- */
+const PCOL={majed:'#C9A227',mohammed:'#5B7DB1',lamess:'#B5657A',lena:'#4E9A7C'};
+const pinHash=p=>btoa(unescape(encodeURIComponent(USER+'|'+p)));
+const locked=()=>!FOLLOW&&state.pin&&(()=>{try{return localStorage.getItem('launchpad-unlocked-'+USER)!==state.pin}catch(e){return true}})();
+function localOf(u){try{return JSON.parse(localStorage.getItem(u==='majed'?'launchpad-state':'launchpad-state-'+u)||'null')}catch(e){return null}}
+function avatar(u,sz){sz=sz||44;return`<span style="display:inline-grid;place-items:center;width:${sz}px;height:${sz}px;border-radius:50%;background:${PCOL[u]};color:#0B1F3A;font:600 ${sz*.42}px var(--serif);flex:none">${profName(u)[0]}</span>`}
+function setUser(u){try{localStorage.setItem('launchpad-user',u)}catch(e){}location.hash='#/home';location.reload()}
+function vPicker(){$('#tabs').classList.add('hide');$('#lvlBox').style.visibility='hidden';
+  view().innerHTML=`<div style="max-width:560px;margin:6vh auto 0"><div class="eyebrow">Launchpad</div><h1>Who is learning today?</h1><p class="note">Each person has their own missions, XP, review deck, goals and reflections. Progress syncs per person.</p><div class="grid g2" style="margin-top:16px">${USERS.map(u=>{const s=localOf(u.id);return`<button class="card tcard" style="text-align:left;font:inherit;color:inherit;cursor:pointer" data-u="${u.id}"><div class="row">${avatar(u.id)}<div><h3 style="margin:0">${u.name}</h3><small class="muted">${s&&s.xp?level(s.xp).name+' · '+fmt(s.xp)+' XP':'Tap to enter'}${s&&s.pin?' · 🔒':''}</small></div></div></button>`}).join('')}</div></div>`;
+  $$('[data-u]').forEach(b=>b.onclick=()=>setUser(b.dataset.u))}
+function vLock(){$('#tabs').classList.add('hide');view().innerHTML=`<div style="max-width:360px;margin:8vh auto 0;text-align:center">${avatar(USER,64)}<h2 style="margin-top:12px">${esc(profName(USER))}</h2><p class="note">Enter your PIN</p><input class="tin" id="pin" type="password" inputmode="numeric" maxlength="8" style="text-align:center;font-size:1.4rem;letter-spacing:6px"><div class="ctl" style="justify-content:center"><button class="sbtn" id="ok">Unlock</button><button class="sbtn alt" id="sw">Switch profile</button></div><p class="note" id="pm"></p></div>`;
+  const go2=()=>{if(pinHash($('#pin').value)===state.pin){try{localStorage.setItem('launchpad-unlocked-'+USER,state.pin)}catch(e){}$('#tabs').classList.remove('hide');route()}else{$('#pm').textContent='Wrong PIN.';$('#pin').value=''}};
+  $('#ok').onclick=go2;$('#pin').onkeydown=e=>{if(e.key==='Enter')go2()};$('#sw').onclick=()=>{try{localStorage.removeItem('launchpad-user')}catch(e){}location.reload()};$('#pin').focus()}
+async function familyStates(){const out={};await Promise.all(USERS.map(async u=>{if(!FOLLOW&&u.id===USER){out[u.id]=state;return}try{const r=await fetch(SYNC.url+'?key='+encodeURIComponent(SYNC.key)+'&user='+u.id+'&t='+Date.now());const j=await r.json();out[u.id]=j.state||null}catch(e){out[u.id]=localOf(u.id)}}));return out}
+function famStreak(s){if(!s||!s.days)return 0;let n=0;const d=new Date();if(!s.days[today()])d.setDate(d.getDate()-1);while(s.days[dkey(d)]){n++;d.setDate(d.getDate()-1)}return n}
+function famDone(s){return s&&s.progress?Object.keys(s.progress).filter(id=>s.progress[id].status==='completed').length:0}
+async function familyTable(box){if(window._fam&&Date.now()-window._fam.t<300000){box.innerHTML=window._fam.h;return}if(!SYNC.url){box.innerHTML='<p class="note">Family standings need cloud sync.</p>';return}box.innerHTML='<p class="note">Loading family…</p>';const F=await familyStates();const ws=weekStart();
+  const rows=USERS.map(u=>{const s=F[u.id];const last=s&&s.log&&s.log.length?s.log[s.log.length-1].t:0;return{u,s,xp:(s&&s.xp)||0,done:famDone(s),st:famStreak(s),wk:s&&s.log?s.log.filter(l=>l.t>=ws&&l.type==='complete').length:0,last}}).sort((x,y)=>y.xp-x.xp);
+  box.innerHTML=`<div class="tablewrap"><table class="t"><tr><th>Person</th><th>Level</th><th>XP</th><th>Missions</th><th>This week</th><th>Streak</th><th>Last active</th></tr>${rows.map(r=>`<tr><td><span class="row" style="gap:8px">${avatar(r.u.id,26)}${r.u.name}</span></td><td>${r.s?level(r.xp).name:'—'}</td><td>${fmt(r.xp)}</td><td>${r.done}/62</td><td>${r.wk}</td><td>${r.st}</td><td>${r.last?new Date(r.last).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—'}</td></tr>`).join('')}</table></div>`;window._fam={t:Date.now(),h:box.innerHTML}}
+function vFamily(){view().innerHTML=`<a href="#/more" class="note">← More</a><h1>Family</h1><p class="note">Everyone's standing. Each person's missions, tests and reflections stay in their own profile.</p><div class="card" id="fam"></div><p class="note">Challenge each other in <a href="#/rooms">Online rooms</a>: Case Sprint duel or a partner case.</p>`;familyTable($('#fam'))}
 
 /* ---------- router ---------- */
 function go(h){location.hash=h}
 function route(){const h=location.hash.replace(/^#\/?/,'')||'home';const [v,a,b]=h.split('/');current=null;window.scrollTo(0,0);
   if(FOLLOW){renderParent();return}
-  $$('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.v===v||(v==='track'&&x.dataset.v==='tracks')||(v==='m'&&x.dataset.v==='tracks')||(['goals','badges','rooms','settings','journal'].includes(v)&&x.dataset.v==='more')));
-  const V={home:vHome,tracks:vTracks,track:()=>vTrack(a),m:()=>vMission(a,b),review:vReview,case:()=>vCase(a),more:vMore,goals:vGoals,badges:vBadges,rooms:vRooms,settings:vSettings,journal:vJournal}[v]||vHome;
+  if(!USER){vPicker();return}
+  if(locked()){vLock();return}
+  $$('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.v===v||(v==='track'&&x.dataset.v==='tracks')||(v==='m'&&x.dataset.v==='tracks')||(['goals','badges','rooms','settings','journal','family'].includes(v)&&x.dataset.v==='more')));
+  const V={family:vFamily,home:vHome,tracks:vTracks,track:()=>vTrack(a),m:()=>vMission(a,b),review:vReview,case:()=>vCase(a),more:vMore,goals:vGoals,badges:vBadges,rooms:vRooms,settings:vSettings,journal:vJournal}[v]||vHome;
   if(roomStop){roomStop();roomStop=null}
   V();renderTop()}
 function renderMap(){route()}
@@ -339,7 +368,7 @@ function vHome(){const L=level(state.xp||0);const ip=inProgress()||nextMission()
   const hr=new Date().getHours();const greet=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
   view().innerHTML=`
   <div class="eyebrow">${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}</div>
-  <h1>${greet}, ${esc(state.name||'Majed')}</h1>
+  <h1>${greet}, ${esc(profName(USER))}</h1>
   <div class="grid g4 g2m" style="margin:12px 0 14px">
     <div class="stat"><small>Level</small><b>${L.name}</b><small>${fmt(state.xp)} XP</small></div>
     <div class="stat"><small>Streak</small><b>${streak()} 🔥</b><small>days in a row</small></div>
@@ -445,8 +474,8 @@ function vCase(id){const cur=currentCase();const c=id?CASES.find(x=>x.id===id):c
 
 /* ---------- more, badges, journal ---------- */
 function vMore(){view().innerHTML=`<h1>More</h1><div class="grid g2">
-  ${[['goals','✅','Weekly goals','Targets and personal goals for this week'],['badges','🏅','Badges','What you have earned so far'],['rooms','🌐','Online rooms','Case Sprint duel and partner case practice'],['journal','📝','Reflections','Everything you have written, by mission'],['settings','⚙︎','Settings','Sync, theme, privacy, backup']].map(([h,e,t,s])=>`<div class="card tcard" onclick="go('#/${h}')"><div class="row"><span class="ico">${e}</span><div><h3 style="margin:0">${t}</h3><small class="muted">${s}</small></div></div></div>`).join('')}</div>
-  <div class="card"><h3>Sync status</h3><p class="note" id="syncStat">${SYNC.url?'Cloud sync on':'Cloud sync is off'}</p></div>`;if(SYNC.url)pullState()}
+  ${[['family','👥','Family','Standings for Majed, Mohammed, Lamess and Lena'],['goals','✅','Weekly goals','Targets and personal goals for this week'],['badges','🏅','Badges','What you have earned so far'],['rooms','🌐','Online rooms','Case Sprint duel and partner case practice'],['journal','📝','Reflections','Everything you have written, by mission'],['settings','⚙︎','Settings','Sync, theme, privacy, backup']].map(([h,e,t,s])=>`<div class="card tcard" onclick="go('#/${h}')"><div class="row"><span class="ico">${e}</span><div><h3 style="margin:0">${t}</h3><small class="muted">${s}</small></div></div></div>`).join('')}</div>
+  <div class="card"><div class="row">${avatar(USER,36)}<div><b>${esc(profName(USER))}</b><br><small class="muted">Signed in on this device</small></div><span class="spacer"></span><button class="sbtn alt" id="swp">Switch profile</button></div></div><div class="card"><h3>Sync status</h3><p class="note" id="syncStat">${SYNC.url?'Cloud sync on':'Cloud sync is off'}</p></div>`;$('#swp').onclick=()=>{try{localStorage.removeItem('launchpad-user')}catch(e){}location.hash='';location.reload()};if(SYNC.url)pullState()}
 function vBadges(){view().innerHTML=`<a href="#/more" class="note">← More</a><h1>Badges</h1><div class="badgegrid">${BADGES.map(([k,e,n])=>`<div class="bdg ${state.badges[k]?'on':''}"><div class="e">${e}</div><small>${n}${state.badges[k]?'<br><span class="muted">'+new Date(state.badges[k]).toLocaleDateString('en-GB')+'</span>':''}</small></div>`).join('')}</div>`}
 function vJournal(){const r=reflStore();const ids=Object.keys(r).filter(id=>M[id]).sort((a,b)=>r[b].t-r[a].t);
   view().innerHTML=`<a href="#/more" class="note">← More</a><h1>Reflections</h1><p class="note">${state.settings.shareRefl?'Shared: these sync to your Follow page.':'Private: stored only on this device. Change in Settings.'}</p>${ids.map(id=>{const m=M[id];const p=m.reflect||['Most useful idea','Where I will apply it','Still unclear'];return`<div class="card"><div class="row"><h3 style="margin:0">${esc(m.title)}</h3><span class="spacer"></span><small class="muted">${new Date(r[id].t).toLocaleDateString('en-GB')}</small></div>${r[id].a.map((a,j)=>a?`<p><b class="muted" style="font-size:.85rem">${esc(p[j]||'')}</b><br>${esc(a)}</p>`:'').join('')}</div>`}).join('')||'<p class="note">No reflections yet.</p>'}`}
@@ -454,13 +483,13 @@ function vJournal(){const r=reflStore();const ids=Object.keys(r).filter(id=>M[id
 /* ---------- settings ---------- */
 function linkFor(page){const b=btoa(unescape(encodeURIComponent(JSON.stringify({u:SYNC.url,k:SYNC.key}))));return location.origin+location.pathname.replace(/[^/]*$/,'')+page+'#sync='+b}
 function vSettings(){view().innerHTML=`<a href="#/more" class="note">← More</a><h1>Settings</h1>
-  <div class="card"><h3>Profile</h3><label class="f">Name</label><input class="tin" id="nm" value="${esc(state.name||'')}"><div class="ctl"><button class="sbtn alt" id="thm">Switch light / dark</button></div></div>
+  <div class="card"><h3>Profile</h3><div class="row">${avatar(USER,40)}<b>${esc(profName(USER))}</b></div><label class="f">PIN lock (optional, 4–8 digits). A light family lock, not real security.</label><div class="ctl"><input class="tin" id="pinN" type="password" inputmode="numeric" maxlength="8" placeholder="${state.pin?'PIN is set — type a new one to change':'No PIN'}" style="flex:1"><button class="sbtn alt" id="pinS">${state.pin?'Change PIN':'Set PIN'}</button>${state.pin?'<button class="sbtn alt" id="pinR">Remove</button>':''}</div><div class="ctl"><button class="sbtn alt" id="thm">Switch light / dark</button></div></div>
   <div class="card"><h3>Cloud sync</h3><p class="note">Progress saves to a Google Sheet so it follows you across Mac, iPhone and iPad.</p><label class="f">Apps Script web-app URL</label><input class="tin" id="syncUrl" value="${esc(SYNC.url)}" placeholder="https://script.google.com/macros/s/…/exec"><label class="f">Secret key</label><input class="tin" id="syncKey" value="${esc(SYNC.key)}"><div class="ctl"><button class="sbtn" id="ssv">Save & sync</button><span class="note" id="syncStat">${SYNC.url?'Cloud sync on':'Cloud sync is off'}</span></div>
-  ${SYNC.url?`<label class="f">Link for your other devices (opens the app already connected)</label><div class="ctl"><input class="tin" readonly id="dl" value="${linkFor('index.html')}" style="flex:1"><button class="sbtn alt sm" data-c="dl">Copy</button></div><label class="f">Read-only Follow link (for your father)</label><div class="ctl"><input class="tin" readonly id="fl" value="${linkFor('follow.html')}" style="flex:1"><button class="sbtn alt sm" data-c="fl">Copy</button></div>`:''}</div>
+  ${SYNC.url?`<label class="f">Link for your other devices (opens the app already connected)</label><div class="ctl"><input class="tin" readonly id="dl" value="${linkFor('index.html')}" style="flex:1"><button class="sbtn alt sm" data-c="dl">Copy</button></div><label class="f">Read-only Follow link (view anyone's progress without signing in)</label><div class="ctl"><input class="tin" readonly id="fl" value="${linkFor('follow.html')}" style="flex:1"><button class="sbtn alt sm" data-c="fl">Copy</button></div>`:''}</div>
   <div class="card"><h3>Privacy</h3><p class="note">The Follow page shows XP, mission scores, confidence ratings, weekly goals, time and activity. Reflections are your choice.</p><label class="goal"><input type="checkbox" id="shr" ${state.settings.shareRefl?'checked':''}><span>Share my written reflections on the Follow page</span></label></div>
   <div class="card"><h3>Backup</h3><div class="ctl"><button class="sbtn alt" id="exp">Download backup (.json)</button><button class="sbtn alt" id="imp">Restore from backup</button><input type="file" id="impf" accept="application/json" hidden></div></div>
   <p class="note">Majed's Launchpad · build ${BUILD}</p>`;
-  $('#nm').onchange=e=>{state.name=e.target.value.trim()||'Majed';save()};$('#thm').onclick=toggleTheme;$('#ssv').onclick=()=>{saveSyncSettings();setTimeout(vSettings,1200)};
+  $('#pinS').onclick=()=>{const p=$('#pinN').value.trim();if(!/^\d{4,8}$/.test(p)){toast('Use 4 to 8 digits');return}state.pin=pinHash(p);try{localStorage.setItem('launchpad-unlocked-'+USER,state.pin)}catch(e){}save();toast('PIN set');vSettings()};const pr=$('#pinR');if(pr)pr.onclick=()=>{delete state.pin;save();toast('PIN removed');vSettings()};$('#thm').onclick=toggleTheme;$('#ssv').onclick=()=>{saveSyncSettings();setTimeout(vSettings,1200)};
   $$('[data-c]').forEach(b=>b.onclick=()=>{const i=$('#'+b.dataset.c);i.select();try{navigator.clipboard.writeText(i.value)}catch(e){document.execCommand('copy')}toast('Link copied')});
   $('#shr').onchange=e=>{setShareRefl(e.target.checked);toast(e.target.checked?'Reflections will sync':'Reflections are private to this device')};
   $('#exp').onclick=()=>{const blob=new Blob([JSON.stringify({state,refl:reflStore()},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='launchpad-backup-'+today()+'.json';a.click()};
@@ -468,16 +497,16 @@ function vSettings(){view().innerHTML=`<a href="#/more" class="note">← More</a
 
 /* ---------- follow (read-only parent view) ---------- */
 function renderParent(){const L=level(state.xp||0);const w=weekProgress();const last=(state.log||[]).slice(-1)[0];const r=state.settings.shareRefl?state.refl:{};
-  view().innerHTML=`<div class="followbar">Read-only view of ${esc(state.name||'Majed')}'s progress · ${state.savedAt?'last synced '+new Date(state.savedAt).toLocaleString('en-GB'):'waiting for data'} · <span id="syncStat"></span></div>
-  <h1>${esc(state.name||'Majed')}'s Launchpad</h1>
+  view().innerHTML=`<div class="chips" style="margin-bottom:10px">${USERS.map(u=>`<button class="chip ${u.id===USER?'on':''}" data-fu="${u.id}">${u.name}</button>`).join('')}</div><div class="followbar">Read-only view of ${esc(profName(USER))}'s progress · ${state.savedAt?'last synced '+new Date(state.savedAt).toLocaleString('en-GB'):'waiting for data'} · <span id="syncStat"></span></div>
+  <h1>${esc(profName(USER))}'s Launchpad</h1>
   <div class="grid g4 g2m" style="margin:12px 0"><div class="stat"><small>Level</small><b>${L.name}</b><small>${fmt(state.xp)} XP</small></div><div class="stat"><small>Streak</small><b>${streak()}</b><small>days</small></div><div class="stat"><small>Missions</small><b>${done().length}/62</b><small>completed</small></div><div class="stat"><small>Last active</small><b style="font-size:1.05rem">${last?new Date(last.t).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'—'}</b><small>${last?new Date(last.t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):''}</small></div></div>
   <div class="grid g2"><div class="card"><h3>This week</h3>${goalBars(w)}${w.g.items.length?'<ul>'+w.g.items.map(x=>`<li>${x.done?'✅':'⬜'} ${esc(x.t)}</li>`).join('')+'</ul>':''}</div>
   <div class="card"><h3>Tracks</h3>${TRACKS.map(t=>{const s=trackStats(t.id);return`<div style="margin:8px 0"><div class="row" style="font-size:.9rem"><span>${t.ico} ${t.name}</span><span class="spacer"></span><b>${s.d}/${s.n}</b></div><div class="prog"><i style="width:${s.d/s.n*100}%"></i></div></div>`}).join('')}</div></div>
   <div class="card"><h3>Missions</h3><div class="tablewrap"><table class="t"><tr><th>Mission</th><th>Status</th><th>Test</th><th>Confidence</th><th>Minutes</th></tr>${Object.keys(state.progress).filter(id=>M[id]).sort().map(id=>{const p=state.progress[id];return`<tr><td>${esc(M[id].title)}</td><td>${p.status==='completed'?'✅':'…'}</td><td>${p.steps&&p.steps.test?Math.round((p.best||0)*100)+'%':'—'}</td><td>${state.conf[id]?state.conf[id]+'/5':'—'}</td><td>${Math.round((state.time[id]||0)/60)}</td></tr>`}).join('')||'<tr><td colspan=5>No missions started yet.</td></tr>'}</table></div></div>
   <div class="card"><h3>Cases of the week</h3>${Object.entries(state.cow).filter(([k,v])=>v.done).map(([k,v])=>`<div>${esc((CASES.find(c=>c.id===k)||{}).title||k)} · ${Math.round(v.score*100)}%</div>`).join('')||'<p class="note">None finished yet.</p>'}</div>
   ${Object.keys(r).length?`<div class="card"><h3>Reflections (shared)</h3>${Object.keys(r).filter(id=>M[id]).map(id=>`<p><b>${esc(M[id].title)}</b><br>${r[id].a.filter(Boolean).map(esc).join('<br>')}</p>`).join('')}</div>`:''}
-  <div class="card"><h3>Recent activity</h3>${(state.log||[]).filter(l=>!['quiz','learn','lab','test','start'].includes(l.type)).slice(-25).reverse().map(l=>`<div class="note">${new Date(l.t).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})} · ${esc(l.type)} · ${esc(l.detail||'')}</div>`).join('')||'<p class="note">No activity yet.</p>'}</div>`;
-  $('#tabs').classList.add('hide');renderTop()}
+  <div class="card"><h3>Family standings</h3><div id="famF"></div></div><div class="card"><h3>Recent activity</h3>${(state.log||[]).filter(l=>!['quiz','learn','lab','test','start'].includes(l.type)).slice(-25).reverse().map(l=>`<div class="note">${new Date(l.t).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})} · ${esc(l.type)} · ${esc(l.detail||'')}</div>`).join('')||'<p class="note">No activity yet.</p>'}</div>`;
+  $('#tabs').classList.add('hide');renderTop();$$('[data-fu]').forEach(b=>b.onclick=()=>{try{localStorage.setItem('launchpad-follow-user',b.dataset.fu)}catch(e){}location.reload()});const fb=$('#famF');if(fb&&!fb.dataset.done){fb.dataset.done=1;familyTable(fb)}}
 
 /* ---------- small widgets used by labs ---------- */
 function numIn(id,label,val,o={}){return`<div><label class="f" for="${id}">${label}</label><input class="tin" type="number" inputmode="decimal" id="${id}" value="${val}" ${o.step?`step="${o.step}"`:'step="any"'} ${o.min!=null?`min="${o.min}"`:''}></div>`}
@@ -489,7 +518,7 @@ function bars(data,o={}){/* data:[{l,v,c}] */const W=560,H=o.h||220,pad=34,bw=(W
 function boot(){applyTheme();
   if(location.hash.startsWith('#sync=')){try{const o=JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(6)))));if(o.u){SYNC={url:o.u,key:o.k||''};localStorage.setItem('launchpad-sync',JSON.stringify(SYNC))}}catch(e){}history.replaceState(null,'',location.pathname+(FOLLOW?'':'#/home'))}
   if(FOLLOW){parentMode=true;window.save=()=>{};window.schedulePush=()=>{};window.pushState=async()=>{};window.addXP=()=>{};$('#themeBtn').onclick=toggleTheme;route();if(SYNC.url){pullState().then(route);setInterval(()=>pullState().then(route),60000)}else view().innerHTML='<div class="card"><h2>Follow link needed</h2><p>Open the Follow link Majed shares from Settings → Cloud sync.</p></div>';return}
-  $('#themeBtn').onclick=toggleTheme;$$('#tabs button').forEach(b=>b.onclick=()=>go('#/'+b.dataset.v));
+  const mb=$('#meBtn');if(mb)mb.onclick=()=>go('#/more');$('#themeBtn').onclick=toggleTheme;$$('#tabs button').forEach(b=>b.onclick=()=>go('#/'+b.dataset.v));
   addEventListener('hashchange',route);route();renderTop();
   if(SYNC.url){setSyncStatus('busy','');pullState()}else setSyncStatus('off','Cloud sync is off');
   addEventListener('visibilitychange',()=>{if(!document.hidden&&SYNC.url)pullState()})}
