@@ -240,7 +240,7 @@ const DUEL={
       box.innerHTML=`${DUEL.board(D,me)}<div class="readout">${txt}</div><div class="ctl">${both?`<button class="sbtn alt" id="dAgain">Back</button>`:''}</div>`;const ag=box.querySelector('#dAgain');if(ag)ag.onclick=()=>{if(stop)stop();onAgain()};if(both&&stop){stop();stop=null}};draw();if(!(D.p[0].done&&D.p[1].done))stop=DUEL.poll(D,me,draw);return()=>{if(stop)stop()}}
 };
 
-const BUILD='v4 · 2026-10-05';
+const BUILD='v5 · 2026-10-05';
 /* ================= Majed's Launchpad — app shell ================= */
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1240,6 +1240,53 @@ CASES.push(
   {q:'What should Hessa propose to her father?',note:'A staged plan: launch the specialty gift box with two chains (low extra fixed cost, positive contribution), keep bulk domestic sales as the cash base, defer the luxury line until the brand earns it, and set a review after 18 months with clear KPIs (sell-through, repeat orders, margin). This reframes the risk: the core business continues, the brand option is cheap to test.',pts:['Staged, low-risk plan','Keeps the existing business as the base','Defers loss-making option','KPIs and a decision point']}]}
 );
 
+/* ================= Cases of the week, batch 4 (fictional companies and people, illustrative data) ================= */
+CASES.push(
+{id:'w13',title:'Sanad Health: Pivot or Persevere?',teaser:'Downloads are up, retention is collapsing, and the runway is ten months. The founders disagree on what the data says.',byline:'Teaching case · Lean start-up and metrics · Fictional company, illustrative data',
+ body:`<p class="dropcap">Sanad Health launched a mobile app in Riyadh helping families manage elderly parents' medications: reminders, refill orders and a shared family view. After an Instagram campaign, downloads jumped to 24,000 in four months. The CEO, Raed, wanted to raise a seed round on that growth.</p>
+<p>His co-founder and CTO, Dana, pointed at the cohort data (Exhibit 1). Most users stopped within a month. Interviews revealed a pattern: the adult children who downloaded the app loved the idea, but their parents rarely used phones for medications; family pharmacists and home nurses did most of the actual managing. Three private home-care agencies had asked whether they could use Sanad for their nurses — and offered to pay.</p>
+<p>Raed worried a pivot to B2B would throw away the consumer brand and slow growth. Dana argued the consumer model was not working and the agencies were the first real customers. They had ten months of runway.</p>`,
+ exhibits:[{t:'Monthly cohort retention (consumer app)',h:`<table class="t"><tr><th>Cohort</th><th>Month 1</th><th>Month 2</th><th>Month 3</th></tr><tr><td>June</td><td>22%</td><td>9%</td><td>5%</td></tr><tr><td>July</td><td>19%</td><td>8%</td><td>4%</td></tr><tr><td>August</td><td>17%</td><td>6%</td><td>—</td></tr></table><p class="note">Paid subscribers: 310 at SAR 19/month. CAC from Instagram: about SAR 38 per download. Home-care agencies interested: 3 (combined 220 nurses), indicated price SAR 60 per nurse per month.</p>`,s:'Illustrative data.'}],
+ questions:[
+  {q:'What do the cohort numbers tell you that total downloads hide?',note:'Retention decays to ~4–5% by month 3 and is getting worse in newer cohorts: no product–market fit in the consumer segment. Downloads are a vanity metric; with ~SAR 38 CAC per download and few paying users, CAC per paying customer is in the thousands against SAR 19/month revenue.',pts:['Retention is low and declining by cohort','Downloads are a vanity metric','Rough CAC per paying user is very high','Concluded no PMF in consumer segment']},
+  {q:'Compare the economics of the consumer and agency opportunities.',note:'Consumer: 310 × 19 = SAR 5.9k MRR. Agencies: 220 nurses × 60 = SAR 13.2k MRR from three customers, likely higher retention (workflow tool), lower CAC (direct sales to few buyers), and referenceable for other agencies and hospitals. B2B has longer sales cycles but stronger signal: they asked and offered to pay.',pts:['Consumer MRR ≈ SAR 6k','Agency MRR ≈ SAR 13k from 3 customers','Retention and CAC advantages of B2B','Noted the strength of inbound demand']},
+  {q:'What experiment would settle the disagreement quickly?',note:'Run a 6-week paid pilot with the three agencies (pre-agreed price, success metrics: weekly active nurses, missed-dose incidents, renewal intent), while freezing consumer marketing spend. Pass line written in advance: e.g., ≥ 70% weekly active nurses and 2 of 3 agencies willing to sign annual contracts.',pts:['Paid pilot, not free','Defined metrics and pass line','Time-boxed','Stops spending on what is not working']},
+  {q:'What should they tell investors?',note:'Honest story: consumer launch generated learning, not PMF; the real customer is the care provider. Raise on early B2B traction (pilot results, contracts, pipeline of agencies and hospitals) rather than downloads. Investors back founders who read data honestly and pivot fast.',pts:['Transparent about the consumer results','Pivot framed as learning','Traction metrics that matter for B2B','Timing the raise after pilot evidence']}]},
+
+{id:'w14',title:'Nakhla Robotics: Two Term Sheets',teaser:'One investor offers a higher valuation; the other offers cleaner terms. The founders have 72 hours.',byline:'Teaching case · Venture financing · Fictional company, illustrative data',
+ body:`<p class="dropcap">Nakhla Robotics built autonomous drones for inspecting date-palm plantations and solar farms. After two years and SAR 2m of angel money, it had SAR 3.1m of annual recurring revenue and was raising a SAR 10m Series A. Two investors sent term sheets the same week (Exhibit 1).</p>
+<p>Fund A, a large regional VC, offered the higher valuation but with a 1.5× participating liquidation preference, two of five board seats and a full-ratchet anti-dilution clause. Fund B, a smaller industrial-tech fund with portfolio companies in agriculture and energy, offered a lower valuation with 1× non-participating preference, one board seat and broad-based weighted-average anti-dilution.</p>
+<p>Co-founder Faisal wanted Fund A: "Higher valuation means less dilution. And they are the bigger name." His co-founder Nora wasn't sure: "What happens if we sell for SAR 80m instead of SAR 400m?"</p>`,
+ exhibits:[{t:'Term sheet summary',h:`<table class="t"><tr><th>Term</th><th>Fund A</th><th>Fund B</th></tr><tr><td>Investment</td><td>SAR 10m</td><td>SAR 10m</td></tr><tr><td>Pre-money valuation</td><td>SAR 40m</td><td>SAR 30m</td></tr><tr><td>Liquidation preference</td><td>1.5× participating</td><td>1× non-participating</td></tr><tr><td>Anti-dilution</td><td>Full ratchet</td><td>Broad-based weighted average</td></tr><tr><td>Board seats (of 5)</td><td>2</td><td>1</td></tr><tr><td>Sector expertise</td><td>Generalist</td><td>Agri and energy portfolio</td></tr></table>`,s:'Ignore other shareholders for simplicity. Illustrative.'}],
+ questions:[
+  {q:'What ownership does each fund get?',note:'Fund A: 10 ÷ 50 = 20%. Fund B: 10 ÷ 40 = 25%. Faisal is right that Fund A dilutes less on paper.',pts:['Fund A 20%','Fund B 25%','Correct post-money for each','Acknowledged the dilution difference']},
+  {q:'Compare what the investor and everyone else receive at a SAR 80m exit.',note:'Fund A: preference 1.5 × 10 = 15, then 20% of remaining 65 = 13 → 28; common gets 52. Fund B: max(10, 25% × 80 = 20) = 20; common gets 60. Despite the higher valuation, the founders and team get SAR 8m more with Fund B at a SAR 80m exit.',pts:['Fund A investor ≈ SAR 28m','Fund B investor ≈ SAR 20m','Common: SAR 52m vs SAR 60m','Concluded Fund B is better for founders at this exit']},
+  {q:'What other terms change the picture?',note:'Full ratchet: in a down round, Fund A\'s price resets to the new low price, heavily diluting founders. Two board seats plus possible protective provisions shift control. Fund B\'s sector network could accelerate sales in agriculture and energy. At very large exits (SAR 400m+), the differences narrow, but downside protection matters for founders.',pts:['Full ratchet risk in a down round','Board control','Value of sector expertise','Exit-size sensitivity']},
+  {q:'What should the founders do in the next 72 hours?',note:'Model the waterfall at SAR 50m, 100m, 200m and 400m exits. Go back to Fund A: ask for 1× non-participating and weighted-average anti-dilution at their valuation (a common outcome), or accept Fund B if A refuses. Reference-check both funds with portfolio founders. Get a lawyer to review. Decide on total package, not headline valuation.',pts:['Model several exit scenarios','Negotiate terms, not just price','Reference checks on investors','Legal review and decide on the package']}]},
+
+{id:'w15',title:'Qahwa Box: Growth That Loses Money',teaser:'A coffee-subscription start-up doubled its subscribers in a quarter. Its contribution per box is negative.',byline:'Teaching case · Unit economics · Fictional company, illustrative data',
+ body:`<p class="dropcap">Qahwa Box delivered monthly boxes of speciality coffee from Saudi and international roasters to subscribers in Riyadh, Jeddah and Dammam. A first-month discount of 60% and influencer campaigns doubled subscribers to 6,200 in a quarter. The founders, Sultan and Hind, were preparing a seed raise around the growth.</p>
+<p>Their new finance lead, an ex-auditor named Yazeed, built the unit economics (Exhibit 1) and asked for a meeting. "Every box we ship loses money, and most of the discounted customers leave after the first box. Growing faster makes us poorer."</p>
+<p>Sultan objected: "Every subscription business loses money at first. Scale will bring down delivery and coffee costs." Hind wanted to know which levers actually mattered.</p>`,
+ exhibits:[{t:'Unit economics per box (SAR)',h:`<table class="t"><tr><th>Item</th><th>Full-price box</th><th>First-month discounted box</th></tr><tr><td>Price</td><td>149</td><td>60</td></tr><tr><td>Coffee</td><td>62</td><td>62</td></tr><tr><td>Packaging</td><td>14</td><td>14</td></tr><tr><td>Delivery</td><td>28</td><td>28</td></tr><tr><td>Payment fees</td><td>4</td><td>2</td></tr><tr><td>Customer support & returns</td><td>9</td><td>9</td></tr></table><p class="note">Monthly churn: 14% for full-price subscribers; 65% of discounted first-month subscribers cancel before month 2. CAC: SAR 85 per subscriber (influencers + ads).</p>`,s:'Illustrative data.'}],
+ questions:[
+  {q:'Calculate contribution per box for full-price and discounted boxes.',note:'Full price: 149 − (62 + 14 + 28 + 4 + 9 = 117) = SAR 32. Discounted: 60 − (62 + 14 + 28 + 2 + 9 = 115) = −SAR 55. Each discounted first box loses SAR 55 on top of CAC.',pts:['Full-price contribution ≈ SAR 32','Discounted box ≈ −SAR 55','Listed all variable costs','Linked losses to the discount']},
+  {q:'What is the LTV of a full-price subscriber, and how does it compare with CAC including the discount?',note:'Lifetime ≈ 1 ÷ 0.14 ≈ 7.1 months; LTV ≈ 32 × 7.1 ≈ SAR 229. But only 35% of discounted sign-ups become full-price subscribers. Effective acquisition cost per retained subscriber ≈ (85 + 55) ÷ 0.35 ≈ SAR 400 > LTV 229. The model destroys value at current churn and discounting.',pts:['Lifetime ≈ 7 months','LTV ≈ SAR 230','Effective CAC per retained subscriber ≈ SAR 400','Concluded LTV < CAC']},
+  {q:'Which levers matter most?',note:'Churn (14% monthly is high for subscriptions — personalisation, flexible skip/pause, quality), the discount design (smaller discount or discount on month 3 to reward retention), delivery cost (pick-up points, route density in fewer cities), and price/mix (premium tiers, gifting). Scale helps coffee costs only modestly.',pts:['Churn reduction','Redesign the discount','Delivery cost via density or pick-up','Price tiers or gifting']},
+  {q:'What should the founders tell seed investors?',note:'Be candid: growth was bought with discounts that do not retain. Show the plan and early evidence: new offer with lower discount, pause option, density in Riyadh first, target contribution per box ≥ SAR 40 and churn ≤ 8%. Raise on improving cohort retention and unit economics, not on subscriber count.',pts:['Candid about current economics','Specific plan with targets','Evidence from a test cohort','Metrics investors should track']}]},
+
+{id:'w16',title:'Two Engineers and a Napkin',teaser:'Two friends want to build an industrial-IoT start-up. One has the idea, the other will quit his job. How should they split the company?',byline:'Teaching case · Founding teams and equity · Fictional people, illustrative situation',
+ body:`<p class="dropcap">Over dinner in Al Khobar, Omar and Bader sketched a start-up on a napkin: low-cost sensors and software to predict failures in water-treatment plants. Omar, a process engineer at a utility, had the idea after years of watching pumps fail. Bader, a software engineer at a large tech company, would build the product.</p>
+<p>The plan: Bader quits his job next month and works full time; Omar stays at the utility for a year "to keep a salary for the family" and works evenings and weekends, bringing the first pilot customer through his network. Omar proposed a 60/40 split in his favour "because it's my idea and my customer". Bader felt uneasy but didn't want to argue with a friend.</p>
+<p>A third friend, Sara, a strong saleswoman in industrial equipment, had expressed interest in joining in six months if the pilot worked. An angel investor they met asked one question: "Who owns what, and what happens if one of you leaves?"</p>`,
+ exhibits:[{t:'Contributions over the next 12 months (estimated)',h:`<table class="t"><tr><th></th><th>Omar</th><th>Bader</th></tr><tr><td>Time commitment</td><td>Part time (~15 h/week)</td><td>Full time</td></tr><tr><td>Salary given up</td><td>None</td><td>~SAR 360k</td></tr><tr><td>Contribution</td><td>Idea, domain insight, first customer access</td><td>Product, technology, early operations</td></tr><tr><td>Cash invested</td><td>SAR 50k</td><td>SAR 50k</td></tr></table>`,s:'Illustrative situation.'}],
+ questions:[
+  {q:'Is a 60/40 split in Omar\'s favour fair? Argue from future contribution.',note:'Ideas are cheap; execution creates value. Over the next year Bader takes more risk (gives up salary) and does most of the work. Omar\'s domain insight and customer access are real but part-time. A fair outcome is closer to equal, or weighted toward Bader until Omar commits full time — with vesting so that commitment is what earns equity.',pts:['Ideas are worth less than execution','Bader\'s risk and full-time work','Omar\'s genuine contributions acknowledged','Proposed a fairer split or conditional structure']},
+  {q:'What mechanisms protect both founders if someone leaves?',note:'Four-year vesting with a one-year cliff for both; good-leaver/bad-leaver clauses; a founders\' agreement on roles, decision-making and IP assignment to the company; a commitment milestone (e.g., Omar full time once the pilot is signed or seed is raised).',pts:['Vesting with cliff for both','Leaver provisions','IP assigned to the company','Commitment milestone for Omar']},
+  {q:'How should they plan for Sara and future hires?',note:'Reserve an option pool (e.g., 10–15%) now. If Sara joins as a co-founder-level hire, her equity should come with vesting and reflect stage and risk at joining (typically lower than the original founders). Don\'t promise percentages casually over dinner.',pts:['Option pool planned early','Later joiners get vested equity','Equity reflects risk at joining time','Avoid informal promises']},
+  {q:'What should they agree before Bader resigns?',note:'A written founders\' agreement: equity split with vesting, roles (CEO/CTO), decision rules and deadlock resolution, Omar\'s commitment date, IP assignment, how they will fund the first months, and what happens if the pilot fails. Have the hard conversation now — friendship survives honesty more easily than resentment.',pts:['Written founders\' agreement','Roles and decision rules','Commitment dates and funding plan','Have the conversation before, not after']}]}
+);
+
 /* ================= Engineering Refresher track: missions ================= */
 addMissions([
 {id:'e01',track:'eng',title:'Manufacturing systems and process types',mins:25,blurb:'Project, job shop, batch, line, continuous — and why fit matters.',
@@ -1822,6 +1869,279 @@ addMissions([
  read:[{t:'A Refresher on Regression Analysis',s:'Harvard Business Review, 2015',u:'https://hbr.org/2015/11/a-refresher-on-regression-analysis'},{t:'A Refresher on A/B Testing',s:'Harvard Business Review, 2017',u:'https://hbr.org/2017/06/a-refresher-on-ab-testing'},{t:'MIT OCW: statistics for applications',s:'MIT OpenCourseWare',u:OCW('statistics')}]}
 ]);
 
+/* ================= Entrepreneurship track: missions ================= */
+addMissions([
+{id:'s01',track:'startup',title:'Opportunity recognition',mins:25,blurb:'Where good start-up ideas come from, and how to compare them honestly.',
+ lab:{key:'oppscore',name:'Opportunity scoring matrix',intro:'Score up to three ideas on weighted criteria.'},
+ cards:[
+  {h:'Problems before ideas',b:`<p>Great start-ups usually begin with a painful, frequent, expensive problem that the founders understand from the inside. Ideas that start from a technology looking for a use fail more often.</p>`},
+  {h:'Where to look',b:`<ul><li>Your own work: inefficiencies you see every day (consulting and manufacturing are full of them)</li><li>Change: new regulation, technology, behaviour (why now?)</li><li>Workarounds: spreadsheets and WhatsApp groups doing a job badly</li><li>Underserved segments: SMEs, regions outside Riyadh</li></ul>`},
+  {h:'Founder–market fit',b:`<p>Investors ask "why you?". Domain insight, access to customers, technical ability and staying power matter. An industrial engineer with plant experience has an edge in industrial software and services.</p>`},
+  {h:'Saudi tailwinds',b:`<p>Vision 2030 programmes, localisation, digital government, tourism, logistics, fintech regulation (SAMA sandbox) and a large young population create openings. Tailwinds help, but customers still have to pay.</p>`},
+  {h:'Score, then test',b:`<p>A scoring matrix forces honest comparison but is only as good as the evidence behind each score. The next step after scoring is always talking to customers.</p>`}],
+ quiz:[
+  {q:'The strongest start-up ideas usually begin with…',o:['A new technology','A painful, frequent, expensive problem','A large market report','A competitor\'s product'],a:1,w:'Pain drives willingness to pay.'},
+  {q:'"Why now?" asks…',o:['Why the founder is in a hurry','What has changed that makes this possible or needed now','When the funding closes','Why investors should hurry'],a:1,w:'Timing: regulation, technology, behaviour.'},
+  {q:'Founder–market fit means…',o:['The founder likes the market','The founders have unusual insight or access in this market','The market is large','Low competition'],a:1,w:'Why this team will win.'},
+  {q:'A workaround (spreadsheets, WhatsApp groups) signals…',o:['No problem exists','A real problem people already spend effort on','A saturated market','Regulation'],a:1,w:'Effort spent is evidence of pain.'},
+  {q:'After scoring ideas, the next step is…',o:['Build the product','Raise money','Talk to customers to test the scores','Hire a team'],a:2,w:'Evidence before investment.'},
+  {q:'Vision 2030 tailwinds guarantee success.',o:['True','False'],a:1,w:'Customers must still pay.'}],
+ srs:[{q:'Best source of start-up ideas?',a:'Painful, frequent, expensive problems the founders understand from inside.'},{q:'"Why now?"',a:'What changed (technology, regulation, behaviour) that opens the opportunity now.'},{q:'Founder–market fit?',a:'The team\'s unusual insight or access in the market.'},{q:'What does a workaround signal?',a:'People already spend effort on the problem: evidence of pain.'}],
+ read:[{t:'How to Get Startup Ideas',s:'Paul Graham',u:'http://paulgraham.com/startupideas.html'},{t:'Why the Lean Start-Up Changes Everything',s:'Harvard Business Review, 2013',u:'https://hbr.org/2013/05/why-the-lean-start-up-changes-everything'},{t:'Opportunity recognition',s:'HBR search',u:HBRS('entrepreneurial opportunity')}]},
+
+{id:'s02',track:'startup',title:'Customer discovery',mins:30,blurb:'Interview customers so you learn the truth, not compliments.',
+ lab:{key:'momtest',name:'Mom Test question drill',intro:'Sort eight interview questions into good and bad.'},
+ cards:[
+  {h:'Get out of the building',b:`<p>Steve Blank: no facts exist inside the building. Customer discovery tests whether the problem exists, who has it, and whether they will pay — before you build.</p>`},
+  {h:'The Mom Test',b:`<ul><li>Talk about their life, not your idea.</li><li>Ask about specifics in the past, not opinions about the future.</li><li>Talk less, listen more.</li></ul><p>Even your mother can't lie to you if you ask good questions.</p>`},
+  {h:'Signals that matter',b:`<p>Compliments are noise. Real signals: they describe the problem unprompted, they have tried to solve it, they spend money or time on it, and they commit — a meeting with their boss, a pilot, a deposit, an introduction.</p>`},
+  {h:'Problem/solution fit',b:`<p>You have it when a defined segment confirms the problem is top-3 for them and reacts strongly to your proposed solution with commitments. Usually 20–40 interviews in.</p>`},
+  {h:'In the Gulf',b:`<p>Relationships and introductions matter; politeness norms make honest negative feedback rarer. Ask about past behaviour and look for commitments even more carefully.</p>`}],
+ quiz:[
+  {q:'Which is a Mom Test–style question?',o:['Would you buy this?','Tell me about the last time this problem happened','Do you like my idea?','How much would you pay?'],a:1,w:'Specific past behaviour.'},
+  {q:'The strongest evidence from an interview is…',o:['"Great idea!"','A commitment: pilot, deposit or introduction','A long meeting','A like on social media'],a:1,w:'Commitments cost them something.'},
+  {q:'Why avoid pitching during discovery interviews?',o:['It is rude','People start reacting to your idea and being polite instead of describing their reality','It takes too long','Investors dislike it'],a:1,w:'You want their story, not their opinion of yours.'},
+  {q:'Problem/solution fit means…',o:['The product is built','A defined segment confirms the problem and commits to your solution','You have revenue','You raised money'],a:1,w:'Evidence before scale.'},
+  {q:'A customer says "I would definitely use that". This is…',o:['Strong evidence','A weak signal until backed by commitment','A contract','Irrelevant'],a:1,w:'Future intentions are unreliable.'},
+  {q:'Roughly how many interviews to see clear patterns?',o:['2–3','20–40','500','None'],a:1,w:'Patterns appear after dozens.'}],
+ srs:[{q:'Three Mom Test rules?',a:'Talk about their life not your idea; ask about specific past behaviour; talk less, listen more.'},{q:'Strong interview signals?',a:'Commitments: time, money, reputation (pilot, deposit, introduction).'},{q:'Problem/solution fit?',a:'Defined segment confirms the problem and commits to the proposed solution.'},{q:'Customer discovery purpose?',a:'Test problem, segment and willingness to pay before building.'}],
+ read:[{t:'The Mom Test',s:'Rob Fitzpatrick',u:'https://www.momtestbook.com/'},{t:'Why the Lean Start-Up Changes Everything',s:'Harvard Business Review',n:'Steve Blank',u:'https://hbr.org/2013/05/why-the-lean-start-up-changes-everything'},{t:'Steve Blank\'s blog',s:'steveblank.com',u:'https://steveblank.com/'}]},
+
+{id:'s03',track:'startup',title:'Jobs-to-be-done and the value proposition',mins:30,blurb:'Understand the job customers hire your product to do.',
+ lab:{key:'vpc',name:'Value-proposition canvas',intro:'Map jobs, pains and gains against what you offer.'},
+ cards:[
+  {h:'Jobs to be done',b:`<p>Christensen: customers don't buy products; they "hire" them to get a job done in a particular circumstance. Jobs have functional, emotional and social dimensions.</p>`},
+  {h:'The milkshake lesson',b:`<p>Morning commuters hired a milkshake for a boring drive: it lasted long and filled them up. Competing "products" were bananas and bagels, not other milkshakes. Define competition by the job.</p>`},
+  {h:'Value-proposition canvas',b:`<p>Customer profile: jobs, pains, gains. Value map: products, pain relievers, gain creators. Fit is when the value map addresses the most important pains and gains.</p>`},
+  {h:'Prioritise',b:`<p>Not all pains are equal. Rank by severity and frequency. A product that relieves one extreme pain beats one that addresses ten mild ones.</p>`},
+  {h:'B2B buyers have jobs too',b:`<p>In industrial sales, the user (maintenance engineer), buyer (procurement) and decision-maker (plant director) each hire the product for different jobs: fewer failures, lower cost, safer audits.</p>`}],
+ quiz:[
+  {q:'In JTBD, customers…',o:['Buy features','"Hire" products to get a job done in a circumstance','Prefer cheapest products','Follow advertising'],a:1,w:'Christensen\'s framing.'},
+  {q:'The morning milkshake\'s real competitors were…',o:['Other milkshakes','Bananas, bagels and other commute snacks','Coffee machines','Restaurants'],a:1,w:'Competition is defined by the job.'},
+  {q:'Which is an emotional dimension of a job?',o:['Fix the pump','Feel confident in front of the plant director','Lower cost','Reduce downtime'],a:1,w:'How they want to feel.'},
+  {q:'Fit in the value-proposition canvas means…',o:['Many features','Pain relievers and gain creators match the most important pains and gains','Low price','A big team'],a:1,w:'Focus on what matters most to the customer.'},
+  {q:'In B2B, the user and the buyer…',o:['Are always the same','Often hire the product for different jobs','Do not matter','Want the same features'],a:1,w:'Map each role\'s job.'},
+  {q:'Better to relieve…',o:['Ten mild pains','One severe, frequent pain','No pains','Only gains'],a:1,w:'Severity and frequency drive value.'}],
+ srs:[{q:'Jobs-to-be-done?',a:'Customers hire products to make progress on a job in a specific circumstance.'},{q:'Three job dimensions?',a:'Functional, emotional, social.'},{q:'Value-proposition canvas parts?',a:'Customer: jobs, pains, gains. Value map: products, pain relievers, gain creators.'},{q:'Competition in JTBD?',a:'Anything hired for the same job, not only similar products.'}],
+ read:[{t:'Know Your Customers\' Jobs to Be Done',s:'Harvard Business Review, 2016',u:'https://hbr.org/2016/09/know-your-customers-jobs-to-be-done'},{t:'Value Proposition Canvas',s:'Strategyzer',u:'https://www.strategyzer.com/library/the-value-proposition-canvas'},{t:'Marketing Myopia',s:'Harvard Business Review',u:'https://hbr.org/2004/07/marketing-myopia'}]},
+
+{id:'s04',track:'startup',title:'Lean canvas',mins:30,blurb:'A one-page business plan made of testable hypotheses.',
+ lab:{key:'leancanvas',name:'Lean canvas builder',intro:'Nine boxes, saved to your profile; copy it into a deck or email.'},
+ cards:[
+  {h:'Why a canvas',b:`<p>Business plans are written once and ignored. A lean canvas fits on one page, takes 20 minutes, and is updated as you learn. Every box is a hypothesis.</p>`},
+  {h:'The nine boxes',b:`<p>Problem · Customer segments · Unique value proposition · Solution · Channels · Revenue streams · Cost structure · Key metrics · Unfair advantage.</p>`},
+  {h:'Fill it in order',b:`<p>Start with Customer segments and Problem; then UVP; then Solution; then Channels, Revenue, Costs; Key metrics; Unfair advantage last — and leave it blank if you don't have one yet. Honesty beats decoration.</p>`},
+  {h:'Unfair advantage',b:`<p>Something that cannot easily be copied or bought: insider information, a community, a dataset, regulatory approval, the right expert. "First mover" and "passion" are not unfair advantages.</p>`},
+  {h:'Riskiest assumption first',b:`<p>Rank the boxes by risk and test the riskiest one next. Early on it is almost always Problem or Customer segment — not Solution.</p>`}],
+ quiz:[
+  {q:'Which box should usually be filled first?',o:['Unfair advantage','Customer segments and Problem','Revenue','Key metrics'],a:1,w:'Start from the customer.'},
+  {q:'Which is a real unfair advantage?',o:['Passion','Being first','A proprietary dataset from local operating conditions','A nice logo'],a:2,w:'Hard to copy or buy.'},
+  {q:'A lean canvas is best treated as…',o:['A finished plan','A set of hypotheses to test and update','A legal document','An investor contract'],a:1,w:'It changes as you learn.'},
+  {q:'Early-stage riskiest assumption is usually…',o:['The logo','Problem or customer segment','Office location','Payment gateway'],a:1,w:'Do people have the problem?'},
+  {q:'Key metrics should…',o:['Be vanity numbers like page views','Measure real progress: activation, retention, revenue','Be secret','Be many'],a:1,w:'Actionable metrics, not vanity.'},
+  {q:'If you have no unfair advantage yet, you should…',o:['Invent one','Leave the box blank honestly','Say "first mover"','Skip the canvas'],a:1,w:'It is fine early on.'}],
+ srs:[{q:'Lean canvas boxes?',a:'Problem, segments, UVP, solution, channels, revenue, costs, key metrics, unfair advantage.'},{q:'Unfair advantage?',a:'Something that cannot easily be copied or bought.'},{q:'Fill order?',a:'Segments and problem first; unfair advantage last.'},{q:'What to test next?',a:'The riskiest assumption, usually problem or segment early on.'}],
+ read:[{t:'Lean Canvas',s:'LEANSTACK (Ash Maurya)',u:'https://www.leanstack.com/lean-canvas'},{t:'Business Model Canvas',s:'Strategyzer',u:'https://www.strategyzer.com/library/the-business-model-canvas'},{t:'Why the Lean Start-Up Changes Everything',s:'Harvard Business Review',u:'https://hbr.org/2013/05/why-the-lean-start-up-changes-everything'}]},
+
+{id:'s05',track:'startup',title:'Market sizing: TAM, SAM, SOM',mins:25,blurb:'Size the market bottom-up so investors believe it.',
+ lab:{key:'tam',name:'TAM/SAM/SOM calculator',intro:'A bottom-up sizing for a predictive-maintenance start-up.'},
+ cards:[
+  {h:'Three circles',b:`<ul><li><b>TAM:</b> total demand if everyone who could buy did.</li><li><b>SAM:</b> the part your product and channels can serve.</li><li><b>SOM:</b> what you can realistically win in a few years.</li></ul>`},
+  {h:'Bottom-up beats top-down',b:`<p>"1% of a USD 10bn market" convinces no one. Count customers × price: 8,000 plants × 30 pumps × SAR 1,500. Show every assumption and its source.</p>`},
+  {h:'Make SOM credible',b:`<p>Rebuild SOM from your sales capacity: sales reps × meetings per month × conversion × deal size. If it does not match your SOM, one of them is wrong.</p>`},
+  {h:'Market growth',b:`<p>Investors like markets that grow on their own. Show the driver: regulation, digitisation, new capacity, population.</p>`},
+  {h:'Sources in the Kingdom',b:`<p>GASTAT (General Authority for Statistics), ministry and authority reports, industrial-city data, chambers of commerce, and listed-company reports on Tadawul. Triangulate at least two.</p>`}],
+ quiz:[
+  {q:'SOM is…',o:['Total market','Serviceable market','The share you can realistically capture','Sales overhead'],a:2,w:'Obtainable market.'},
+  {q:'Which sizing is most credible to investors?',o:['Top-down percentage of a huge market','Bottom-up count of customers × price','A guess','Competitor revenue only'],a:1,w:'Transparent assumptions.'},
+  {q:'2,000 customers × SAR 6,000 a year = TAM of…',o:['SAR 12m','SAR 1.2m','SAR 120m','SAR 3m'],a:0,w:'2,000 × 6,000 = 12,000,000.'},
+  {q:'How to check SOM?',o:['Ask friends','Rebuild it from sales capacity and conversion','Halve TAM','Copy a competitor'],a:1,w:'Bottom-up from the go-to-market plan.'},
+  {q:'SAM is smaller than TAM because…',o:['Of taxes','Your product, channels or geography cannot serve everyone','Of competitors only','Of inflation'],a:1,w:'Serviceable = reachable with your model.'},
+  {q:'A good source for Saudi statistics is…',o:['Social media','GASTAT and sector authorities','Guessing','Only foreign reports'],a:1,w:'Official data first, triangulated.'}],
+ srs:[{q:'TAM/SAM/SOM?',a:'Total, serviceable, obtainable market.'},{q:'Bottom-up sizing?',a:'Number of customers × units × price, with sourced assumptions.'},{q:'Check SOM how?',a:'Rebuild from sales capacity × conversion × deal size.'},{q:'Saudi statistics source?',a:'GASTAT plus sector authorities and listed-company reports.'}],
+ read:[{t:'General Authority for Statistics (GASTAT)',s:'Saudi Arabia',u:'https://www.stats.gov.sa/'},{t:'Market sizing',s:'HBR search',u:HBRS('market sizing startup')},{t:'Fermi problem',s:'Wikipedia',u:WIKI('Fermi_problem')}]},
+
+{id:'s06',track:'startup',title:'Business and revenue models',mins:25,blurb:'How the money flows decides almost everything else.',
+ lab:{key:'bizmodel',name:'Business-model pattern drill',intro:'Match eight businesses to their revenue model.'},
+ cards:[
+  {h:'Business model vs revenue model',b:`<p>A business model is how you create, deliver and capture value. The revenue model is the capture part: who pays, for what, how often, at what price.</p>`},
+  {h:'Common patterns',b:`<ul><li>Subscription / SaaS</li><li>Marketplace (take rate)</li><li>Transaction fees</li><li>Freemium</li><li>Razor and blade</li><li>Licensing</li><li>Advertising</li><li>Hardware + service</li></ul>`},
+  {h:'Each has its own physics',b:`<p>SaaS lives on retention. Marketplaces need liquidity on both sides and fight disintermediation. Freemium needs huge top-of-funnel and good conversion. Hardware needs margins and service attach.</p>`},
+  {h:'Recurring revenue',b:`<p>Investors pay more for predictable recurring revenue (subscriptions, contracts) than for one-off project revenue. Consulting-style service businesses are valuable but valued lower.</p>`},
+  {h:'Business Model Canvas',b:`<p>Osterwalder's nine blocks: customer segments, value propositions, channels, customer relationships, revenue streams, key resources, key activities, key partners, cost structure. Good for established models; the lean canvas suits early start-ups.</p>`}],
+ quiz:[
+  {q:'A marketplace typically earns…',o:['Subscriptions only','A take rate on transactions between buyers and sellers','Advertising only','Licences'],a:1,w:'Commission per transaction.'},
+  {q:'SaaS success depends most on…',o:['Office design','Retention (low churn)','Number of features','One big customer'],a:1,w:'Recurring revenue compounds only if customers stay.'},
+  {q:'Razor and blade means…',o:['Expensive device, cheap consumables','Cheap device, profitable consumables','Free everything','Licences'],a:1,w:'Lock-in through consumables.'},
+  {q:'Why do investors value recurring revenue more?',o:['It is larger','It is predictable and compounds','Tax','Fashion'],a:1,w:'Predictability lowers risk.'},
+  {q:'Disintermediation threatens…',o:['SaaS','Marketplaces','Hardware','Licensing'],a:1,w:'Buyers and sellers bypass the platform.'},
+  {q:'Freemium needs…',o:['Few users','Large top-of-funnel and good conversion to paid','No product','High prices'],a:1,w:'Most free users never pay.'}],
+ srs:[{q:'Eight common revenue models?',a:'Subscription/SaaS, marketplace, transaction fee, freemium, razor-blade, licensing, advertising, hardware+service.'},{q:'Marketplace challenges?',a:'Two-sided liquidity and disintermediation.'},{q:'Why recurring revenue?',a:'Predictable, compounding, valued higher.'},{q:'Business Model Canvas blocks?',a:'Segments, value props, channels, relationships, revenue, resources, activities, partners, costs.'}],
+ read:[{t:'Business Model Canvas',s:'Strategyzer',u:'https://www.strategyzer.com/library/the-business-model-canvas'},{t:'Reinventing Your Business Model',s:'Harvard Business Review, 2008',u:'https://hbr.org/2008/12/reinventing-your-business-model'},{t:'Business models',s:'HBR search',u:HBRS('business model innovation')}]},
+
+{id:'s07',track:'startup',title:'Unit economics',mins:30,blurb:'Does each customer make money? LTV, CAC and payback.',
+ lab:{key:'ltv',name:'LTV / CAC calculator',intro:'Find the lever that makes the unit economics work.'},
+ cards:[
+  {h:'Unit economics',b:`<p>Profit or loss on one unit — a customer, an order, a delivery — before fixed costs. If units lose money, growth makes losses bigger.</p>`},
+  {h:'CAC',b:`<div class="formula">CAC = sales and marketing spend ÷ new customers acquired</div><p>Include salaries of sales staff, not just ads. Separate paid from organic channels.</p>`},
+  {h:'LTV',b:`<div class="formula">LTV = ARPU × gross margin ÷ churn rate</div><p>Use gross margin, not revenue. Churn is the biggest driver: 5% monthly churn means a 20-month average life; 2.5% means 40.</p>`},
+  {h:'Rules of thumb',b:`<p>LTV/CAC ≥ 3 and CAC payback ≤ 12 months for SaaS-like businesses. Too high a ratio can mean under-investing in growth.</p>`},
+  {h:'Contribution per order',b:`<p>For delivery, e-commerce and marketplaces, check contribution per order: price − product cost − delivery − payment − returns − support. Many start-ups discover it is negative only after scaling.</p>`}],
+ quiz:[
+  {q:'ARPU SAR 200/month, margin 60%, churn 4%. LTV?',o:['SAR 3,000','SAR 5,000','SAR 120','SAR 4,800'],a:0,w:'200 × 0.6 ÷ 0.04 = 3,000.'},
+  {q:'LTV 3,000, CAC 1,500. Ratio?',o:['0.5','2','3','4.5'],a:1,w:'Below the 3× rule of thumb.'},
+  {q:'Halving churn from 4% to 2%…',o:['Has no effect','Doubles LTV','Halves LTV','Raises CAC'],a:1,w:'Lifetime doubles.'},
+  {q:'CAC should include…',o:['Only ad spend','All sales and marketing costs, including salaries','Product costs','Rent only'],a:1,w:'Fully loaded.'},
+  {q:'CAC 2,400, monthly gross profit per customer 175. Payback?',o:['about 14 months','2 months','24 months','5 months'],a:0,w:'2,400 ÷ 175 ≈ 13.7.'},
+  {q:'If unit economics are negative, growth…',o:['Fixes them automatically','Makes losses bigger','Is irrelevant','Lowers churn'],a:1,w:'Fix the unit first.'}],
+ srs:[{q:'LTV formula?',a:'ARPU × gross margin ÷ churn.'},{q:'CAC?',a:'Total sales & marketing spend ÷ new customers.'},{q:'Rules of thumb?',a:'LTV/CAC ≥ 3; payback ≤ 12 months.'},{q:'Biggest LTV lever?',a:'Churn: halving it doubles lifetime value.'}],
+ read:[{t:'SaaS Metrics 2.0',s:'For Entrepreneurs (David Skok)',u:'https://www.forentrepreneurs.com/saas-metrics-2/'},{t:'Customer lifetime value',s:'HBR search',u:HBRS('customer lifetime value')},{t:'Unit economics',s:'Wikipedia',u:WIKI('Unit_economics')}]},
+
+{id:'s08',track:'startup',title:'MVP and experiments',mins:30,blurb:'Build the smallest thing that tests the riskiest assumption.',
+ lab:{key:'experiment',name:'Experiment card + sample size',intro:'Design a test with a clear pass/fail line, and see how many people you need.'},
+ cards:[
+  {h:'Build–measure–learn',b:`<p>Eric Ries: the unit of progress is validated learning. Each loop should test a hypothesis as cheaply and quickly as possible.</p>`},
+  {h:'MVP types',b:`<ul><li><b>Landing page / smoke test:</b> measure sign-ups or deposits.</li><li><b>Concierge:</b> deliver the service manually.</li><li><b>Wizard of Oz:</b> looks automated, humans behind it.</li><li><b>Single-feature product.</b></li><li><b>Pilot</b> with one paying customer.</li></ul>`},
+  {h:'Write the pass line first',b:`<p>"We are right if ≥ 10% of plant managers pay a SAR 500 deposit." Deciding the threshold afterwards invites self-deception.</p>`},
+  {h:'Pivot or persevere',b:`<p>If experiments keep missing, change one element of the model: segment, problem, channel, revenue model or technology. A pivot keeps what you learned.</p>`},
+  {h:'Statistics with small numbers',b:`<p>Early start-ups rarely have the traffic for statistically significant A/B tests. Look for strong qualitative signals and big effects; use proper tests once traffic grows.</p>`}],
+ quiz:[
+  {q:'An MVP is…',o:['A cheap version of the final product','The smallest thing that tests the riskiest assumption','A beta release','A prototype for investors'],a:1,w:'Learning, not product.'},
+  {q:'A concierge MVP…',o:['Is fully automated','Delivers the service manually to learn','Is a hotel app','Uses AI'],a:1,w:'Do things that don\'t scale.'},
+  {q:'Why set the pass threshold before running the test?',o:['Tradition','To avoid rationalising any result as success','Investors require it','To save time'],a:1,w:'Pre-commitment keeps you honest.'},
+  {q:'A pivot means…',o:['Giving up','Changing one element of the model based on learning','Raising money','Hiring'],a:1,w:'Structured change.'},
+  {q:'Detecting 10% → 15% conversion at 95%/80% needs roughly…',o:['50 per group','about 680 per group','10,000 per group','5 per group'],a:1,w:'Small differences need big samples.'},
+  {q:'With little traffic, early start-ups should…',o:['Run many small A/B tests','Look for big effects and strong commitments','Skip testing','Buy traffic only'],a:1,w:'Use signals that need small samples.'}],
+ srs:[{q:'Build–measure–learn unit of progress?',a:'Validated learning.'},{q:'Five MVP types?',a:'Smoke test, concierge, Wizard of Oz, single feature, paid pilot.'},{q:'Experiment card fields?',a:'We believe… we will… measure… we are right if…'},{q:'Pivot?',a:'Change one model element (segment, problem, channel, revenue, tech) while keeping learning.'}],
+ read:[{t:'The Lean Startup',s:'Eric Ries',u:'https://theleanstartup.com/principles'},{t:'The Discipline of Business Experimentation',s:'Harvard Business Review, 2014',u:'https://hbr.org/2014/12/the-discipline-of-business-experimentation'},{t:'Do Things That Don\'t Scale',s:'Paul Graham',u:'http://paulgraham.com/ds.html'}]},
+
+{id:'s09',track:'startup',title:'Go-to-market',mins:30,blurb:'Channels, funnels and the first hundred customers.',
+ lab:{key:'funnel',name:'Funnel model',intro:'See how conversion rates drive customers and CAC.'},
+ cards:[
+  {h:'Pick a beachhead',b:`<p>Win one narrow segment completely before expanding (Geoffrey Moore's beachhead). For an industrial start-up: one sector, one region, one buyer type.</p>`},
+  {h:'Channel–product fit',b:`<p>Price and complexity decide channels: low-price self-serve products need digital channels; high-value B2B needs direct sales, pilots and references. Mismatch is a common cause of failure.</p>`},
+  {h:'The funnel',b:`<p>Awareness → interest → sign-up → activation → paid → retained → referral. Measure each conversion; fix the leakiest step first.</p>`},
+  {h:'B2B in Saudi Arabia',b:`<p>Expect longer cycles with large enterprises and government: procurement registration, local-content scoring, pilots. Partners (distributors, integrators) can open doors but take margin.</p>`},
+  {h:'Founder-led sales',b:`<p>Founders should sell the first customers themselves: it is the fastest way to learn objections and pricing. Hire sales only when the playbook is repeatable.</p>`}],
+ quiz:[
+  {q:'A beachhead market is…',o:['The largest market','A narrow segment you can dominate first','A tourist market','The last market'],a:1,w:'Focus to win.'},
+  {q:'A SAR 50/month self-serve app should mainly use…',o:['Field sales','Digital self-serve channels','Government tenders','Trade fairs only'],a:1,w:'Low price can\'t pay for sales people.'},
+  {q:'20,000 visitors, 4% sign up, 40% activate, 20% pay. Paying customers?',o:['64','320','800','160'],a:0,w:'20,000 × 0.04 × 0.4 × 0.2 = 64.'},
+  {q:'Fix which funnel step first?',o:['Top always','The leakiest step','The last always','None'],a:1,w:'Biggest gain per effort.'},
+  {q:'When should a start-up hire its first sales people?',o:['Day one','When the founders have a repeatable playbook','Never','After Series C'],a:1,w:'Founder-led sales first.'},
+  {q:'Selling to government in KSA often requires…',o:['Nothing special','Registration, local-content considerations and pilots','Only a website','A foreign partner always'],a:1,w:'Plan for longer cycles.'}],
+ srs:[{q:'Beachhead?',a:'Narrow segment you can win completely first.'},{q:'Channel–product fit?',a:'Channel cost must suit product price and complexity.'},{q:'Funnel stages?',a:'Awareness, interest, sign-up, activation, paid, retained, referral.'},{q:'When to hire sales?',a:'After founder-led sales produce a repeatable playbook.'}],
+ read:[{t:'Crossing the Chasm',s:'Geoffrey Moore (summary)',u:WIKI('Crossing_the_Chasm')},{t:'Go-to-market strategy',s:'HBR search',u:HBRS('go-to-market startup')},{t:'Y Combinator Startup Library',s:'Y Combinator',u:'https://www.ycombinator.com/library'}]},
+
+{id:'s10',track:'startup',title:'Financial model and runway',mins:35,blurb:'Burn, runway, and whether you are default alive.',
+ lab:{key:'runway',name:'Runway model with hiring plan',intro:'Project cash month by month and extend the runway.'},
+ cards:[
+  {h:'Burn and runway',b:`<div class="formula">Net burn = cash out − cash in (per month) · Runway = cash ÷ net burn</div><p>Use net burn, but watch gross burn: revenue can disappear faster than costs.</p>`},
+  {h:'Default alive or dead',b:`<p>Paul Graham: assuming costs stay as planned and revenue keeps growing at the current rate, will you reach profitability before the money runs out? Know the answer every month.</p>`},
+  {h:'Build a simple model',b:`<p>Drivers, not plugs: customers × price; hires × salary; marketing → customers via CAC. Monthly for 24 months. Three scenarios: base, downside, upside.</p>`},
+  {h:'Fundraising timing',b:`<p>Raising usually takes 3–6 months or more. Start with 9–12 months of runway left; investors smell desperation.</p>`},
+  {h:'Hiring is the big lever',b:`<p>People are most of the cost. Tie hires to milestones (e.g., second sales hire after 10 paying customers) rather than to the calendar.</p>`}],
+ quiz:[
+  {q:'Cash SAR 2.4m, net burn SAR 200k/month. Runway?',o:['12 months','24 months','6 months','2.4 months'],a:0,w:'2.4m ÷ 200k.'},
+  {q:'"Default alive" means…',o:['The company has investors','On current trends it reaches profit before cash runs out','The founders are optimistic','It is profitable today'],a:1,w:'Paul Graham\'s test.'},
+  {q:'When to start fundraising?',o:['With 1 month left','With about 9–12 months of runway left','After running out','Never'],a:1,w:'Raising takes time.'},
+  {q:'A driver-based model links revenue to…',o:['Guesses','Customers × price, with customers from the funnel','Last year +10%','Competitor revenue'],a:1,w:'Transparent and testable.'},
+  {q:'The biggest cost lever in most start-ups is…',o:['Office coffee','Hiring','Software subscriptions','Marketing materials'],a:1,w:'Salaries dominate.'},
+  {q:'Net burn vs gross burn?',o:['Same thing','Net = outflows − inflows; gross = total outflows','Gross is smaller','Net ignores revenue'],a:1,w:'Watch both.'}],
+ srs:[{q:'Runway?',a:'Cash ÷ monthly net burn.'},{q:'Default alive?',a:'On current trajectory, profitable before cash runs out.'},{q:'When to raise?',a:'With 9–12 months of runway left.'},{q:'Biggest cost lever?',a:'Hiring; tie hires to milestones.'}],
+ read:[{t:'Default Alive or Default Dead?',s:'Paul Graham',u:'http://paulgraham.com/aord.html'},{t:'Startup financial modelling',s:'HBR search',u:HBRS('startup cash burn')},{t:'Y Combinator Startup Library',s:'Y Combinator',u:'https://www.ycombinator.com/library'}]},
+
+{id:'s11',track:'startup',title:'Fundraising stages and instruments',mins:30,blurb:'Pre-seed to Series A; SAFEs, convertibles and priced rounds.',
+ lab:{key:'valuation',name:'Pre/post-money and SAFE calculator',intro:'Compute ownership and see how a SAFE converts.'},
+ cards:[
+  {h:'Stages',b:`<p>Pre-seed (founders, friends, angels) → Seed (product–market fit search) → Series A (scale a working model) → B, C… Each stage buys evidence that de-risks the next.</p>`},
+  {h:'Pre- and post-money',b:`<div class="formula">Post-money = Pre-money + New investment · Investor % = Investment ÷ Post-money</div>`},
+  {h:'SAFEs and convertible notes',b:`<p>Instruments that convert into shares at a future priced round, usually with a valuation <b>cap</b> and/or <b>discount</b>. Quick and cheap, but they stack up dilution founders often underestimate. Notes are debt with interest and maturity; SAFEs are not.</p>`},
+  {h:'Who invests',b:`<p>Angels and angel networks, accelerators, VC funds (many in the Kingdom backed by fund-of-funds programmes), corporate VCs, and government funds. Choose investors for value beyond money: network, sector knowledge, follow-on capacity.</p>`},
+  {h:'Due diligence',b:`<p>Expect checks on company registration, cap table, contracts, IP ownership, financials and the founders. Clean paperwork from day one saves deals.</p>`}],
+ quiz:[
+  {q:'Pre-money SAR 12m, investment SAR 3m. Investor %?',o:['25%','20%','15%','33%'],a:1,w:'3 ÷ 15.'},
+  {q:'A SAFE converts at…',o:['A fixed date','The next priced round, at the better of cap or discount','Never','The current valuation'],a:1,w:'Cap and/or discount protect early risk.'},
+  {q:'A convertible note differs from a SAFE because…',o:['It never converts','It is debt with interest and maturity','It has no cap','It is equity today'],a:1,w:'Notes are debt.'},
+  {q:'Seed money is typically used to…',o:['Buy a building','Search for product–market fit','Pay dividends','IPO'],a:1,w:'Find what works.'},
+  {q:'Cap SAR 8m vs discounted round price equivalent to SAR 9.6m. SAFE converts at…',o:['SAR 8m','SAR 9.6m','SAR 12m','Average'],a:0,w:'The lower effective valuation.'},
+  {q:'Good investors bring…',o:['Only money','Network, expertise and follow-on capacity','Control','Office space'],a:1,w:'Smart money.'}],
+ srs:[{q:'Post-money?',a:'Pre-money + investment.'},{q:'Investor ownership?',a:'Investment ÷ post-money.'},{q:'SAFE conversion?',a:'At the next priced round using the better of cap or discount.'},{q:'Note vs SAFE?',a:'Note is debt (interest, maturity); SAFE is not.'}],
+ read:[{t:'Y Combinator SAFE documents',s:'Y Combinator',u:'https://www.ycombinator.com/documents'},{t:'Venture capital',s:'HBR search',u:HBRS('venture capital fundraising')},{t:'Saudi Venture Capital Company',s:'SVC',u:'https://svc.com.sa/'}]},
+
+{id:'s12',track:'startup',title:'Cap tables and dilution',mins:30,blurb:'Who owns what after each round — and the option-pool shuffle.',
+ lab:{key:'captable',name:'Multi-round cap table',intro:'Model a seed and Series A with an option pool.'},
+ cards:[
+  {h:'The cap table',b:`<p>A record of who owns what: founders, employees (options), investors, by class of share. Keep it clean and current from day one.</p>`},
+  {h:'Dilution',b:`<p>Each round issues new shares, so everyone's percentage falls. Dilution is fine if the company's value rises faster: 60% of a SAR 50m company beats 100% of SAR 2m.</p>`},
+  {h:'Option pool',b:`<p>Shares reserved for future employees (often 10–15%). Investors usually require it to be created in the pre-money, so it dilutes founders only — the "option-pool shuffle".</p>`},
+  {h:'Vesting',b:`<p>Founder and employee shares typically vest over four years with a one-year cliff, so someone who leaves early does not keep a large stake. Investors will insist on it.</p>`},
+  {h:'Co-founder splits',b:`<p>Split based on future contribution and commitment, not just the idea. Equal splits are common but should reflect reality. Put vesting on everyone, including yourself.</p>`}],
+ quiz:[
+  {q:'Founders own 70% before a round that sells 20% of the post-money. After?',o:['56%','50%','70%','64%'],a:0,w:'70% × 0.8.'},
+  {q:'Creating the option pool in the pre-money dilutes…',o:['Only new investors','Only existing holders (founders)','Everyone equally','Nobody'],a:1,w:'The option-pool shuffle.'},
+  {q:'A one-year cliff means…',o:['No shares ever','Nothing vests until month 12, then a year\'s worth at once','Shares vest daily from day one','Shares expire'],a:1,w:'Protects against early departures.'},
+  {q:'Dilution is acceptable when…',o:['Never','The value of the remaining stake rises','Investors are friends','The pool is small'],a:1,w:'Smaller share of a bigger pie.'},
+  {q:'Typical vesting period?',o:['6 months','4 years','10 years','None'],a:1,w:'With a 1-year cliff.'},
+  {q:'Co-founder equity should mainly reflect…',o:['Who had the idea','Future contribution and commitment','Age','Who pays for dinner'],a:1,w:'Ideas are cheap; execution is not.'}],
+ srs:[{q:'Option-pool shuffle?',a:'Pool created pre-money, diluting only existing holders.'},{q:'Standard vesting?',a:'4 years with a 1-year cliff.'},{q:'Dilution after selling x% of post-money?',a:'Existing % × (1 − x).'},{q:'Co-founder split basis?',a:'Future contribution and commitment, with vesting for all.'}],
+ read:[{t:'Cap table',s:'Wikipedia',u:WIKI('Capitalization_table')},{t:'Founder equity and vesting',s:'HBR search',u:HBRS('founder equity split')},{t:'Y Combinator Startup Library',s:'Y Combinator',u:'https://www.ycombinator.com/library'}]},
+
+{id:'s13',track:'startup',title:'Term sheets',mins:30,blurb:'The terms that matter more than the valuation.',
+ lab:{key:'waterfall',name:'Liquidation-preference waterfall',intro:'See who gets what at different exit values.'},
+ cards:[
+  {h:'Economics and control',b:`<p>Term sheets cover <b>economics</b> (valuation, liquidation preference, anti-dilution, option pool) and <b>control</b> (board seats, protective provisions, information rights).</p>`},
+  {h:'Liquidation preference',b:`<p>Investors get their money back (1×) before common shareholders in a sale. <b>Non-participating</b>: the larger of the preference or their share. <b>Participating</b>: preference first, then their share of the rest. 1× non-participating is the founder-friendly norm.</p>`},
+  {h:'Anti-dilution',b:`<p>Protects investors if a later round is at a lower price. Broad-based weighted average is standard; full ratchet is harsh on founders.</p>`},
+  {h:'Board and protective provisions',b:`<p>Who sits on the board decides who controls hiring the CEO, budgets and sales. Protective provisions give investors vetoes on major actions. Keep founder control as long as is reasonable.</p>`},
+  {h:'Negotiate the whole package',b:`<p>A high valuation with a 2× participating preference can leave founders with less than a lower valuation with clean terms. Model the waterfall at realistic exit values and get a good lawyer.</p>`}],
+ quiz:[
+  {q:'1× non-participating preference: investor put in 10, owns 25%, exit 30. Investor gets…',o:['10','7.5','17.5','30'],a:0,w:'Max(10, 7.5) = 10.'},
+  {q:'Same but participating. Investor gets…',o:['10','15','7.5','17.5'],a:1,w:'10 + 25% × 20 = 15.'},
+  {q:'Which anti-dilution clause is harshest for founders?',o:['Broad-based weighted average','Full ratchet','None','Narrow-based'],a:1,w:'It reprices all earlier shares to the new low price.'},
+  {q:'Protective provisions give investors…',o:['Dividends','Veto rights over major decisions','Board chair','Salaries'],a:1,w:'Control terms.'},
+  {q:'Preferences matter most in…',o:['Huge exits','Modest exits','IPOs only','Never'],a:1,w:'In huge exits, investors convert to common anyway.'},
+  {q:'The founder-friendly market norm is…',o:['3× participating','1× non-participating','No preference ever','2× participating'],a:1,w:'Standard in healthy markets.'}],
+ srs:[{q:'Non-participating vs participating?',a:'Non-part: max(preference, pro-rata share). Part: preference + pro-rata share of remainder.'},{q:'Harshest anti-dilution?',a:'Full ratchet.'},{q:'Term-sheet categories?',a:'Economics and control.'},{q:'When do preferences bite?',a:'Modest exits.'}],
+ read:[{t:'Venture Deals',s:'Brad Feld & Jason Mendelson',u:'https://www.venturedeals.com/'},{t:'Term sheets',s:'HBR search',u:HBRS('term sheet venture capital')},{t:'Liquidation preference',s:'Wikipedia',u:WIKI('Liquidation_preference')}]},
+
+{id:'s14',track:'startup',title:'The Saudi ecosystem',mins:30,blurb:'Who does what for founders in the Kingdom.',
+ lab:{key:'ecosystem',name:'Funding and support navigator',intro:'Build a starting map of bodies relevant to your venture, then check who does what.'},
+ cards:[
+  {h:'A deliberately built ecosystem',b:`<p>Since 2016 the Kingdom has built an entrepreneurship ecosystem through dedicated authorities, government-backed funds and programmes, alongside a fast-growing private VC and angel community. Programmes evolve quickly: always check the official source.</p>`},
+  {h:'Support and finance bodies',b:`<ul><li><b>Monsha'at:</b> the SME authority, front door to many programmes.</li><li><b>Kafalah:</b> loan guarantees for SMEs.</li><li><b>Social Development Bank:</b> financing for small and emerging businesses.</li><li><b>SIDF:</b> industrial project financing.</li></ul>`},
+  {h:'Equity and innovation',b:`<ul><li><b>SVC:</b> invests in private-capital funds (VC, PE, venture debt) and co-invests.</li><li><b>RDIA:</b> national research, development and innovation funding.</li><li>University programmes such as KAUST's for deep tech.</li><li>A growing base of private VCs, angels and corporate VCs.</li></ul>`},
+  {h:'Licensing and regulation',b:`<p>MISA handles investment licences (including for foreign founders); the Ministry of Commerce handles commercial registration; sector regulators matter for fintech (SAMA sandbox), health, education and telecoms.</p>`},
+  {h:'How to use it well',b:`<p>Public programmes are a complement, not a business model. Strong founders use them for non-dilutive capital, credibility and access, while proving customers will pay.</p>`}],
+ quiz:[
+  {q:'Which body provides SME loan guarantees?',o:['SVC','Kafalah','RDIA','MISA'],a:1,w:'Helps SMEs access bank finance.'},
+  {q:'SVC mainly…',o:['Issues licences','Invests in private-capital funds and co-invests','Gives research grants','Regulates banks'],a:1,w:'A government-backed fund investor.'},
+  {q:'A foreign founder setting up in KSA needs a licence from…',o:['Kafalah','MISA','SIDF','SVC'],a:1,w:'Ministry of Investment.'},
+  {q:'A manufacturing start-up building a plant may seek long-term financing from…',o:['SIDF','Misk','RDIA','Kafalah only'],a:0,w:'Industrial development fund.'},
+  {q:'Fintech start-ups often test products through…',o:['The SAMA regulatory sandbox','MISA','SIDF','Monsha\'at only'],a:0,w:'Sandbox lets them test under supervision.'},
+  {q:'Best way to treat public programmes?',o:['As the business model','As a complement while proving customers will pay','Ignore them','Only for marketing'],a:1,w:'Customers first.'}],
+ srs:[{q:'Monsha\'at?',a:'SME General Authority: front door to SME programmes.'},{q:'SVC?',a:'Government-backed investor in private-capital funds (VC, PE, debt) that also co-invests.'},{q:'Kafalah?',a:'SME loan-guarantee programme.'},{q:'RDIA?',a:'Research, Development and Innovation Authority: RDI funding.'}],
+ read:[{t:'Monsha\'at',s:'SME General Authority',u:'https://www.monshaat.gov.sa/'},{t:'Saudi Venture Capital Company',s:'SVC',u:'https://svc.com.sa/'},{t:'Research, Development and Innovation Authority',s:'RDIA',u:'https://www.rdia.gov.sa/'}]},
+
+{id:'s15',track:'startup',title:'The pitch',mins:30,blurb:'Ten slides, three minutes, one clear ask.',
+ lab:{key:'pitch',name:'Deck checklist + timed pitch',intro:'Score your deck structure, then pitch out loud against the clock.'},
+ cards:[
+  {h:'The story',b:`<p>A pitch is a story: a painful problem, a better way, proof it works, why this team, and what the money will achieve. Slides support the story; they are not the story.</p>`},
+  {h:'Ten slides',b:`<p>Problem · Solution · Why now · Market · Product · Traction · Business model · Competition · Team · Ask. Ten slides, readable in three minutes.</p>`},
+  {h:'Traction beats claims',b:`<p>Revenue, growth rate, retention, pilots, letters of intent, waiting lists. One real number beats a page of adjectives. Show the trend, not just the total.</p>`},
+  {h:'The ask',b:`<p>How much, what for, and which milestones it buys: "SAR 4m for 18 months to reach SAR 3m ARR and 40 plant customers, setting up Series A."</p>`},
+  {h:'Answer like a consultant',b:`<p>Answer first, then the reason. If you don't know, say so and say how you'll find out. Pyramid principle and pitching are the same skill.</p>`}],
+ quiz:[
+  {q:'The strongest traction evidence is…',o:['Adjectives','Real numbers: revenue, retention, signed pilots','A long feature list','Press mentions'],a:1,w:'Evidence beats claims.'},
+  {q:'A good ask states…',o:['Only the amount','Amount, use of funds and milestones','A valuation only','Nothing specific'],a:1,w:'What the money buys.'},
+  {q:'Which slide is most often missing or weak?',o:['Team','Why now and competition','Title','Thank-you'],a:1,w:'Investors notice.'},
+  {q:'If asked something you don\'t know…',o:['Bluff','Say so and explain how you\'ll find out','Change the subject','End the meeting'],a:1,w:'Honesty builds trust.'},
+  {q:'Slides should…',o:['Be read aloud','Support the story you tell','Contain all details','Have 40 bullets'],a:1,w:'You are the pitch.'},
+  {q:'A competition slide should be…',o:['"We have no competitors"','An honest map showing your edge','Omitted','Negative about rivals'],a:1,w:'"No competitors" signals no market or no research.'}],
+ srs:[{q:'Ten pitch slides?',a:'Problem, solution, why now, market, product, traction, model, competition, team, ask.'},{q:'A good ask?',a:'Amount, use of funds, milestones it buys.'},{q:'Best traction?',a:'Real numbers and trends: revenue, retention, pilots.'},{q:'"We have no competitors" signals?',a:'No market or no research.'}],
+ read:[{t:'How to pitch your startup',s:'Y Combinator Startup Library',u:'https://www.ycombinator.com/library'},{t:'The Necessary Art of Persuasion',s:'Harvard Business Review',u:'https://hbr.org/1998/05/the-necessary-art-of-persuasion'},{t:'Pitch decks',s:'HBR search',u:HBRS('pitch deck investors')}]}
+]);
+
 /* ================= Engineering Refresher labs ================= */
 /* generic classification drill */
 function classifyLab(el,done,cfg){let html=`<p class="note">${cfg.intro||''}</p>`+cfg.items.map((it,i)=>`<div style="margin:8px 0"><div style="font-size:.93rem">${it[0]}</div><select class="tin" data-c="${i}" style="margin-top:4px"><option value="">— choose —</option>${cfg.cats.map(c=>`<option>${c}</option>`).join('')}</select></div>`).join('')+`<div class="ctl"><button class="sbtn" id="cc">Check</button></div><div id="cm"></div>`;el.innerHTML=html;
@@ -2105,6 +2425,126 @@ LABS.stats=(el,m,done)=>{const C=CUST('stats');if(!C.d)C.d='2,24\n3,28\n4,33\n5,
    $('#ao',el).innerHTML=kv([['Conversion A',pct(pa,2)],['Conversion B',pct(pb,2)],['Relative lift',pct((pb-pa)/pa,1)],['z-score',fmt(z,2)]])};
  $('#rd',el).oninput=reg;$$('#va,#ca,#vb,#cb',el).forEach(x=>x.oninput=ab);reg();ab();
  $('#pc',el).onclick=()=>{const g=parseFloat($('#pv',el).value);const ok=Math.abs(g-p)<=Math.max(.003,p*.1);$('#pm',el).innerHTML=`<div class="readout ${ok?'ok':'bad'}"><b>${ok?'Correct':'p ≈ '+fmt(p,3)}</b> — ${p<.05?'significant at 95%: unlikely to be chance alone.':'not significant at 95%: the lift could be noise. Run longer or test a bigger change.'} Two-proportion z-test: z = (p_B − p_A) / √(p(1−p)(1/n_A + 1/n_B)).</div>`;if(ok)done()}};
+
+/* ================= Entrepreneurship labs ================= */
+/* generic multi-field canvas builder, saved per profile */
+function canvasLab(el,done,key,cfg){const C=CUST(key);C.f=C.f||{};const draw=()=>{el.innerHTML=`<p class="note">${cfg.intro}</p>${cfg.ex?`<div class="ctl"><button class="sbtn alt sm" id="cx">Load an example</button></div>`:''}<div class="grid ${cfg.cols||'g3'}">${cfg.fields.map(([k,l,h])=>`<div class="card" style="box-shadow:none;margin:0;padding:12px"><label class="f" style="margin-top:0"><b>${l}</b>${h?' — '+h:''}</label><textarea data-k="${k}" style="min-height:84px">${esc(C.f[k]||'')}</textarea></div>`).join('')}</div><div class="ctl"><button class="sbtn" id="cs">Save</button><button class="sbtn alt" id="cc">Copy as text</button></div><div id="cm"></div>`;
+  $$('textarea[data-k]',el).forEach(t=>t.oninput=()=>{C.f[t.dataset.k]=t.value});
+  const cx=$('#cx',el);if(cx)cx.onclick=()=>{C.f=Object.assign({},cfg.ex);save();draw()};
+  $('#cc',el).onclick=()=>{try{navigator.clipboard.writeText(cfg.fields.map(([k,l])=>l+':\n'+(C.f[k]||'')).join('\n\n'));toast('Copied')}catch(e){}};
+  $('#cs',el).onclick=()=>{save();const filled=cfg.fields.filter(([k])=>(C.f[k]||'').trim().length>=8).length;const ok=filled>=cfg.fields.length;$('#cm',el).innerHTML=`<div class="readout ${ok?'ok':''}">${ok?'<b>Saved.</b> '+cfg.check:`Fill every box with something specific (${filled}/${cfg.fields.length} done).`}</div>`;if(ok)done()}};draw()}
+
+/* s01 — opportunity scoring */
+const OPC=[['Pain severity',3],['Market size',2],['Willingness to pay',3],['Founder–market fit',2],['Competition (5 = little)',1],['Regulatory ease (5 = easy)',1]];
+LABS.oppscore=(el,m,done)=>{const C=CUST('opp');if(!C.i)C.i=[{n:'',s:[3,3,3,3,3,3]},{n:'',s:[3,3,3,3,3,3]},{n:'',s:[3,3,3,3,3,3]}];
+ const sc=s=>s.reduce((a,v,j)=>a+v*OPC[j][1],0)/OPC.reduce((a,c)=>a+5*c[1],0)*100;
+ const draw=()=>{el.innerHTML=`<p class="note">Write up to three business ideas (yours, or problems you have seen at work or in Saudi industry). Score each criterion 1–5. Weights in brackets reflect what matters most early on: a painful problem people will pay to solve.</p><div class="grid g3">${C.i.map((it,i)=>`<div class="card" style="box-shadow:none;margin:0"><input class="tin" data-n="${i}" value="${esc(it.n)}" placeholder="Idea ${i+1}">${OPC.map((c,j)=>`<div style="margin-top:6px"><div class="row" style="font-size:.8rem"><span>${c[0]} (×${c[1]})</span><span class="spacer"></span><b>${it.s[j]}</b></div><input type="range" min="1" max="5" value="${it.s[j]}" data-i="${i}" data-j="${j}" style="width:100%"></div>`).join('')}<div class="big" style="margin-top:8px">${fmt(sc(it.s))}<span class="note">/100</span></div></div>`).join('')}</div><div class="ctl"><button class="sbtn" id="sv">Rank my ideas</button></div><div id="om"></div>`;
+  $$('[data-n]',el).forEach(x=>x.onchange=()=>{C.i[+x.dataset.n].n=x.value;save()});$$('input[type=range]',el).forEach(x=>x.oninput=()=>{C.i[+x.dataset.i].s[+x.dataset.j]=+x.value;save();draw()});
+  $('#sv',el).onclick=()=>{const named=C.i.filter(x=>x.n.trim());if(named.length<2){toast('Name at least two ideas');return}const r=named.slice().sort((a,b)=>sc(b.s)-sc(a.s));$('#om',el).innerHTML=`<div class="readout ok"><b>Top idea: ${esc(r[0].n)} (${fmt(sc(r[0].s))}).</b> A score is a hypothesis, not a verdict. Your next step is ten customer interviews to test the two criteria you scored most generously.</div>`;done()}};draw()};
+
+/* s02 — Mom Test drill */
+LABS.momtest=(el,m,done)=>classifyLab(el,done,{intro:'Customer interviews fail when people are polite. Which questions produce reliable evidence?',cats:['Good question','Bad question'],
+ items:[['"Would you use an app that helps you schedule maintenance?"','Bad question','hypothetical and leading: people say yes to be nice'],['"Tell me about the last time a pump failed unexpectedly. What happened?"','Good question','specific past behaviour'],['"How much would you pay for this?"','Bad question','opinions about future spending are unreliable'],['"What do you use today to track maintenance, and what does it cost you?"','Good question','current solution and real spend'],['"Do you think this is a good idea?"','Bad question','fishing for compliments'],['"How much time did your team spend on that last month?"','Good question','quantifies the pain with facts'],['"Who else is involved when you buy a solution like this?"','Good question','reveals the buying process'],['"Wouldn\'t it be great if downtime were zero?"','Bad question','leading; everyone agrees']],
+ why:'The Mom Test (Fitzpatrick): talk about their life, not your idea; ask about specifics in the past, not opinions about the future; talk less and listen more. Commitments (time, money, introductions) are the real signal.'});
+
+/* s03 — value proposition canvas */
+LABS.vpc=(el,m,done)=>canvasLab(el,done,'vpc',{intro:'Customer profile on the left, value map on the right. Fit means your pain relievers and gain creators address the pains and gains that matter most.',cols:'g2',
+ fields:[['jobs','Customer jobs','what they are trying to get done'],['prod','Products & services','what you offer'],['pains','Pains','frustrations, risks, costs'],['rel','Pain relievers','how you remove specific pains'],['gains','Gains','outcomes they want'],['gc','Gain creators','how you create those gains']],
+ ex:{jobs:'Plant maintenance manager: keep 40 pumps running; report uptime monthly; stay within budget.',prod:'Sensor kit + predictive-maintenance dashboard + monthly reliability review.',pains:'Unplanned failures stop production (SAR 20k/hour); reactive overtime; no early warning.',rel:'Alerts 1–2 weeks before likely failure; ranked list of pumps at risk.',gains:'Predictable schedule; credit from management for uptime; lower spare-parts stock.',gc:'Uptime report auto-generated for management; spare parts ordered just in time.'},
+ check:'Test fit: for each top pain, can you point to a specific reliever? If a reliever has no matching pain, it is a feature nobody asked for.'});
+
+/* s04 — lean canvas */
+LABS.leancanvas=(el,m,done)=>canvasLab(el,done,'lean',{intro:'Ash Maurya\'s lean canvas: one page, nine boxes, every box a hypothesis to test. Fill it for your top idea from mission 1.',
+ fields:[['prob','Problem','top 3'],['seg','Customer segments','early adopters first'],['uvp','Unique value proposition','one clear message'],['sol','Solution','top 3 features'],['ch','Channels','path to customers'],['rev','Revenue streams','model and price'],['cost','Cost structure','fixed and variable'],['met','Key metrics','what you will track'],['adv','Unfair advantage','cannot be easily copied']],
+ ex:{prob:'1) Unplanned pump failures in mid-size plants 2) No affordable monitoring 3) Maintenance data on paper',seg:'Mid-size food, water and chemical plants in the Eastern Province; early adopters: plants with recent costly failures',uvp:'Know which pump will fail next — two weeks before it does',sol:'Clip-on vibration sensors; failure-risk ranking; WhatsApp alerts',ch:'Direct sales via plant engineers; pump distributors; industrial-city associations',rev:'SAR 1,500 per pump per year subscription; installation fee',cost:'Sensors (SAR 400/unit), cloud, 3 engineers, sales',met:'Pumps monitored, failures predicted, churn, payback per client',adv:'Failure dataset from Saudi operating conditions (heat, dust, water quality)'},
+ check:'Now rank the boxes by risk. The riskiest assumption (usually Problem or Customer segment) is what your next experiment must test.'});
+
+/* s05 — TAM/SAM/SOM */
+LABS.tam=(el,m,done)=>calcLab(el,m,done,{inputs:[['plants','Industrial plants in KSA with pumps (count)',8000],['pumps','Average critical pumps per plant',30],['price','Price per pump per year (SAR)',1500],['sam','Share in your target regions & sectors (%)',25],['som','Share you can win in 5 years (%)',8]],
+ compute:v=>{const tam=v.plants*v.pumps*v.price/1e6,sam=tam*v.sam/100,som=sam*v.som/100;
+  return{out:{som},html:`<div class="grid g3"><div class="stat"><small>TAM: everyone who could buy</small><b>SAR ${fmt(tam,1)}m</b></div><div class="stat"><small>SAM: who you can serve</small><b>SAR ${fmt(sam,1)}m</b></div><div class="stat"><small>SOM: what you can win</small><b>SAR ${fmt(som,1)}m</b></div></div>${bars([{l:'TAM',v:tam,c:'var(--line)'},{l:'SAM',v:sam,c:'#7C8BA3'},{l:'SOM',v:som}],{h:180,f:x=>fmt(x,1)+'m'})}<p class="note">Bottom-up (count customers × price) is more credible to investors than top-down ("1% of a USD 10bn market"). Assumptions here are illustrative — replace them with sourced numbers.</p>`}},
+ challenge:{text:'Read your model: what is the <b>SOM</b> in SAR millions at the current inputs?',ask:{ans:(v,o)=>o.som,tol:.2,dp:1,unit:'SAR m',why:()=>'Investors will push on the SOM: how many sales people, how many plants per month, what conversion? Be ready to rebuild it from the sales funnel.'}}});
+
+/* s06 — business models */
+LABS.bizmodel=(el,m,done)=>classifyLab(el,done,{intro:'Match each (fictional or generic) business to its core revenue model.',cats:['Marketplace (take rate)','Subscription / SaaS','Freemium','Razor and blade','Transaction fee','Advertising','Licensing','Hardware + service bundle'],
+ items:[['A platform matching home-maintenance technicians with households, keeping 15% of each job','Marketplace (take rate)'],['Accounting software billed per company per month','Subscription / SaaS'],['A budgeting app free for basic use, SAR 15/month for premium features','Freemium'],['Cheap coffee machines, profitable capsules','Razor and blade'],['A payment gateway charging 2.5% per card payment','Transaction fee'],['A free news app funded by sponsors','Advertising'],['A university lab earning royalties on a patented desalination membrane','Licensing'],['Predictive-maintenance sensors sold with a yearly monitoring contract','Hardware + service bundle']],pass:6,
+ why:'The model decides your unit economics: marketplaces need liquidity on both sides, SaaS needs low churn, freemium needs high conversion, razor-blade needs lock-in.'});
+
+/* s07 — unit economics */
+LABS.ltv=(el,m,done)=>calcLab(el,m,done,{inputs:[['arpu','Revenue per customer per month (SAR)',250],['gm','Gross margin (%)',70],['churn','Monthly churn (%)',5,.1],['cac','Customer acquisition cost (SAR)',2400]],
+ compute:v=>{const life=v.churn>0?1/(v.churn/100):Infinity,ltv=v.arpu*v.gm/100*life,ratio=ltv/v.cac,pb=v.cac/(v.arpu*v.gm/100);
+  return{out:{ratio},html:`<div class="grid g4 g2m"><div class="stat"><small>Average lifetime</small><b>${fmt(life,1)} mo</b></div><div class="stat"><small>LTV (gross-margin based)</small><b>SAR ${fmt(ltv)}</b></div><div class="stat"><small>LTV ÷ CAC</small><b style="color:${ratio>=3?'var(--ok)':'var(--bad)'}">${fmt(ratio,1)}×</b></div><div class="stat"><small>CAC payback</small><b>${fmt(pb,1)} mo</b></div></div><div class="formula">LTV = ARPU × gross margin ÷ monthly churn · Rules of thumb: LTV/CAC ≥ 3, payback ≤ 12 months</div>`}},
+ challenge:{text:'Reach <b>LTV/CAC ≥ 3</b>. Which lever is most realistic for an early start-up: lower churn, higher price, or cheaper acquisition?',test:(v,o)=>o.ratio>=3,why:'Churn is usually the highest-leverage fix: halving churn doubles lifetime value. Cheaper CAC from referrals and partnerships also compounds. Price changes need evidence of willingness to pay.'}});
+
+/* s08 — experiment design + sample size */
+LABS.experiment=(el,m,done)=>{const C=CUST('exp');C.f=C.f||{};
+ el.innerHTML=`<h4>Experiment card</h4><div class="grid g2">${[['h','We believe that…','e.g. plant managers will pay a SAR 500 deposit for a pilot'],['t','To verify, we will…','e.g. pitch 30 managers with a landing page and deposit link'],['m','And measure…','e.g. deposit conversion'],['c','We are right if…','e.g. ≥ 10% pay the deposit']].map(([k,l,p])=>`<div><label class="f">${l}</label><textarea data-k="${k}" style="min-height:60px" placeholder="${p}">${esc(C.f[k]||'')}</textarea></div>`).join('')}</div>
+ <h4 style="margin-top:14px">How many people do you need?</h4><div class="grid g4 g2m">${numIn('p1','Baseline conversion (%)',10)}${numIn('p2','Conversion you hope to detect (%)',15)}${numIn('al','Significance α (%)',5)}${numIn('pw','Power (%)',80)}</div><div id="so"></div><div class="ctl"><button class="sbtn" id="sv">Save experiment</button></div><div id="sm"></div>`;
+ const zf=p=>{let lo=-6,hi=6;for(let i=0;i<60;i++){const mi=(lo+hi)/2;if(ncdf(mi)<p)lo=mi;else hi=mi}return(lo+hi)/2};
+ const calc=()=>{const p1=V('p1',el)/100,p2=V('p2',el)/100,za=zf(1-V('al',el)/200),zb=zf(V('pw',el)/100);const n=Math.ceil((za+zb)**2*(p1*(1-p1)+p2*(1-p2))/((p1-p2)**2));$('#so',el).innerHTML=`<div class="readout"><b>${isFinite(n)?fmt(n):'—'} per group</b> (${isFinite(n)?fmt(2*n):'—'} total) to detect ${pct(p1,0)} → ${pct(p2,0)}. Small effects need large samples: early start-ups should test for <i>big</i> effects, or use qualitative signals such as deposits and letters of intent.</div>`};
+ $$('#p1,#p2,#al,#pw',el).forEach(x=>x.oninput=calc);calc();$$('textarea[data-k]',el).forEach(t=>t.oninput=()=>{C.f[t.dataset.k]=t.value});
+ $('#sv',el).onclick=()=>{save();const ok=['h','t','m','c'].every(k=>(C.f[k]||'').trim().length>=8);$('#sm',el).innerHTML=`<div class="readout ${ok?'ok':''}">${ok?'<b>Saved.</b> Good experiments are cheap, fast, and decide something: write down now what you will do if the result is below your threshold.':'Fill all four boxes of the card.'}</div>`;if(ok)done()}};
+
+/* s09 — go-to-market funnel */
+LABS.funnel=(el,m,done)=>calcLab(el,m,done,{inputs:[['vis','Website visitors per month',20000],['su','Visitor → sign-up (%)',4,.1],['act','Sign-up → activated (%)',40],['paid','Activated → paying (%)',20],['spend','Marketing spend per month (SAR)',60000],['arpu','Revenue per customer per month (SAR)',250]],
+ compute:v=>{const s=v.vis*v.su/100,a=s*v.act/100,p=a*v.paid/100,cac=p>0?v.spend/p:Infinity;
+  return{out:{p},html:`${bars([{l:'Visitors',v:v.vis,c:'var(--line)'},{l:'Sign-ups',v:s,c:'#7C8BA3'},{l:'Activated',v:a,c:'var(--navy2)'},{l:'Paying',v:p}],{h:190})}<div class="grid g3"><div class="stat"><small>New paying customers / month</small><b>${fmt(p)}</b></div><div class="stat"><small>Blended CAC</small><b>SAR ${fmt(cac)}</b></div><div class="stat"><small>New MRR / month</small><b>SAR ${fmt(p*v.arpu)}</b></div></div><p class="note">Fix the funnel from the bottom: improving activation and conversion makes every marketing riyal work harder; buying more traffic into a leaky funnel just raises CAC.</p>`}},
+ challenge:{text:'At the current inputs, how many <b>new paying customers</b> per month does the funnel produce?',ask:{ans:(v,o)=>o.p,tol:1,dp:0,unit:'customers',why:()=>'Then try doubling activation vs doubling traffic: same customers, very different CAC.'}}});
+
+/* s10 — runway */
+LABS.runway=(el,m,done)=>calcLab(el,m,done,{inputs:[['cash','Cash in bank (SAR k)',3000],['rev','Revenue this month (SAR k)',60],['g','Monthly revenue growth (%)',8,.5],['gm','Gross margin (%)',65],['team','Team cost per month (SAR k)',220],['other','Other fixed costs per month (SAR k)',60],['hire','New hires per quarter',1],['hc','Cost per hire per month (SAR k)',25]],
+ compute:v=>{let c=v.cash,r=v.rev,team=v.team,mo=0,pts=[[0,c]],prof=null;while(c>0&&mo<48){mo++;r*=1+v.g/100;if(mo%3===0)team+=v.hire*v.hc;const burn=team+v.other-r*v.gm/100;if(burn<=0&&prof==null)prof=mo;c-=burn;pts.push([mo,c])}const rw=c>0?48:mo;
+  return{out:{rw},html:`<div class="grid g3"><div class="stat"><small>Runway</small><b>${c>0?'48+ months':rw+' months'}</b></div><div class="stat"><small>Break-even month</small><b>${prof?('month '+prof):'not within runway'}</b></div><div class="stat"><small>Default</small><b style="color:${prof&&prof<rw?'var(--ok)':'var(--bad)'}">${prof&&prof<=rw?'alive':'dead'}</b><small>can it reach profit on current cash?</small></div></div>${plotXY({x0:0,x1:Math.max(12,pts.length-1),y0:Math.min(0,...pts.map(p=>p[1])),y1:v.cash*1.05,h:200,fx:t=>'m'+fmt(t),fy:t=>fmt(t/1000,1)+'m',series:[{pts,l:'cash'}]})}<p class="note">"Default alive or default dead?" (Paul Graham): on current growth and costs, does the company reach profitability before cash runs out? Fundraising usually takes 6+ months — start with 9–12 months of runway left.</p>`}},
+ challenge:{text:'Extend runway to <b>at least 18 months</b>. Try slowing hiring, cutting other costs, or improving growth — which feels realistic?',test:(v,o)=>o.rw>=18,why:'Runway is the founder\'s oxygen. Hiring ahead of revenue is the usual reason start-ups run out; tying hires to milestones keeps you default alive.'}});
+
+/* s11 — valuation and SAFEs */
+LABS.valuation=(el,m,done)=>calcLab(el,m,done,{inputs:[['pre','Pre-money valuation (SAR m)',12],['inv','New investment (SAR m)',3],['safe','SAFE amount converting (SAR m)',1],['cap','SAFE valuation cap (SAR m)',8],['disc','SAFE discount (%)',20]],
+ compute:v=>{const post=v.pre+v.inv,own=v.inv/post;const capPrice=v.cap,discPrice=v.pre*(1-v.disc/100),conv=Math.min(capPrice,discPrice);const safeOwn=v.safe/(conv+v.safe)*(v.pre/(v.pre))*(v.pre/post);
+  return{out:{own},html:`<div class="grid g3"><div class="stat"><small>Post-money</small><b>SAR ${fmt(post,1)}m</b></div><div class="stat"><small>New investor ownership</small><b>${pct(own)}</b></div><div class="stat"><small>SAFE converts at (effective pre-money)</small><b>SAR ${fmt(conv,1)}m</b><small>${conv===capPrice?'cap applies':'discount applies'}</small></div></div><div class="formula">Post-money = Pre-money + Investment · Investor % = Investment ÷ Post-money</div><p class="note">A SAFE converts at the better of the cap and the discounted round price. Here the SAFE holder ends with roughly ${pct(v.safe/(conv+v.safe)*(v.pre/post))} after the round (simplified). Pre-money vs post-money SAFEs treat dilution differently — read the document.</p>`}},
+ challenge:{text:'What <b>ownership percentage</b> does the new investor get at the current inputs?',ask:{ans:(v,o)=>o.own*100,tol:.2,dp:1,unit:'%',why:()=>'Founders often fixate on valuation; the terms (preferences, board seats, pro-rata, option pool) can matter more. Next missions cover both.'}}});
+
+/* s12 — cap table */
+LABS.captable=(el,m,done)=>calcLab(el,m,done,{inputs:[['f','Founders\' shares (m)',10],['spre','Seed pre-money (SAR m)',10],['samt','Seed amount (SAR m)',2.5],['pool','Option pool after seed (% of post, created pre-money)',10],['apre','Series A pre-money (SAR m)',40],['aamt','Series A amount (SAR m)',10]],
+ compute:v=>{// seed: pool created pre-money so it dilutes only founders
+  const seedPost=v.spre+v.samt,seedPct=v.samt/seedPost,poolPct=v.pool/100,foundPct=1-seedPct-poolPct;const totS=v.f/foundPct,seedSh=totS*seedPct,poolSh=totS*poolPct;const aPost=v.apre+v.aamt,aPct=v.aamt/aPost,totA=totS/(1-aPct),aSh=totA*aPct;
+  const row=(n,s,t1,t2)=>`<tr><td>${n}</td><td>${fmt(s,2)}</td><td>${t1==null?'—':pct(s/t1)}</td><td>${pct(s/t2)}</td></tr>`;
+  return{out:{fa:v.f/totA*100},html:`<div class="tablewrap"><table class="t"><tr><th>Holder</th><th>Shares (m)</th><th>After seed</th><th>After Series A</th></tr>${row('Founders',v.f,totS,totA)}${row('Option pool',poolSh,totS,totA)}${row('Seed investors',seedSh,totS,totA)}${row('Series A investors',aSh,null,totA)}<tr><td><b>Total</b></td><td><b>${fmt(totA,2)}</b></td><td>100%</td><td>100%</td></tr></table></div><p class="note">The "option-pool shuffle": investors usually ask for the pool to be created before their money comes in, so it dilutes founders only. A 10% pool at a SAR 10m pre-money effectively lowers the founders' pre-money.</p>`}},
+ challenge:{text:'What percentage do the <b>founders</b> own after the Series A?',ask:{ans:(v,o)=>o.fa,tol:.3,dp:1,unit:'%',why:()=>'Two rounds typically take founders from 100% to 50–60%. That is fine if each round raised the value of what they keep.'}}});
+
+/* s13 — liquidation waterfall */
+LABS.waterfall=(el,m,done)=>calcLab(el,m,done,{inputs:[['exit','Exit value (SAR m)',30],['inv','Investor invested (SAR m)',10],['own','Investor ownership (%)',25],['mult','Liquidation preference (× invested)',1,.5],['part','Participating? (1 = yes, 0 = no)',0]],
+ compute:v=>{const pref=Math.min(v.exit,v.inv*v.mult),o=v.own/100;let inv;if(v.part>=1)inv=pref+(v.exit-pref)*o;else inv=Math.max(pref,v.exit*o);inv=Math.min(inv,v.exit);const com=v.exit-inv;
+  const ex=[10,20,30,40,60,80,100].map(e=>{const p=Math.min(e,v.inv*v.mult);const i=v.part>=1?p+(e-p)*o:Math.max(p,e*o);return[e,Math.min(e,i),e-Math.min(e,i)]});
+  return{out:{com},html:`<div class="grid g2"><div class="stat"><small>Investor receives</small><b>SAR ${fmt(inv,1)}m</b><small>${pct(inv/v.exit)} of exit</small></div><div class="stat"><small>Founders & employees (common) receive</small><b>SAR ${fmt(com,1)}m</b><small>${pct(com/v.exit)} of exit</small></div></div><div class="tablewrap"><table class="t"><tr><th>Exit (SAR m)</th>${ex.map(x=>`<th>${x[0]}</th>`).join('')}</tr><tr><td>Investor</td>${ex.map(x=>`<td>${fmt(x[1],1)}</td>`).join('')}</tr><tr><td>Common</td>${ex.map(x=>`<td>${fmt(x[2],1)}</td>`).join('')}</tr></table></div><p class="note">Non-participating: the investor takes the larger of its preference or its share. Participating ("double dip"): preference first, then its share of the rest. Preferences matter most in modest exits.</p>`}},
+ challenge:{text:'At the current inputs, how much do <b>common shareholders</b> receive (SAR m)?',ask:{ans:(v,o)=>o.com,tol:.1,dp:1,unit:'SAR m',why:()=>'Now switch to participating and a 2× preference: see how a "good" valuation can hide terms that leave founders little in a mid-sized exit.'}}});
+
+/* s14 — Saudi ecosystem navigator */
+const ECO=[
+ ['Monsha\'at (SME General Authority)','Support programmes, guidance and services for SMEs and entrepreneurs; a front door to many government initiatives.','https://www.monshaat.gov.sa/',['idea','mvp','revenue'],['mentoring','loan','licence']],
+ ['Kafalah','Loan-guarantee programme that helps SMEs obtain bank financing.','https://www.kafalah.gov.sa/',['revenue','scaling'],['loan']],
+ ['Saudi Venture Capital Company (SVC)','Government-backed investor in private-capital funds (venture capital, private equity, venture and private debt) and co-investor alongside private investors.','https://svc.com.sa/',['revenue','scaling'],['equity']],
+ ['Research, Development and Innovation Authority (RDIA)','National RDI authority; funding programmes for research and innovation, including research-based ventures.','https://www.rdia.gov.sa/',['idea','mvp'],['grant']],
+ ['Ministry of Investment (MISA)','Investment licensing, including for foreign founders and entrepreneurs establishing in the Kingdom.','https://misa.gov.sa/',['idea','mvp','revenue','scaling'],['licence']],
+ ['Saudi Industrial Development Fund (SIDF)','Long-term financing for industrial projects, including manufacturing start-ups with a plant.','https://www.sidf.gov.sa/',['revenue','scaling'],['loan']],
+ ['Social Development Bank','Financing programmes for small businesses and emerging entrepreneurs.','https://www.sdb.gov.sa/',['idea','mvp'],['loan']],
+ ['Misk Foundation','Youth-focused programmes, including entrepreneurship and skills initiatives.','https://misk.org.sa/',['idea','mvp'],['mentoring']],
+ ['KAUST innovation & Taqadam','University accelerator and venture support for deep-tech and science-based start-ups.','https://taqadam.kaust.edu.sa/',['idea','mvp'],['mentoring','grant','equity']]];
+LABS.ecosystem=(el,m,done)=>{let gen=false;el.innerHTML=`<p class="note">Describe a venture and get a starting map of relevant Saudi bodies. Programmes change often: treat this as a list of doors to knock on, and check each body's official site for current offers.</p><div class="grid g2"><div><label class="f">Stage</label><select class="tin" id="st"><option value="idea">Idea / research</option><option value="mvp">MVP / pilot</option><option value="revenue">Early revenue</option><option value="scaling">Scaling</option></select></div><div><label class="f">Main need now (pick one)</label><select class="tin" id="nd"><option value="mentoring">Mentoring / accelerator</option><option value="grant">Grant (non-dilutive)</option><option value="loan">Loan / guarantee</option><option value="equity">Equity investment</option><option value="licence">Licence to operate</option></select></div></div><div class="ctl"><button class="sbtn" id="go">Show my map</button></div><div id="eo"></div><h4 style="margin-top:16px">Quick check: who does what?</h4><div id="eq"></div>`;
+ let ok2=false;const fin=()=>{if(gen&&ok2)done()};
+ $('#go',el).onclick=()=>{const st=$('#st',el).value,nd=$('#nd',el).value;const hits=ECO.filter(e=>e[3].includes(st)&&e[4].includes(nd)),also=ECO.filter(e=>!hits.includes(e)&&e[3].includes(st));
+  $('#eo',el).innerHTML=`<div class="card" style="box-shadow:none">${hits.length?hits.map(e=>`<p><b><a href="${e[2]}" target="_blank" rel="noopener">${e[0]}</a></b><br>${e[1]}</p>`).join(''):'<p class="note">No direct match — see the related bodies below.</p>'}<details><summary class="note">Also relevant at this stage</summary>${also.map(e=>`<p><a href="${e[2]}" target="_blank" rel="noopener">${e[0]}</a> — ${e[1]}</p>`).join('')}</details></div>`;gen=true;fin()};
+ classifyLab($('#eq',el),()=>{ok2=true;fin()},{intro:'',cats:['Monsha\'at','SVC','RDIA','MISA','Kafalah','SIDF'],items:[['Guarantees part of a bank loan to an SME','Kafalah'],['Invests in private-capital funds and co-invests to grow the ecosystem','SVC'],['Issues investment licences, including for foreign entrepreneurs','MISA'],['Long-term loans for a manufacturing plant','SIDF'],['National authority funding research and innovation','RDIA'],['SME authority: front door to support programmes','Monsha\'at']],pass:5,why:'Knowing which door to knock on saves months. Always confirm current eligibility on the official site.'})};
+
+/* s15 — pitch deck scorer + timed pitch */
+const PITCH=['Problem: who hurts and how much','Solution: what you do, simply','Why now: what changed','Market: bottom-up size','Product: demo or screenshots','Traction: numbers, growth, customers','Business model: price and unit economics','Competition: honest map and your edge','Team: why you will win','The ask: amount, use of funds, milestones'];
+LABS.pitch=(el,m,done)=>{const C=CUST('pitch');C.c=C.c||{};let timed=false;
+ el.innerHTML=`<h4>Deck checklist (10 slides)</h4><p class="note">Tick what your deck already does well. Be strict: a slide counts only if a stranger would understand it in 15 seconds.</p><div class="rubric">${PITCH.map((p,i)=>`<label><input type="checkbox" data-i="${i}" ${C.c[i]?'checked':''}><span>${p}</span></label>`).join('')}</div><div id="ps"></div>
+ <h4 style="margin-top:16px">Three-minute pitch timer</h4><p class="note">Stand up and pitch out loud. The prompt changes as you go: problem (30 s), solution (30 s), market and traction (45 s), business model (30 s), team and ask (45 s).</p><div class="card flash" style="box-shadow:none"><div class="big" id="pt">3:00</div><div class="q" id="pp">Press start</div></div><div class="ctl"><button class="sbtn" id="pg">Start</button><button class="sbtn alt" id="px">Reset</button></div>`;
+ const score=()=>{const n=PITCH.filter((_,i)=>C.c[i]).length;$('#ps',el).innerHTML=`<div class="readout ${n>=8?'ok':''}"><b>${n}/10.</b> ${n>=8?'Strong structure. Now rehearse it until the story, not the slides, carries it.':'Missing slides are usually Why now, Competition or a precise Ask. Investors notice.'}</div>`;if(n>=6&&timed)done()};
+ $$('[data-i]',el).forEach(x=>x.onchange=()=>{C.c[+x.dataset.i]=x.checked;save();score()});score();
+ const seg=[[30,'Problem: who hurts, how much?'],[30,'Solution: what do you do?'],[45,'Market and traction: how big, what proof?'],[30,'Business model: how do you make money?'],[45,'Team and ask: why you, how much, for what?']];let tm=null;
+ $('#pg',el).onclick=()=>{if(tm)return;const t0=Date.now();tm=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000),left=180-s;if(!$('#pt',el)){clearInterval(tm);return}$('#pt',el).textContent=left>=0?`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`:'Time!';let acc=0,txt='Wrap up: thank them and stop talking.';for(const [d,p] of seg){acc+=d;if(s<acc){txt=p;break}}$('#pp',el).textContent=txt;if(left<0){clearInterval(tm);tm=null;timed=true;logEvent('pitch',m.id,'Timed pitch');save();score();toast('⏱ Pitch done. How did the ask land?')}},250)};
+ $('#px',el).onclick=()=>{clearInterval(tm);tm=null;$('#pt',el).textContent='3:00';$('#pp',el).textContent='Press start'}};
 
 boot();
 </script>
