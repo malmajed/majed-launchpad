@@ -33,7 +33,7 @@ const M={};          // mission id -> mission object
 const LABS={};       // lab key -> fn(el, mission, done)
 const CASES=[];      // case-of-the-week list
 const SIMS={};       // case simulations by id
-function addMissions(list){list.forEach(m=>{M[m.id]=m})}
+function addMissions(list){list.forEach(m=>{if(!m.quiz&&m.sets)m.quiz=m.sets.flatMap(st=>st.qs.map(q=>Object.assign({stem:st.v,setT:st.t},q)));M[m.id]=m})}
 const mid=(t,i)=>PFX[t]+String(i+1).padStart(2,'0');
 
 /* ---------- state defaults ---------- */
@@ -189,7 +189,7 @@ function stepTest(box,m){const qs=m.quiz;let i=0,ok=0;const ans=[];
       box.innerHTML=`<div class="card" style="text-align:center"><div class="eyebrow">Result</div><div class="big" style="font-size:2.6rem">${ok}/${qs.length}</div><p>${sc>=.85?'Excellent. You own this.':sc>=.67?'Solid. Review the explanations you missed.':'Worth another pass. Revisit the concept cards, then retry.'}</p><div class="ctl" style="justify-content:center"><button class="sbtn alt" id="again">Retry</button><button class="sbtn" onclick="go('#/m/${m.id}/reflect')">Reflect →</button></div></div>`;
       $('#again',box).onclick=()=>{i=0;ok=0;draw()};
       if(first){markStep(m,'test',Math.round(40*sc))}else{if(gain>0)addXP(gain,m.id);logEvent('retest',m.id,Math.round(sc*100)+'%');save()}if(sc>=1)checkBadges();return}
-    const q0=qs[i],pm=perm(q0.o.length),q={q:q0.q,w:q0.w,o:pm.map(k=>q0.o[k]),a:pm.indexOf(q0.a)};box.innerHTML=`<div class="card"><div class="row"><div class="eyebrow">Question ${i+1} of ${qs.length}</div><span class="spacer"></span><small class="muted">${ok} correct</small></div><h3 style="margin-top:6px;font-family:var(--sans);font-size:1.02rem">${q.q}</h3><div id="opts">${q.o.map((o,j)=>`<button class="qopt" data-j="${j}">${o}</button>`).join('')}</div><div id="why"></div></div>`;
+    const q0=qs[i],pm=perm(q0.o.length),q={q:q0.q,w:q0.w,o:pm.map(k=>q0.o[k]),a:pm.indexOf(q0.a)};box.innerHTML=`<div class="card">${q0.stem?`<details ${i===0||qs[i-1].stem!==q0.stem?'open':''} class="exhibit" style="margin-bottom:10px"><summary><b>Item set: ${esc(q0.setT||'Vignette')}</b> <span class="note">(tap to show or hide)</span></summary><div class="casebody" style="margin-top:6px">${q0.stem}</div></details>`:''}<div class="row"><div class="eyebrow">Question ${i+1} of ${qs.length}</div><span class="spacer"></span><small class="muted">${ok} correct</small></div><h3 style="margin-top:6px;font-family:var(--sans);font-size:1.02rem">${q.q}</h3><div id="opts">${q.o.map((o,j)=>`<button class="qopt" data-j="${j}">${o}</button>`).join('')}</div><div id="why"></div></div>`;
     $$('.qopt',box).forEach(b=>b.onclick=()=>{const j=+b.dataset.j;const r=j===q.a;if(r)ok++;logEvent('quiz',m.id,(r?'✓ ':'✗ ')+String(q.q).replace(/<[^>]+>/g,'').slice(0,60));$$('.qopt',box).forEach(x=>{x.disabled=true;if(+x.dataset.j===q.a)x.classList.add('right');else if(x===b)x.classList.add('wrong')});
       $('#why',box).innerHTML=`<div class="readout ${r?'ok':'bad'}"><b>${r?'Correct.':'Not quite.'}</b> ${q.w}</div><div class="ctl"><span class="spacer"></span><button class="sbtn" id="nq">${i<qs.length-1?'Next question →':'See result'}</button></div>`;$('#nq',box).onclick=()=>{i++;draw()};reveal($('#nq',box))})};draw()}
 function stepReflect(box,m){const r=reflStore()[m.id]||{};const conf=state.conf[m.id]||0;const prompts=m.reflect||['What is the single most useful idea from this mission?','Where could you apply it in your current work at Strategy& this month?','What is still unclear, and how will you close the gap?'];
