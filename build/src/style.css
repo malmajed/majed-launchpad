@@ -148,3 +148,42 @@ table.t th{font-weight:600;color:var(--mut);background:var(--sur2)}
 @media(max-width:600px){.nxtlvl{display:none}.steps{gap:4px}.steps button{font-size:.74rem;padding:8px 2px}}
 
 .g2m label.f{font-size:.78rem;min-height:2.4em}
+
+/* ---- colour system: track colours and icon tiles ---- */
+.ic{display:block;flex:none}
+.tile{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--tc,var(--navy2));color:#fff;flex:none;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.tile.soft{background:color-mix(in srgb,var(--tc) 14%,var(--sur));color:var(--tc);box-shadow:none;border:1px solid color-mix(in srgb,var(--tc) 30%,transparent)}
+.tile.glass{background:rgba(255,255,255,.18);color:#fff;box-shadow:none;border:1px solid rgba(255,255,255,.3)}
+.trk{padding:0;overflow:hidden;border:0}
+.trkband{display:flex;align-items:center;gap:12px;padding:16px;color:#fff}
+.trkband h3{color:#fff;margin:0}.trkband small{color:rgba(255,255,255,.85);display:block;line-height:1.35}
+.trkpct{font:600 1.3rem var(--serif);color:#fff}
+.trkbody{padding:12px 16px 14px}
+.trkbody .prog i,.trackhead+.mlist .prog i{background:var(--tc)}
+.icorow{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.mini{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;color:var(--tc);background:color-mix(in srgb,var(--tc) 10%,var(--sur))}
+.mini.on{background:var(--tc);color:#fff}
+.mitem{border-left:4px solid var(--tc,var(--line))}
+.mitem.done{background:color-mix(in srgb,var(--tc) 6%,var(--sur))}
+.mitem .mnum{display:block;color:var(--tc);font:700 .68rem var(--sans);letter-spacing:.06em;text-transform:uppercase}
+.mitem.lock .tile{filter:grayscale(1);opacity:.6}
+.mhead{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:14px;background:color-mix(in srgb,var(--tc) 9%,var(--sur));border:1px solid color-mix(in srgb,var(--tc) 25%,transparent);margin:6px 0 4px}
+.mhead .tile{width:54px;height:54px;border-radius:14px}
+.steps button{display:flex;align-items:center;justify-content:center;gap:5px}
+.steps button.on{border-color:var(--tc,var(--gold2));box-shadow:inset 0 -3px 0 var(--tc,var(--gold2));color:var(--tc,var(--ink))}
+.steps button.ok::before{content:none}.steps button.ok{color:var(--ok)}
+[style*="--tc"] .sbtn:not(.alt):not(.gold){background:var(--tc);border-color:var(--tc);color:#fff}
+[style*="--tc"] .eyebrow{color:var(--tc)}
+[style*="--tc"] .prog i{background:var(--tc)}
+.upnext{border-top:4px solid var(--tc)}
+.upnext .tile{margin-top:2px}
+.tabs button span{display:grid;place-items:center;height:24px}
+@media(max-width:600px){.steps button span{display:none}.steps button{padding:9px 0}}
+
+.trackhead p{color:rgba(255,255,255,.92)}
+
+.kpis .stat{border-top:4px solid var(--k);background:color-mix(in srgb,var(--k) 7%,var(--sur))}
+.kpis .stat:nth-child(1){--k:#C9A227}.kpis .stat:nth-child(2){--k:#E0662A}.kpis .stat:nth-child(3){--k:#0E8C8C}.kpis .stat:nth-child(4){--k:#3C5FD0}
+.kpis .stat small:first-child{color:var(--k);font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:.7rem}
+
+.sbtn,.qopt{scroll-margin-bottom:96px}

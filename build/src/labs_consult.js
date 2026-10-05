@@ -22,7 +22,7 @@ LABS.mece=(el,m,done)=>{const I=[
  const L=['MECE','Overlap','Gap'];let i=0,ok=0;
  const draw=()=>{if(i>=I.length){el.innerHTML=`<div class="readout ${ok>=6?'ok':''}"><b>${ok}/${I.length}.</b> The test that matters in practice: could two people put the same item in different buckets (overlap)? Is there a plausible answer that fits no bucket (gap)?</div><div class="ctl"><button class="sbtn alt" id="ag">Again</button></div>`;$('#ag',el).onclick=()=>{i=0;ok=0;draw()};if(ok>=6)done();return}
   const it=I[i];el.innerHTML=`<div class="eyebrow">${i+1} of ${I.length}</div><p><b>${it[0]}</b></p><div class="readout">${it[1]}</div><div class="ctl">${L.map((l,j)=>`<button class="sbtn alt" data-j="${j}" style="flex:1">${l}</button>`).join('')}</div><div id="w"></div>`;
-  $$('[data-j]',el).forEach(b=>b.onclick=()=>{const g=+b.dataset.j===it[2];if(g)ok++;$$('[data-j]',el).forEach(x=>x.disabled=true);$('#w',el).innerHTML=`<div class="readout ${g?'ok':'bad'}"><b>${L[it[2]]}.</b> ${it[3]}</div><div class="ctl"><span class="spacer"></span><button class="sbtn" id="nx">Next →</button></div>`;$('#nx',el).onclick=()=>{i++;draw()}})};draw()};
+  $$('[data-j]',el).forEach(b=>b.onclick=()=>{const g=+b.dataset.j===it[2];if(g)ok++;$$('[data-j]',el).forEach(x=>x.disabled=true);$('#w',el).innerHTML=`<div class="readout ${g?'ok':'bad'}"><b>${L[it[2]]}.</b> ${it[3]}</div><div class="ctl"><span class="spacer"></span><button class="sbtn" id="nx">Next →</button></div>`;$('#nx',el).onclick=()=>{i++;draw()};reveal($('#nx',el))})};draw()};
 
 /* c03 — issue tree builder */
 const TREE_PRESETS={
