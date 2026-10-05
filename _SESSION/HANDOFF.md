@@ -1,6 +1,6 @@
 # Launchpad — session handoff
 
-Last updated: 2026-10-05 · Status: **four career tracks live (62 missions, 16 cases) + CFA Level I (20) and Level II (16 missions, 32 item sets) live with exam simulator. CFA Level III (x01–x22) still to build.**
+Last updated: 2026-10-05 · Status: **four career tracks live (62 missions, 16 cases) + full CFA program: Level I (20), Level II (16), Level III (22 = 10 core + 12 pathway) with exam simulator. 120 missions total. Build v10.**
 
 ## What it is
 Family learning PWA (single-file HTML) at https://malmajed.github.io/majed-launchpad/
@@ -21,7 +21,8 @@ Family standings, read-only Follow page (follow.html) with profile selector.
 
 - CFA Level I DONE (build v8): `labs_cfa1.js`, `data_cfa1.js` (a01–a20, 10 three-option MCQs each, `topic` tag per mission). `exam.js` = exam simulator (`#/exam`, `#/exam/cfa1|cfa2|cfa3`), samples by `m.topic` weights, tops up short topics from the rest of the bank, auto-saves MCQ-only results to `state.exams`.
 - CFA Level II DONE (build v9): `labs_cfa2.js` (lab key `ratetree`, not `tree` — that is a Consulting lab), `data_cfa2a.js` (b01–b08, defines `tbl()` table helper), `data_cfa2b.js` (b09–b16). Missions have `sets:[{t,v,topic?,qs:[4]}]`; `addMissions` derives `m.quiz` from sets (with `stem`/`setT`) and stepTest shows the vignette. Exam picks sets weighted by topic (`pickSets`). Test: `/home/claude/test9.js cfa2`.
-- CFA Level III TODO: track `cfa3`, prefix `x`, 22 titles (10 core + 4 PM + 4 Private Markets + 4 Private Wealth pathway). Needs `sets` and `cr:[{q,model,pts:[...]}]`.
+- CFA Level III DONE (build v10): `labs_cfa3.js`, `data_cfa3a.js` (x01–x10 core), `data_cfa3b.js` (x11–x22 pathways; `topic:'path'`, `path:'pm'|'pmk'|'pw'`). Each mission: 1 item set + 4 MCQs (`quiz`, appended after set questions) + 2 constructed responses `cr:[{q,model,pts,topic?}]`. `crPractice()` in app.js shows CR practice after the mission test. Exam: pathway selector (saved in `state.cfaPath`), `buildExam(tr,mode,pw)` filters pathway items.
+- Link helper gotcha: `INV()` already prefixes `terms/`; Investopedia blocks curl (402) so prefer verifiable links.
 - CFA content is ORIGINAL, aligned to CFA Institute's published topic outline/weights (2026). Never copy curriculum text. Code & Standards per 2023 revision (effective 1 Jan 2024: I(E) Competence; VI(A) Avoid or Disclose Conflicts).
 - Tests: `/home/claude/test7.js` (Level I missions/labs/quizzes), `test8.js` (exam simulator), server on 8766.
 
