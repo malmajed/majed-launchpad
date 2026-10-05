@@ -146,3 +146,5 @@ table.t th{font-weight:600;color:var(--mut);background:var(--sur2)}
 @media(max-width:380px){h1{font-size:1.4rem}.lvl{font-size:.7rem}}
 
 @media(max-width:600px){.nxtlvl{display:none}.steps{gap:4px}.steps button{font-size:.74rem;padding:8px 2px}}
+
+.g2m label.f{font-size:.78rem;min-height:2.4em}

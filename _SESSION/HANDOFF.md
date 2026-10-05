@@ -1,6 +1,6 @@
 # Launchpad — session handoff
 
-Last updated: 2026-10-05 · Status: **batch 1 live, setup complete, batch 2 next**
+Last updated: 2026-10-05 · Status: **batches 1–2 live (Consulting, MBA Core); batch 3 next**
 
 ## What it is
 Family learning PWA (single-file HTML) at https://malmajed.github.io/majed-launchpad/
@@ -12,7 +12,8 @@ Family standings, read-only Follow page (follow.html) with profile selector.
 
 ## State of the build
 - Batch 1 DONE: app shell + Consulting track c01–c15 (7 case sims, 12 labs), 4 cases of the week.
-- Batch 2 NEXT: MBA Core m01–m16. Batch 3: Engineering e01–e16. Batch 4: Entrepreneurship s01–s15.
+- Batch 2 DONE: MBA Core m01–m16 (labs_mba.js, data_mba.js), cases w05–w08 (cases_mba.js). calcLab + plotXY helpers live in labs_mba.js — reuse them.
+- Batch 3 NEXT: Engineering e01–e16. Batch 4: Entrepreneurship s01–s15.
 - Approved mission lists are in `TRACKS[].titles` in `build/src/app.js` (titles are fixed; keep ids m01.. e01.. s01..).
 - Each batch should also add 4 more cases of the week to `CASES` (fictional GCC companies, illustrative data).
 
@@ -38,4 +39,4 @@ Push to `main` → GitHub Actions `pages.yml` deploys (Pages source = GitHub Act
 - The weekly email report was declined — do not set up `setupWeeklyTrigger`.
 
 ## Next action
-Build batch 2 (MBA Core, 16 missions, labs = working models: 3-statement linker, CCC, DuPont, break-even, NPV/IRR, WACC, DCF with sensitivity, elasticity/profit-max, macro scenario, pricing simulator, positioning map, Porter builder, BCG/Ansoff, process-flow/Little's Law, stakeholder map, regression/A-B). Test headless, push, report.
+Build batch 3 (Engineering Refresher, 16 missions; labs = line balancing, EOQ/inventory, OEE, control charts, LP solver, queuing, CPM/EVM, VSM, Cp/Cpk, FMEA, forecasting, bullwhip). Add 4 cases (w09–w12). Test headless, push, report.
