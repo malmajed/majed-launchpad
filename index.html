@@ -202,6 +202,16 @@ table.t th{font-weight:600;color:var(--mut);background:var(--sur2)}
 
 .sbtn,.qopt{scroll-margin-bottom:96px}
 
+/* mission-icon tooltips */
+.trk{overflow:visible}.trkband{border-radius:14px 14px 0 0}
+.mini{position:relative;cursor:pointer;transition:transform .12s}
+.mini:hover{transform:translateY(-1px);background:var(--tc);color:#fff}
+.mini.off{cursor:default}
+.mini[data-tip]:hover::after,.mini[data-tip]:focus-visible::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;border:1px solid var(--tc);padding:6px 10px;border-radius:8px;font:600 .78rem/1.3 var(--sans);white-space:nowrap;z-index:40;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.mini[data-tip]:hover::before{content:"";position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--tc);z-index:40}
+.icorow .mini:nth-child(-n+2):hover::after{left:0;transform:none}
+.icorow .mini:nth-child(n+12):hover::after{left:auto;right:0;transform:none}
+
 </style>
 </head>
 <body><header class="top">
@@ -278,7 +288,7 @@ const DUEL={
       box.innerHTML=`${DUEL.board(D,me)}<div class="readout">${txt}</div><div class="ctl">${both?`<button class="sbtn alt" id="dAgain">Back</button>`:''}</div>`;const ag=box.querySelector('#dAgain');if(ag)ag.onclick=()=>{if(stop)stop();onAgain()};if(both&&stop){stop();stop=null}};draw();if(!(D.p[0].done&&D.p[1].done))stop=DUEL.poll(D,me,draw);return()=>{if(stop)stop()}}
 };
 
-const BUILD='v6 · 2026-10-05';
+const BUILD='v7 · 2026-10-05';
 /* ================= Majed's Launchpad — app shell ================= */
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -431,7 +441,7 @@ function vHome(){const L=level(state.xp||0);const ip=inProgress()||nextMission()
   ${due?`<div class="card"><div class="row"><div><h3 style="margin:0">Spaced review</h3><p class="note" style="margin:0">${due} card${due===1?'':'s'} due. Five minutes keeps the concepts fresh.</p></div><span class="spacer"></span><button class="sbtn" onclick="go('#/review')">Review now</button></div></div>`:''}
   <h2 style="margin-top:18px">Tracks</h2>
   <div class="grid g2">${TRACKS.map(trackCard).join('')}</div>`}
-function trackCard(t){const s=trackStats(t.id),c=tcol(t.id);const avail=t.titles.some((_,i)=>M[mid(t.id,i)]);return`<div class="card tcard trk" style="--tc:${c.c}" onclick="go('#/track/${t.id}')"><div class="trkband" style="background:${c.g}"><span class="tile glass">${ico(c.i,26)}</span><div style="flex:1;min-width:0"><h3>${t.name}</h3><small>${t.sub}</small></div><span class="trkpct">${Math.round(s.d/s.n*100)}%</span></div><div class="trkbody"><div class="icorow">${t.titles.map((_,i)=>{const id=mid(t.id,i),dn=(state.progress[id]||{}).status==='completed';return`<span class="mini ${dn?'on':''}" title="${esc(t.titles[i])}">${mico(id,15)}</span>`}).join('')}</div><div class="prog"><i style="width:${s.d/s.n*100}%"></i></div><small class="muted">${s.d} of ${s.n} missions${avail?'':' · coming soon'}</small></div></div>`}
+function trackCard(t){const s=trackStats(t.id),c=tcol(t.id);const avail=t.titles.some((_,i)=>M[mid(t.id,i)]);return`<div class="card tcard trk" style="--tc:${c.c}" onclick="go('#/track/${t.id}')"><div class="trkband" style="background:${c.g}"><span class="tile glass">${ico(c.i,26)}</span><div style="flex:1;min-width:0"><h3>${t.name}</h3><small>${t.sub}</small></div><span class="trkpct">${Math.round(s.d/s.n*100)}%</span></div><div class="trkbody"><div class="icorow">${t.titles.map((_,i)=>{const id=mid(t.id,i),dn=(state.progress[id]||{}).status==='completed';return`<span class="mini ${dn?'on':''} ${M[id]?'':'off'}" data-tip="${i+1}. ${esc(M[id]?M[id].title:t.titles[i])}${dn?' ✓':''}" role="link" aria-label="Mission ${i+1}: ${esc(t.titles[i])}" ${M[id]?`onclick="event.stopPropagation();go('#/m/${id}')"`:''}>${mico(id,15)}</span>`}).join('')}</div><div class="prog"><i style="width:${s.d/s.n*100}%"></i></div><small class="muted">${s.d} of ${s.n} missions${avail?'':' · coming soon'}</small></div></div>`}
 function vTracks(){view().innerHTML=`<h1>Tracks</h1><p class="note">Each mission: concept cards → a working lab → a self-test → a reflection. Concepts then join your spaced-review deck.</p><div class="grid g2">${TRACKS.map(trackCard).join('')}</div>`}
 function vTrack(t){const tr=TRACKS.find(x=>x.id===t);if(!tr)return vTracks();const s=trackStats(t);
   const c=tcol(t);view().innerHTML=`<div style="--tc:${c.c}"><div class="trackhead" style="background:${c.g};border:0"><div class="row" style="flex-wrap:nowrap"><span class="tile glass" style="width:52px;height:52px">${ico(c.i,30)}</span><div><div class="eyebrow" style="color:rgba(255,255,255,.8)">Track</div><h1 style="margin:0">${tr.name}</h1></div></div><p style="margin-top:8px">${tr.sub}</p><div class="prog" style="background:rgba(255,255,255,.2)"><i style="width:${s.d/s.n*100}%;background:#fff"></i></div><small style="color:rgba(255,255,255,.85)">${s.d} of ${s.n} complete</small></div>
