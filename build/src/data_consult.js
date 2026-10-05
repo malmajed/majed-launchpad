@@ -1,5 +1,4 @@
 /* ================= Consulting track: missions ================= */
-const HBRS=t=>'https://hbr.org/search?term='+encodeURIComponent(t);
 addMissions([
 {id:'c01',track:'consult',title:'How engagements work',mins:30,blurb:'The life of a strategy engagement, who does what, and how a firm like Strategy& thinks about capabilities.',
  lab:{key:'phases',name:'Engagement-phase sorter',intro:'Place ten real activities in the phase where they belong.'},

@@ -10,6 +10,12 @@ const dkey=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth(
 function weekStart(t){const d=new Date(t||Date.now());d.setHours(0,0,0,0);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return d.getTime()} // Monday
 const weekKey=t=>dkey(weekStart(t));
 const FOLLOW=!!window.FOLLOW;
+/* reading-link helpers shared by all track files */
+const HBRS=t=>'https://hbr.org/search?term='+encodeURIComponent(t);
+const INV=t=>'https://www.investopedia.com/terms/'+t;
+const OCW=q=>'https://ocw.mit.edu/search/?q='+encodeURIComponent(q);
+const DAMO='https://pages.stern.nyu.edu/~adamodar/';
+const WIKI=t=>'https://en.wikipedia.org/wiki/'+t;
 
 /* ---------- registry (filled by track data files) ---------- */
 const TRACKS=[

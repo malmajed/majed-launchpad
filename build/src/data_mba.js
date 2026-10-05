@@ -1,7 +1,4 @@
 /* ================= MBA Core track: missions ================= */
-const INV=t=>'https://www.investopedia.com/terms/'+t;
-const OCW=q=>'https://ocw.mit.edu/search/?q='+encodeURIComponent(q);
-const DAMO='https://pages.stern.nyu.edu/~adamodar/';
 addMissions([
 {id:'m01',track:'mba',title:'Reading the three statements',mins:35,blurb:'Income statement, balance sheet and cash flow — and the links that tie them together.',
  lab:{key:'three',name:'Linked three-statement model',intro:'Change any driver and watch profit, cash and the balance sheet move together.'},

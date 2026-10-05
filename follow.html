@@ -240,7 +240,7 @@ const DUEL={
       box.innerHTML=`${DUEL.board(D,me)}<div class="readout">${txt}</div><div class="ctl">${both?`<button class="sbtn alt" id="dAgain">Back</button>`:''}</div>`;const ag=box.querySelector('#dAgain');if(ag)ag.onclick=()=>{if(stop)stop();onAgain()};if(both&&stop){stop();stop=null}};draw();if(!(D.p[0].done&&D.p[1].done))stop=DUEL.poll(D,me,draw);return()=>{if(stop)stop()}}
 };
 
-const BUILD='v3 · 2026-10-05';
+const BUILD='v4 · 2026-10-05';
 /* ================= Majed's Launchpad — app shell ================= */
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -253,6 +253,12 @@ const dkey=t=>{const d=new Date(t);return d.getFullYear()+'-'+String(d.getMonth(
 function weekStart(t){const d=new Date(t||Date.now());d.setHours(0,0,0,0);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return d.getTime()} // Monday
 const weekKey=t=>dkey(weekStart(t));
 const FOLLOW=!!window.FOLLOW;
+/* reading-link helpers shared by all track files */
+const HBRS=t=>'https://hbr.org/search?term='+encodeURIComponent(t);
+const INV=t=>'https://www.investopedia.com/terms/'+t;
+const OCW=q=>'https://ocw.mit.edu/search/?q='+encodeURIComponent(q);
+const DAMO='https://pages.stern.nyu.edu/~adamodar/';
+const WIKI=t=>'https://en.wikipedia.org/wiki/'+t;
 
 /* ---------- registry (filled by track data files) ---------- */
 const TRACKS=[
@@ -812,7 +818,6 @@ SIMS.mock={title:'Full mock: Red Sea Foods cannot meet demand',partner:true,mins
  wrap:'This case rewards engineering instincts: find the bottleneck, then check where it moves. Many candidates jump to the SAR 45m line because the CEO mentioned it.'};
 
 /* ================= Consulting track: missions ================= */
-const HBRS=t=>'https://hbr.org/search?term='+encodeURIComponent(t);
 addMissions([
 {id:'c01',track:'consult',title:'How engagements work',mins:30,blurb:'The life of a strategy engagement, who does what, and how a firm like Strategy& thinks about capabilities.',
  lab:{key:'phases',name:'Engagement-phase sorter',intro:'Place ten real activities in the phase where they belong.'},
@@ -1140,6 +1145,53 @@ CASES.push(
   {q:'What does this case teach about the associate role?',note:'Analysis is necessary but not sufficient: the value is in the answer, communicated so the client can decide. Associates should draft the storyline early (ghost deck), surface doubts as soon as they arise, and think about the people in the room, not just the numbers.',pts:['Answer-first communication','Ghost deck / storyline early','Raise doubts early with options','Stakeholder awareness']}]}
 );
 
+/* ================= Cases of the week, batch 3 (fictional companies, illustrative data) ================= */
+CASES.push(
+{id:'w09',title:'Dammam Pump Works: Buy a Machine or Fix the One You Have?',teaser:'The CNC cell is the bottleneck. Production wants a SAR 6m new machine; maintenance says the old one is only 57% effective.',byline:'Teaching case · OEE, TPM and capacity · Fictional company, illustrative data',
+ body:`<p class="dropcap">Dammam Pump Works machined impeller housings on a single five-axis CNC cell that everyone agreed was the plant's bottleneck. Orders from water utilities and a new localisation contract had grown 25% in a year, and the sales director was turning work away. The production manager, Turki, had a quote for a second CNC cell: SAR 6m installed, 9 months' lead time.</p>
+<p>The new maintenance head, Mariam, an industrial engineer who had joined from an automotive supplier, asked for two weeks of data before the investment committee met. She logged every minute of the existing cell (Exhibit 1). "We are not short of machines," she told the plant director. "We are short of uptime."</p>
+<p>Turki was unconvinced: "TPM is a five-year culture programme. I need capacity this year." The plant director had to recommend one path — or a combination — to the CEO.</p>`,
+ exhibits:[{t:'CNC cell, two-week study (per 7-hour shift average)',h:`<table class="t"><tr><th>Item</th><th>Minutes</th></tr><tr><td>Planned production time</td><td>420</td></tr><tr><td>Breakdowns</td><td>48</td></tr><tr><td>Changeovers (avg 3 per shift × 22 min)</td><td>66</td></tr><tr><td>Minor stops and reduced speed</td><td>52</td></tr><tr><td>Rejects and rework (time equivalent)</td><td>16</td></tr></table>`,s:'Ideal cycle time 6 min per housing.'}],
+ questions:[
+  {q:'Calculate availability, performance, quality and OEE for the cell.',note:'Run time = 420 − 48 − 66 = 306 → A = 72.9%. Net running time = 306 − 52 = 254 → P = 83.0%. Fully productive = 254 − 16 = 238 → Q = 93.7%. OEE = 238 ÷ 420 = 56.7%. Fully productive time ≈ 40 housings per shift vs 70 theoretical.',pts:['Availability ≈ 73%','Performance ≈ 83%','Quality ≈ 94%','OEE ≈ 57%']},
+  {q:'How much capacity could be recovered without new equipment, and how quickly?',note:'SMED on changeovers (66 → ~30 min) recovers ~36 min/shift within 2–3 months; autonomous maintenance and fixing the top breakdown causes could halve breakdowns (24 min) within 6 months; minor stops via root cause on tooling/fixtures maybe 20 min. Total ~80 min/shift ≈ +13 housings/shift (+33%), more than the 25% demand growth, in 6–9 months — the same time as the new machine\'s lead time.',pts:['Quantified recoverable minutes by loss','SMED as a quick win','Breakdown reduction via TPM','Compared with demand growth and the 9-month lead time']},
+  {q:'What are the risks of each path?',note:'New machine: SAR 6m capex, 9-month lead time, needs operators and programmers, and a second poorly-run cell would also run at ~57%. TPM/SMED: depends on discipline and leadership; benefits are less certain; culture change takes time. Doing nothing: lost orders and localisation credibility.',pts:['New machine inherits the same losses','TPM execution risk','Capacity timing risk','Cost of doing nothing']},
+  {q:'What should the plant director recommend?',note:'Launch a 90-day SMED and breakdown-reduction sprint on the bottleneck now (OEE target 70%), protect the bottleneck (no unplanned changeovers, buffer before it, run through breaks), and place a conditional order for the second cell only if OEE gains stall below ~65% or demand exceeds ~1.4× today. Report OEE weekly to the CEO.',pts:['Improve the existing bottleneck first','Exploit the constraint (TOC thinking)','Conditional investment with a trigger','Clear KPI and cadence']}]},
+
+{id:'w10',title:'Al-Hijaz Medical Supply: Shortages and Overflows',teaser:'Hospitals run out of insulin while the warehouse overflows with saline. Is it forecasting, policy or the bullwhip?',byline:'Teaching case · Inventory, forecasting and supply chains · Fictional company, illustrative data',
+ body:`<p class="dropcap">Al-Hijaz Medical Supply distributed pharmaceuticals and consumables to 140 hospitals and clinics in the Western Region. In 2025 its service level fell to 89% — against a contract target of 97% — while total inventory rose 30%. The CEO, Dr. Ibrahim Al-Ghamdi, summed it up: "We are out of the things people need and full of the things they don't."</p>
+<p>The operations team pointed at forecasting: the system used a 12-month moving average for all 4,800 SKUs. The procurement team blamed suppliers, whose lead times had doubled for some imported items. A consultant's quick analysis showed that hospital orders swung far more than patient consumption: hospitals ordered heavily when they heard of shortages, and in large batches before budget year-end.</p>
+<p>Ibrahim wanted a plan that would restore service within six months without adding more inventory.</p>`,
+ exhibits:[{t:'Selected SKUs',h:`<table class="t"><tr><th>SKU</th><th>Annual value</th><th>Demand CV (monthly)</th><th>Lead time</th><th>Days of stock</th><th>Fill rate</th></tr><tr><td>Insulin (cold chain)</td><td>SAR 38m</td><td>0.45</td><td>45 days</td><td>12</td><td>81%</td></tr><tr><td>Oncology drug X</td><td>SAR 26m</td><td>0.60</td><td>60 days</td><td>20</td><td>84%</td></tr><tr><td>Saline 500 ml</td><td>SAR 4m</td><td>0.10</td><td>10 days</td><td>95</td><td>100%</td></tr><tr><td>Gloves, nitrile</td><td>SAR 6m</td><td>0.15</td><td>30 days</td><td>80</td><td>99%</td></tr></table>`,s:'Illustrative data. CV = standard deviation ÷ mean of monthly demand.'}],
+ questions:[
+  {q:'Diagnose the problem using ABC and XYZ thinking.',note:'Inventory is allocated backwards: high-value, high-variability, long-lead items (A/Z: insulin, oncology) hold too few days; low-value, stable items (C/X: saline, gloves) hold far too many. One policy (12-month MA, similar days of stock) for all SKUs ignores value, variability and lead time.',pts:['Classified by value (ABC)','Classified by variability (XYZ)','Noted lead-time differences','Concluded one-size policy misallocates stock']},
+  {q:'What role does the bullwhip effect play?',note:'Hospital orders amplify real consumption: shortage gaming (rationing) and year-end batching. Al-Hijaz forecasts from orders, not consumption, so it chases its own amplified signal. Getting consumption data from hospitals (or managing their stock — VMI) attacks the root cause.',pts:['Orders ≠ consumption','Rationing/shortage gaming','Batching at budget year-end','Use consumption data / VMI']},
+  {q:'Design the new inventory policy.',note:'Segment SKUs (ABC × XYZ). A/Z: safety stock from z × σ × √L at a high service level, frequent review, supplier collaboration on lead times, dual sourcing where possible. C/X: lower days of stock, simple min-max. Replace the 12-month MA with exponential smoothing plus seasonality for seasonal SKUs. Release cash from overstocked C items to fund A safety stock — total inventory roughly flat.',pts:['Segmented policies','Safety stock formula linked to service level','Better forecasting method','Rebalance inventory, not grow it']},
+  {q:'What should the six-month plan look like?',note:'Month 1: segmentation and new targets for top 300 SKUs; agree consumption-data sharing with the 20 largest hospitals. Months 2–3: new parameters live, supplier reviews for long-lead A items, stop over-ordering C items. Months 4–6: VMI pilot with 5 hospitals, monthly S&OP meeting. KPIs: fill rate by segment, inventory days by segment, forecast bias.',pts:['Phased plan with priorities','Customer collaboration','Supplier actions','Segment-level KPIs']}]},
+
+{id:'w11',title:'Qassim Steel Fabrication: The Weld That Keeps Failing',teaser:'A major energy client has issued a quality alert. The plant says the welds are in spec. The data say otherwise.',byline:'Teaching case · Quality, SPC and root-cause analysis · Fictional company, illustrative data',
+ body:`<p class="dropcap">Qassim Steel Fabrication produced pressure-vessel components for oil and gas projects. In September, a national energy client issued a formal quality alert: three shipments had welds with penetration depth below specification, found during the client's incoming inspection. The client demanded an 8D report within 30 days and threatened to suspend Qassim from its approved vendor list — a list that took four years to join.</p>
+<p>The production manager insisted the process was fine: "Our average penetration depth is 4.2 mm against a 3.8 mm minimum. We're comfortably inside." The quality engineer, Nouf, pulled six months of data (Exhibit 1). She also noticed that most low readings came from the night shift, after a new wire supplier was introduced in June, and on the older of the two welding stations.</p>
+<p>The general manager asked Nouf to lead the 8D and present a plan to the client.</p>`,
+ exhibits:[{t:'Weld penetration depth, six months',h:`<table class="t"><tr><th>Item</th><th>Value</th></tr><tr><td>Specification (minimum)</td><td>3.8 mm</td></tr><tr><td>Process mean</td><td>4.2 mm</td></tr><tr><td>Standard deviation</td><td>0.22 mm</td></tr><tr><td>Night shift mean / station 2 mean</td><td>4.05 mm / 4.00 mm</td></tr><tr><td>Readings below 3.8 mm</td><td>3.4%</td></tr></table>`,s:'One-sided specification. Illustrative data.'}],
+ questions:[
+  {q:'Is the process capable? Calculate Cpk.',note:'One-sided: Cpk = (μ − LSL) ÷ 3σ = (4.2 − 3.8) ÷ 0.66 = 0.61. Far below 1.33. A mean "inside spec" says nothing about the tail: with σ = 0.22, about 3.4% of welds fall below 3.8 mm, as observed. The production manager is looking at the average, not the distribution.',pts:['Used the one-sided Cpk formula','Cpk ≈ 0.6','Linked it to the 3.4% below spec','Explained why the average is misleading']},
+  {q:'What does the stratified data suggest about root causes?',note:'Special causes stack: new wire supplier from June (material), night shift (method/people: parameters, supervision), station 2 (machine: wear, calibration). Use a fishbone to organise and test each with data (e.g., compare wire lots, run controlled trials on station 2, check parameter logs by shift).',pts:['Identified material (wire) as a candidate','Shift/method differences','Equipment (station 2)','Proposed verification with data, not opinion']},
+  {q:'Outline the 8D actions, especially containment.',note:'D1 team (quality, production, maintenance, supplier). D2 describe the problem precisely. D3 containment: 100% ultrasonic inspection of outgoing welds and recall/inspection of shipped stock; quarantine suspect wire lots. D4 root cause (5 Whys, designed tests). D5–D6 corrective actions: requalify wire supplier, recalibrate/repair station 2, lock welding parameters, train night shift. D7 prevent: SPC on penetration with control limits, supplier incoming inspection, FMEA update. D8 recognise the team.',pts:['Immediate containment protecting the client','Structured root-cause step','Corrective actions per cause','Systemic prevention (SPC, FMEA, supplier control)']},
+  {q:'What should Nouf tell the client in the first meeting?',note:'Own the problem, no excuses: "Our process capability for penetration depth was inadequate (Cpk 0.6). We have contained all shipped and in-process parts with 100% inspection, identified three contributing causes, and will reach Cpk ≥ 1.33 within 60 days, verified with SPC data we will share weekly." Clients forgive problems handled transparently; they do not forgive denial.',pts:['Takes ownership','States containment done','Specific capability target and timeline','Offers data transparency']}]},
+
+{id:'w12',title:'Tabuk Water Plant Retrofit: Six Weeks Behind',teaser:'The retrofit is late and over budget. The contractor wants to add crews to everything. Where would extra money actually buy time?',byline:'Teaching case · Project management, CPM and EVM · Fictional project, illustrative data',
+ body:`<p class="dropcap">The retrofit of a reverse-osmosis water plant near Tabuk had to finish before the summer peak, when the town's demand rose by 40%. At week 20 of a 36-week plan, the project director, Eng. Salman, faced bad news: the schedule showed six weeks of delay, and costs were running ahead of budget (Exhibit 1).</p>
+<p>The main contractor proposed adding crews across all workstreams at a cost of SAR 4.5m. The client's finance team refused to approve more money without understanding where the delay sat. Salman's planner produced a network: membrane procurement and installation were on the critical path; civil works and the control-room upgrade had slack of four and seven weeks respectively.</p>
+<p>The ministry wanted a recovery plan within a week.</p>`,
+ exhibits:[{t:'Project status at week 20 (SAR m)',h:`<table class="t"><tr><th>Item</th><th>Value</th></tr><tr><td>Budget at completion (BAC)</td><td>48.0</td></tr><tr><td>Planned value (PV)</td><td>28.0</td></tr><tr><td>Earned value (EV)</td><td>22.4</td></tr><tr><td>Actual cost (AC)</td><td>25.6</td></tr><tr><td>Critical path</td><td>Membrane procurement → installation → commissioning</td></tr></table>`,s:'Illustrative data.'}],
+ questions:[
+  {q:'Calculate SPI, CPI and a cost estimate at completion. What do they tell you?',note:'SPI = 22.4 ÷ 28 = 0.80 (20% behind plan). CPI = 22.4 ÷ 25.6 = 0.875 (each riyal buys 0.875 of planned work). EAC = BAC ÷ CPI = 48 ÷ 0.875 ≈ SAR 54.9m, about SAR 6.9m over budget if performance continues.',pts:['SPI 0.80','CPI ≈ 0.875','EAC ≈ SAR 55m','Interpreted: behind schedule and over budget']},
+  {q:'Is the contractor\'s proposal to add crews everywhere a good use of SAR 4.5m?',note:'No. Only critical-path work shortens the project. Adding crews to civil works or the control room (which have slack) buys no time. Crash only critical tasks, in order of lowest cost per week saved, and stop when another path becomes critical.',pts:['Only critical tasks shorten the project','Non-critical tasks have slack','Crash cheapest-per-week first','Watch for a new critical path']},
+  {q:'What recovery options exist on the critical path?',note:'Membranes: expedite (air freight, alternative approved supplier), pre-assemble skids off-site. Installation: second shift on membrane installation, fast-track by overlapping installation with partial commissioning by train. Commissioning: prepare procedures and operator training in parallel (uses slack elsewhere). Also reduce scope temporarily: bring 3 of 4 trains online before peak.',pts:['Expedite procurement','Add shifts or crews only on critical installation','Fast-track with overlap, noting risk','Scope phasing to meet the summer deadline']},
+  {q:'What should Salman present to the ministry?',note:'"We are six weeks behind because membrane procurement slipped; the delay is entirely on the critical path. We will recover four to five weeks by expediting membranes, a second installation shift and phased commissioning, at SAR 1.8m — not SAR 4.5m. Three of four trains will be online before the summer peak; the fourth two weeks later. Cost forecast: SAR 54–56m; we will track SPI and CPI weekly."',pts:['Clear cause of delay','Targeted, costed recovery','Realistic outcome against the summer deadline','Updated forecast and tracking']}]}
+);
+
 /* ================= Cases of the week, batch 2 (fictional companies, illustrative data) ================= */
 CASES.push(
 {id:'w05',title:'Al-Ahsa Foods: Profitable and Out of Cash',teaser:'Record profits, a growing order book — and the CFO says the company cannot make payroll in eight weeks.',byline:'Teaching case · Accounting and working capital · Fictional company, illustrative data',
@@ -1188,10 +1240,298 @@ CASES.push(
   {q:'What should Hessa propose to her father?',note:'A staged plan: launch the specialty gift box with two chains (low extra fixed cost, positive contribution), keep bulk domestic sales as the cash base, defer the luxury line until the brand earns it, and set a review after 18 months with clear KPIs (sell-through, repeat orders, margin). This reframes the risk: the core business continues, the brand option is cheap to test.',pts:['Staged, low-risk plan','Keeps the existing business as the base','Defers loss-making option','KPIs and a decision point']}]}
 );
 
+/* ================= Engineering Refresher track: missions ================= */
+addMissions([
+{id:'e01',track:'eng',title:'Manufacturing systems and process types',mins:25,blurb:'Project, job shop, batch, line, continuous — and why fit matters.',
+ lab:{key:'ppm',name:'Product–process matrix',intro:'Match eight products to the process type that fits them.'},
+ cards:[
+  {h:'Five process types',b:`<ul><li><b>Project:</b> one-off, large, often at the customer's site.</li><li><b>Job shop:</b> high variety, low volume, flexible equipment, varied routings.</li><li><b>Batch:</b> moderate variety, products made in runs with changeovers.</li><li><b>Line:</b> standard products, high volume, paced flow.</li><li><b>Continuous:</b> commodities, very high volume, around the clock.</li></ul>`},
+  {h:'The product–process matrix',b:`<p>Hayes and Wheelwright: as products move from low-volume custom to high-volume standard, the process should move from job shop to continuous flow. Firms "off the diagonal" carry cost or flexibility penalties.</p>`},
+  {h:'Layouts follow process',b:`<p>Job shops use <b>process (functional) layouts</b>, grouping similar machines. Lines use <b>product layouts</b>. Cellular layouts group the machines for a product family to get flow with variety.</p>`},
+  {h:'Make-to-stock vs make-to-order',b:`<p>MTS builds to forecast (fast delivery, inventory risk); MTO builds after the order (custom, longer lead time); ATO assembles from stocked modules (a common compromise).</p>`},
+  {h:'Why consultants care',b:`<p>Many manufacturing problems in a strategy engagement are fit problems: a plant designed for long runs now asked for high variety, or a job shop chasing commodity volume. Diagnose fit before optimising details.</p>`}],
+ quiz:[
+  {q:'High variety, low volume, flexible equipment describes…',o:['Continuous flow','Job shop','Assembly line','Project'],a:1,w:'Each job may follow a different route.'},
+  {q:'A refinery is a classic…',o:['Batch process','Continuous process','Job shop','Project'],a:1,w:'Commodity output, 24/7 flow.'},
+  {q:'Cellular layouts aim to combine…',o:['Low volume with low variety','Flow efficiency with some product variety','Projects and lines','MTS and MTO'],a:1,w:'Cells give flow to product families.'},
+  {q:'Assemble-to-order means…',o:['Everything built after the order','Modules stocked, final assembly after the order','Everything to forecast','One-off projects'],a:1,w:'A balance between speed and customisation.'},
+  {q:'A firm "off the diagonal" of the product–process matrix typically…',o:['Gains a cost advantage','Faces cost or flexibility penalties','Has no inventory','Needs no changeovers'],a:1,w:'Process and product do not fit.'},
+  {q:'Process (functional) layouts group…',o:['All steps of one product','Similar machines together','Only robots','Warehouses'],a:1,w:'Typical of job shops.'}],
+ srs:[{q:'Five process types?',a:'Project, job shop, batch, line, continuous.'},{q:'Product–process matrix?',a:'Process choice should move from job shop to continuous as volume rises and variety falls.'},{q:'MTS, MTO, ATO?',a:'Make-to-stock, make-to-order, assemble-to-order.'},{q:'Cellular layout?',a:'Machines grouped by product family to get flow with variety.'}],
+ read:[{t:'Link Manufacturing Process and Product Life Cycles',s:'Harvard Business Review, 1979',n:'Hayes & Wheelwright',u:HBRS('Hayes Wheelwright product process')},{t:'MIT OCW: manufacturing systems',s:'MIT OpenCourseWare',u:OCW('manufacturing systems')},{t:'Cellular manufacturing',s:'Wikipedia',u:WIKI('Cellular_manufacturing')}]},
+
+{id:'e02',track:'eng',title:'Capacity, utilisation and bottlenecks',mins:30,blurb:'Why lines rarely run at the speed of their slowest machine — and what buffers do.',
+ lab:{key:'linesim',name:'Line throughput simulator',intro:'Simulate 2,000 units through a three-station line with random cycle times.'},
+ cards:[
+  {h:'Capacity measures',b:`<ul><li><b>Design capacity:</b> maximum output in ideal conditions.</li><li><b>Effective capacity:</b> after planned losses (changeovers, maintenance).</li><li><b>Actual output.</b></li></ul><div class="formula">Utilisation = actual ÷ design · Efficiency = actual ÷ effective</div>`},
+  {h:'Theory of Constraints',b:`<p>Goldratt's five steps: identify the constraint, exploit it, subordinate everything else to it, elevate it, repeat. An hour lost at the bottleneck is lost for the whole system.</p>`},
+  {h:'Variability steals capacity',b:`<p>With random cycle times, a slow cycle at one station starves the next or blocks the previous one. Without buffers, throughput falls well below the bottleneck rate.</p>`},
+  {h:'Buffers vs lean',b:`<p>Buffers protect throughput but add inventory and lead time. Lean reduces variability first (standard work, TPM, SMED) so buffers can be cut safely.</p>`},
+  {h:'Drum-buffer-rope',b:`<p>The bottleneck sets the pace (drum), a time buffer protects it, and material release is tied to its pace (rope) so WIP does not pile up elsewhere.</p>`}],
+ quiz:[
+  {q:'Design capacity 1,000/day, actual 720. Utilisation?',o:['72%','85%','138%','28%'],a:0,w:'720 ÷ 1,000.'},
+  {q:'First step of the Theory of Constraints?',o:['Elevate the constraint','Identify the constraint','Buy new machines','Reduce all inventories'],a:1,w:'You cannot improve what you have not found.'},
+  {q:'Why does a line with random cycle times produce less than its bottleneck rate?',o:['Workers are slow','Blocking and starving between stations','Measurement error','Demand is low'],a:1,w:'Variability propagates without buffers.'},
+  {q:'In drum-buffer-rope, the "rope" is…',o:['The conveyor','Linking material release to the bottleneck\'s pace','A safety stock','A maintenance plan'],a:1,w:'It prevents WIP flooding the system.'},
+  {q:'Lean\'s view of buffers?',o:['Add as many as possible','Reduce variability first, then cut buffers','Buffers are free','Ignore them'],a:1,w:'Buffers hide problems.'},
+  {q:'An hour gained at a non-bottleneck is…',o:['An hour gained for the system','A mirage — system output does not change','Twice as valuable','Equal to an hour at the bottleneck'],a:1,w:'Goldratt\'s famous point.'}],
+ srs:[{q:'Utilisation vs efficiency?',a:'Utilisation = actual ÷ design capacity; efficiency = actual ÷ effective capacity.'},{q:'TOC five focusing steps?',a:'Identify, exploit, subordinate, elevate, repeat.'},{q:'Drum-buffer-rope?',a:'Bottleneck sets pace, buffer protects it, release tied to its pace.'},{q:'Why variability reduces throughput?',a:'Stations block and starve each other without buffers.'}],
+ read:[{t:'Theory of constraints',s:'Wikipedia',u:WIKI('Theory_of_constraints')},{t:'MIT OCW: manufacturing systems analysis',s:'MIT OpenCourseWare',u:OCW('manufacturing systems analysis')},{t:'Bottleneck management',s:'HBR search',u:HBRS('bottleneck operations')}]},
+
+{id:'e03',track:'eng',title:'Line balancing',mins:35,blurb:'Takt time, precedence and the ranked positional weight heuristic.',
+ lab:{key:'balance',name:'Line balancer (precedence, takt, RPW)',intro:'Assign ten tasks to stations without breaking precedence or takt.'},
+ cards:[
+  {h:'Takt time',b:`<div class="formula">Takt = available production time ÷ customer demand</div><p>The pace the customer sets. 8 hours (28,800 s) ÷ 480 units = 60 s per unit.</p>`},
+  {h:'Minimum stations',b:`<div class="formula">N_min = ⌈ total work content ÷ takt ⌉</div><p>A lower bound; precedence and task sizes often force more.</p>`},
+  {h:'Efficiency and balance delay',b:`<div class="formula">Efficiency = total work ÷ (stations × takt) · Balance delay = 1 − efficiency</div><p>Idle time per cycle is the cost of imperfect balance.</p>`},
+  {h:'RPW heuristic',b:`<p>Positional weight = task time + times of all its successors. Assign tasks in descending weight to the current station if precedence and takt allow; else open a new station. Simple, usually good, not always optimal.</p>`},
+  {h:'In practice',b:`<p>Split long tasks, rebalance when demand changes, use multi-skilled operators to flex, and remember that ergonomics and quality matter as much as the arithmetic.</p>`}],
+ quiz:[
+  {q:'7 hours available, demand 420 units. Takt?',o:['60 s','1 min','Both A and B','30 s'],a:2,w:'25,200 s ÷ 420 = 60 s = 1 minute.'},
+  {q:'Work content 186 s, takt 60 s. Minimum stations?',o:['3','4','5','186'],a:1,w:'186 ÷ 60 = 3.1 → 4.'},
+  {q:'4 stations, takt 60 s, work 186 s. Efficiency?',o:['77.5%','96%','62%','100%'],a:0,w:'186 ÷ 240 = 77.5%.'},
+  {q:'Positional weight of a task is…',o:['Its own time','Its time plus all successors\' times','Its number of predecessors','Takt − time'],a:1,w:'Prioritises tasks that unlock most work.'},
+  {q:'A task longer than takt…',o:['Is impossible','Needs splitting, parallel stations or faster methods','Should be ignored','Defines takt'],a:1,w:'Otherwise the line cannot meet demand.'},
+  {q:'If demand rises, takt…',o:['Rises','Falls','Unchanged','Doubles always'],a:1,w:'More units in the same time means less time per unit.'}],
+ srs:[{q:'Takt time?',a:'Available time ÷ demand.'},{q:'Minimum number of stations?',a:'Ceiling of work content ÷ takt.'},{q:'Line efficiency?',a:'Work content ÷ (stations × takt).'},{q:'RPW?',a:'Assign tasks by descending (own time + all successors\' time).'}],
+ read:[{t:'Assembly line balancing',s:'Wikipedia',u:WIKI('Assembly_line')},{t:'Takt time',s:'Wikipedia',u:WIKI('Takt_time')},{t:'MIT OCW: production systems',s:'MIT OpenCourseWare',u:OCW('production planning')}]},
+
+{id:'e04',track:'eng',title:'Lean: the 8 wastes and value-stream mapping',mins:30,blurb:'See flow, see waste: lead time is mostly waiting.',
+ lab:{key:'vsm',name:'Value-stream map calculator',intro:'Compute lead time and process cycle efficiency; cut inventory to shorten flow.'},
+ cards:[
+  {h:'Value from the customer\'s view',b:`<p>Value-added steps change the product in a way the customer will pay for, done right first time. Everything else is waste or necessary non-value-added work.</p>`},
+  {h:'The 8 wastes (DOWNTIME)',b:`<p><b>D</b>efects · <b>O</b>verproduction · <b>W</b>aiting · <b>N</b>on-utilised talent · <b>T</b>ransport · <b>I</b>nventory · <b>M</b>otion · <b>E</b>xtra processing. Overproduction is the worst: it creates the others.</p>`},
+  {h:'Value-stream mapping',b:`<p>Map material and information flow door to door for one product family: process boxes with cycle time, changeover and uptime; inventory triangles; the timeline of waiting vs value-added time.</p><div class="formula">Lead time ≈ Σ inventory ÷ daily demand</div>`},
+  {h:'Process cycle efficiency',b:`<div class="formula">PCE = value-added time ÷ total lead time</div><p>Often far below 1% in traditional plants. The gap is the opportunity.</p>`},
+  {h:'Future state',b:`<p>Design flow: produce to takt, continuous flow where possible, supermarkets and pull where not, one pacemaker process, level the mix. Then plan the kaizen bursts to get there.</p>`}],
+ quiz:[
+  {q:'Which waste is considered the worst because it creates others?',o:['Motion','Overproduction','Transport','Defects'],a:1,w:'Making too much, too early, hides problems and creates inventory.'},
+  {q:'Inventory 2,000 units, daily demand 400. Days of lead time?',o:['0.2','5','2,400','800'],a:1,w:'2,000 ÷ 400 = 5 days.'},
+  {q:'Process cycle efficiency is…',o:['Uptime','Value-added time ÷ lead time','Output ÷ input','OEE'],a:1,w:'How much of the lead time actually adds value.'},
+  {q:'The "N" in DOWNTIME stands for…',o:['Noise','Non-utilised talent','Nesting','Negotiation'],a:1,w:'Unused skills and ideas of people.'},
+  {q:'A VSM covers…',o:['One machine','One product family door to door, material and information','The whole company','Finance only'],a:1,w:'Scope matters.'},
+  {q:'Why reduce inventory step by step?',o:['To save space only','Lower inventory exposes problems you then fix','To stop production','It looks good'],a:1,w:'The "lower the water to see the rocks" principle.'}],
+ srs:[{q:'8 wastes (DOWNTIME)?',a:'Defects, Overproduction, Waiting, Non-utilised talent, Transport, Inventory, Motion, Extra processing.'},{q:'Lead time from a VSM?',a:'Σ inventory ÷ daily demand (+ processing time).'},{q:'PCE?',a:'Value-added time ÷ total lead time.'},{q:'Worst waste and why?',a:'Overproduction: it creates inventory and hides other problems.'}],
+ read:[{t:'Decoding the DNA of the Toyota Production System',s:'Harvard Business Review',u:'https://hbr.org/1999/09/decoding-the-dna-of-the-toyota-production-system'},{t:'Lean Enterprise Institute',s:'lean.org',n:'Lexicon and VSM resources',u:'https://www.lean.org/'},{t:'Value-stream mapping',s:'Wikipedia',u:WIKI('Value-stream_mapping')}]},
+
+{id:'e05',track:'eng',title:'Lean tools: 5S, SMED, kanban, pull',mins:30,blurb:'The toolkit that turns lean principles into daily practice.',
+ lab:{key:'kanban',name:'Kanban and SMED calculator',intro:'Size a kanban loop and value a changeover reduction.'},
+ cards:[
+  {h:'5S',b:`<p>Sort, Set in order, Shine, Standardise, Sustain. A visual workplace where abnormalities are obvious. Not housekeeping for its own sake: the foundation for standard work.</p>`},
+  {h:'SMED',b:`<p>Single-Minute Exchange of Die (Shingo): separate internal setup (machine stopped) from external (machine running), convert internal to external, streamline both. Shorter changeovers allow smaller batches.</p>`},
+  {h:'Kanban and pull',b:`<div class="formula">N = D × L × (1 + α) ÷ C</div><p>Cards authorise production or withdrawal only when downstream consumes. Fewer cards = less inventory; remove cards deliberately to expose problems.</p>`},
+  {h:'Heijunka',b:`<p>Level the volume and mix of production over time (e.g., ABAC instead of AAAA BBBB) so upstream processes see steady demand. Requires short changeovers.</p>`},
+  {h:'Jidoka and poka-yoke',b:`<p>Build quality in: machines and people stop when something is wrong (jidoka, andon), and mistake-proofing devices make errors impossible or obvious (poka-yoke).</p>`}],
+ quiz:[
+  {q:'D = 100/hr, L = 3 hr, α = 10%, C = 25. Kanbans?',o:['12','13.2 → 14','11','30'],a:1,w:'100 × 3 × 1.1 ÷ 25 = 13.2 → round up to 14.'},
+  {q:'First step of SMED?',o:['Buy faster machines','Separate internal and external setup','Increase batch size','Skip quality checks'],a:1,w:'Most gains come from organising what is already done.'},
+  {q:'The 5S in order?',o:['Sort, Set in order, Shine, Standardise, Sustain','Shine, Sort, Sustain, Set, Standardise','Safety, Speed, Scale, Sort, Save','Sort, Shine, Ship, Store, Sustain'],a:0,w:'Sustain is the hardest.'},
+  {q:'Heijunka means…',o:['Mistake-proofing','Levelling production volume and mix','Stopping the line','Visual control'],a:1,w:'Smooth demand on upstream processes.'},
+  {q:'A poka-yoke is…',o:['A kanban card','A mistake-proofing device','A maintenance plan','A KPI'],a:1,w:'E.g. a fixture that only fits the right way.'},
+  {q:'Why do short changeovers matter for pull?',o:['They do not','They make small batches and levelled mix economical','They raise inventory','They cut demand'],a:1,w:'SMED enables heijunka and pull.'}],
+ srs:[{q:'Kanban formula?',a:'N = D × L × (1 + α) ÷ C, rounded up.'},{q:'SMED core idea?',a:'Separate internal from external setup; convert internal to external; streamline.'},{q:'5S?',a:'Sort, Set in order, Shine, Standardise, Sustain.'},{q:'Jidoka vs poka-yoke?',a:'Jidoka: stop on abnormality; poka-yoke: mistake-proofing devices.'}],
+ read:[{t:'Single-minute exchange of die',s:'Wikipedia',u:WIKI('Single-minute_exchange_of_die')},{t:'Kanban',s:'Wikipedia',u:WIKI('Kanban')},{t:'Lean Enterprise Institute',s:'lean.org',u:'https://www.lean.org/'}]},
+
+{id:'e06',track:'eng',title:'OEE and TPM',mins:30,blurb:'Measure equipment losses and organise to eliminate them.',
+ lab:{key:'oee',name:'OEE calculator with loss waterfall',intro:'Compute A × P × Q and see where the minutes go.'},
+ cards:[
+  {h:'OEE',b:`<div class="formula">OEE = Availability × Performance × Quality</div><ul><li>A = run time ÷ planned time</li><li>P = (ideal cycle × total count) ÷ run time</li><li>Q = good count ÷ total count</li></ul>`},
+  {h:'Six big losses',b:`<p>Availability: breakdowns, setups/adjustments. Performance: minor stops, reduced speed. Quality: start-up rejects, production rejects. Each maps to specific countermeasures.</p>`},
+  {h:'Benchmarks',b:`<p>World-class OEE is often quoted around 85% for discrete manufacturing; many plants run at 40–60%. Compare trends on the same line, not across different industries.</p>`},
+  {h:'TPM',b:`<p>Total Productive Maintenance: operators own basic care (autonomous maintenance), planned maintenance, focused improvement, early equipment management, training. Goal: zero breakdowns, zero defects.</p>`},
+  {h:'Use OEE honestly',b:`<p>OEE is a diagnostic for one asset, not a target to game. Watch for inflated ideal cycle times (performance above 100%) and excluded "planned" downtime that hides losses.</p>`}],
+ quiz:[
+  {q:'A 90%, P 80%, Q 95%. OEE?',o:['68.4%','85%','72%','95%'],a:0,w:'0.9 × 0.8 × 0.95 = 0.684.'},
+  {q:'Minor stops reduce…',o:['Availability','Performance','Quality','Planned time'],a:1,w:'Short stops are usually counted as speed loss.'},
+  {q:'Performance above 100% suggests…',o:['Excellent operators','The ideal cycle time is set too slow','High quality','Low downtime'],a:1,w:'Fix the standard.'},
+  {q:'Autonomous maintenance means…',o:['Robots maintain machines','Operators do basic cleaning, inspection, lubrication','No maintenance','Outsourcing'],a:1,w:'A TPM pillar.'},
+  {q:'Which is an availability loss?',o:['Rejects','Breakdowns','Reduced speed','Rework'],a:1,w:'Unplanned stops.'},
+  {q:'Best use of OEE?',o:['Compare all plants worldwide','Track and diagnose losses on the same asset over time','Pay bonuses','Replace financial KPIs'],a:1,w:'A diagnostic, not a league table.'}],
+ srs:[{q:'OEE formula?',a:'Availability × Performance × Quality.'},{q:'Six big losses?',a:'Breakdowns, setups; minor stops, reduced speed; start-up rejects, production rejects.'},{q:'TPM goal?',a:'Zero breakdowns and zero defects through operator ownership and planned maintenance.'},{q:'Typical world-class OEE quote?',a:'About 85% (discrete manufacturing).'}],
+ read:[{t:'Overall equipment effectiveness',s:'Wikipedia',u:WIKI('Overall_equipment_effectiveness')},{t:'Total productive maintenance',s:'Wikipedia',u:WIKI('Total_productive_maintenance')},{t:'Maintenance and reliability',s:'HBR search',u:HBRS('predictive maintenance')}]},
+
+{id:'e07',track:'eng',title:'Six Sigma and process capability',mins:35,blurb:'DMAIC, Cp, Cpk and defects per million.',
+ lab:{key:'cpk',name:'Capability calculator',intro:'Centre the process or shrink its spread to meet the customer\'s Cpk.'},
+ cards:[
+  {h:'DMAIC',b:`<p><b>Define</b> the problem and CTQs · <b>Measure</b> the baseline (and the measurement system) · <b>Analyse</b> root causes with data · <b>Improve</b> and pilot · <b>Control</b> to sustain.</p>`},
+  {h:'Capability indices',b:`<div class="formula">Cp = (USL − LSL) ÷ 6σ · Cpk = min(USL − μ, μ − LSL) ÷ 3σ</div><p>Cp: could the process fit if centred? Cpk: does it, where it actually sits? Common requirement: Cpk ≥ 1.33 (automotive often 1.67 for critical features).</p>`},
+  {h:'Sigma levels',b:`<p>"Six Sigma" quality ≈ 3.4 defects per million opportunities, assuming a 1.5σ long-term shift. A 3σ process produces about 66,800 DPMO long-term.</p>`},
+  {h:'Measure the measurement',b:`<p>Before trusting data, run a gauge R&R: if measurement variation is large relative to tolerance, you cannot see the process clearly.</p>`},
+  {h:'Lean Six Sigma',b:`<p>Lean removes waste and speeds flow; Six Sigma reduces variation. Most programmes combine them: flow problems need lean, variation problems need statistics.</p>`}],
+ quiz:[
+  {q:'USL 10.1, LSL 9.9, σ 0.025. Cp?',o:['1.33','2.67','0.75','1.0'],a:0,w:'0.2 ÷ 0.15 = 1.33.'},
+  {q:'Same process, mean 10.05. Cpk?',o:['0.67','1.33','2.0','1.0'],a:0,w:'min(0.05, 0.15) ÷ 0.075 = 0.67.'},
+  {q:'Cp high but Cpk low means…',o:['Too much variation','The process is off-centre','The spec is wrong','Nothing'],a:1,w:'Centre it first: usually the cheaper fix.'},
+  {q:'DMAIC stands for…',o:['Design, Make, Assess, Inspect, Close','Define, Measure, Analyse, Improve, Control','Detect, Monitor, Act, Improve, Check','Define, Map, Analyse, Implement, Celebrate'],a:1,w:'The Six Sigma improvement cycle.'},
+  {q:'Six Sigma quality is about…',o:['6 defects per hundred','3.4 defects per million opportunities','Zero defects','1% defects'],a:1,w:'With the conventional 1.5σ shift.'},
+  {q:'Why do a gauge R&R first?',o:['It is required by ISO only','To check the measurement system can see the variation you care about','To calibrate prices','It replaces SPC'],a:1,w:'Bad measurement leads to wrong conclusions.'}],
+ srs:[{q:'Cp and Cpk formulas?',a:'Cp = (USL−LSL)/6σ; Cpk = min(USL−μ, μ−LSL)/3σ.'},{q:'DMAIC?',a:'Define, Measure, Analyse, Improve, Control.'},{q:'Six Sigma DPMO?',a:'≈ 3.4 defects per million opportunities (with 1.5σ shift).'},{q:'Common Cpk requirement?',a:'≥ 1.33 (1.67 for critical automotive features).'}],
+ read:[{t:'Process capability index',s:'Wikipedia',u:WIKI('Process_capability_index')},{t:'Six Sigma',s:'Wikipedia',u:WIKI('Six_Sigma')},{t:'NIST/SEMATECH e-Handbook of Statistical Methods',s:'NIST',n:'Process capability and SPC chapters',u:'https://www.itl.nist.gov/div898/handbook/'}]},
+
+{id:'e08',track:'eng',title:'Statistical process control',mins:30,blurb:'Separate signal from noise with control charts.',
+ lab:{key:'spc',name:'X̄ control chart: find the signal',intro:'New data every time. Spot the first out-of-control subgroup.'},
+ cards:[
+  {h:'Common vs special causes',b:`<p>Shewhart: every process varies. <b>Common-cause</b> variation is the system's natural noise; <b>special causes</b> are assignable events (a worn tool, a new batch). Control charts tell them apart.</p>`},
+  {h:'X̄–R charts',b:`<div class="formula">UCL/LCL (X̄) = X̿ ± A₂R̄ · UCL (R) = D₄R̄ · LCL (R) = D₃R̄</div><p>For subgroups of 5: A₂ = 0.577, D₃ = 0, D₄ = 2.114. Use X̄–R for continuous measurements in small subgroups.</p>`},
+  {h:'Out-of-control rules',b:`<ul><li>A point beyond a control limit</li><li>7 (or 8) consecutive points on one side of the centre line</li><li>6 points steadily rising or falling</li><li>2 of 3 points beyond 2σ on the same side</li></ul>`},
+  {h:'Control limits ≠ spec limits',b:`<p>Control limits come from the process (voice of the process); spec limits come from the customer (voice of the customer). A process can be in control and still incapable.</p>`},
+  {h:'Don\'t tamper',b:`<p>Adjusting a stable process in response to common-cause noise increases variation (Deming's funnel experiment). React only to signals.</p>`}],
+ quiz:[
+  {q:'X̿ 50, R̄ 2, n = 5 (A₂ 0.577). UCL for X̄?',o:['51.15','52','50.58','54.2'],a:0,w:'50 + 0.577 × 2 = 51.15.'},
+  {q:'Eight points in a row above the centre line suggest…',o:['Normal noise','A process shift (special cause)','Good quality','Bad specifications'],a:1,w:'A run rule signal.'},
+  {q:'Control limits are based on…',o:['Customer specs','The process\'s own variation','Management targets','Industry averages'],a:1,w:'Voice of the process.'},
+  {q:'Adjusting a stable process after every reading…',o:['Reduces variation','Increases variation (tampering)','Has no effect','Is required'],a:1,w:'Deming\'s funnel.'},
+  {q:'A process in control is always capable.',o:['True','False'],a:1,w:'Stable, yes; within spec, not necessarily.'},
+  {q:'For defect proportions you would use…',o:['X̄–R chart','p-chart','Gantt chart','Pareto only'],a:1,w:'Attribute data use p or np charts.'}],
+ srs:[{q:'Common vs special cause?',a:'Common: inherent system noise. Special: assignable event to find and fix.'},{q:'X̄ chart limits?',a:'X̿ ± A₂R̄ (A₂ = 0.577 for n = 5).'},{q:'Two key run rules?',a:'Point beyond a limit; 7–8 consecutive points on one side.'},{q:'Control vs spec limits?',a:'Control = voice of process; spec = voice of customer.'}],
+ read:[{t:'NIST e-Handbook: process control',s:'NIST',u:'https://www.itl.nist.gov/div898/handbook/'},{t:'Control chart',s:'Wikipedia',u:WIKI('Control_chart')},{t:'Western Electric rules',s:'Wikipedia',u:WIKI('Western_Electric_rules')}]},
+
+{id:'e09',track:'eng',title:'Quality systems: FMEA and root cause',mins:30,blurb:'Prevent failures before they happen; find the true cause when they do.',
+ lab:{key:'fmea',name:'FMEA builder',intro:'Rate five pump-assembly failure modes and drive every RPN below 100.'},
+ cards:[
+  {h:'FMEA',b:`<p>Failure Mode and Effects Analysis: for each step, list how it could fail, the effect, causes and controls. Rate Severity, Occurrence, Detection (1–10).</p><div class="formula">RPN = S × O × D</div>`},
+  {h:'Using RPN well',b:`<p>Prioritise high RPN but also any high severity (9–10 = safety or regulatory). Newer standards (AIAG-VDA) use Action Priority tables instead of raw RPN for this reason.</p>`},
+  {h:'Root-cause tools',b:`<ul><li><b>5 Whys:</b> keep asking why until you reach a process cause you can fix.</li><li><b>Fishbone (Ishikawa):</b> brainstorm causes by Man, Machine, Method, Material, Measurement, Environment.</li><li><b>Pareto:</b> 80% of problems often come from 20% of causes.</li></ul>`},
+  {h:'8D problem solving',b:`<p>Common in automotive: team, describe, contain, root cause, corrective action, validate, prevent recurrence, recognise the team. Containment protects the customer while you investigate.</p>`},
+  {h:'ISO 9001',b:`<p>A quality management system standard: process approach, risk-based thinking, documented procedures, internal audits, management review, continual improvement. Certification is often a condition for supplying large Saudi buyers.</p>`}],
+ quiz:[
+  {q:'S 8, O 4, D 5. RPN?',o:['17','160','32','40'],a:1,w:'8 × 4 × 5 = 160.'},
+  {q:'Which rating usually changes only with a design change?',o:['Severity','Occurrence','Detection','RPN'],a:0,w:'Severity is about the effect, not the cause.'},
+  {q:'A failure mode with S 10, O 2, D 2 (RPN 40) should…',o:['Be ignored','Still be addressed because severity is critical','Wait for RPN > 100','Be deleted'],a:1,w:'Safety-critical effects need action regardless.'},
+  {q:'The 6 Ms of a fishbone include…',o:['Money, Marketing, Media','Man, Machine, Method, Material, Measurement, Mother nature (environment)','Mission, Metrics, Meetings','Make, Move, Measure'],a:1,w:'Categories to structure cause brainstorming.'},
+  {q:'In 8D, containment is done to…',o:['Find the root cause','Protect the customer while investigating','Close the case','Reward the team'],a:1,w:'Stop bad parts escaping first.'},
+  {q:'Lowering Detection rating means…',o:['Defects become harder to detect','Better ability to detect before the customer','Higher severity','Fewer failures occur'],a:1,w:'D = 1 means almost certain detection.'}],
+ srs:[{q:'RPN?',a:'Severity × Occurrence × Detection.'},{q:'5 Whys?',a:'Ask "why" repeatedly until reaching a fixable process cause.'},{q:'Fishbone categories?',a:'Man, Machine, Method, Material, Measurement, Environment.'},{q:'8D first actions?',a:'Form team, describe problem, contain (protect customer) before root cause.'}],
+ read:[{t:'Failure mode and effects analysis',s:'Wikipedia',u:WIKI('Failure_mode_and_effects_analysis')},{t:'Ishikawa diagram',s:'Wikipedia',u:WIKI('Ishikawa_diagram')},{t:'ISO 9001 quality management',s:'ISO',n:'The 2015 edition has been replaced by ISO 9001:2026',u:'https://www.iso.org/iso-9001-quality-management.html'}]},
+
+{id:'e10',track:'eng',title:'Demand forecasting',mins:30,blurb:'Moving averages, exponential smoothing and forecast error.',
+ lab:{key:'forecast',name:'Forecasting workbench',intro:'Fit two simple methods to a year of demand with a Ramadan peak.'},
+ cards:[
+  {h:'Forecasts are always wrong',b:`<p>The goal is to be less wrong, know how wrong, and plan for it. Aggregate forecasts (families, regions, longer horizons) are more accurate than item-level ones.</p>`},
+  {h:'Time-series methods',b:`<ul><li><b>Moving average:</b> mean of the last n periods.</li><li><b>Exponential smoothing:</b> F_{t+1} = αA_t + (1 − α)F_t.</li><li><b>Holt/Winters:</b> add trend and seasonality.</li></ul>`},
+  {h:'Error metrics',b:`<div class="formula">MAD = mean |A − F| · MAPE = mean |A − F| ÷ A · Bias = mean (A − F)</div><p>Track bias: a forecast that is consistently high or low is worse than a noisy one.</p>`},
+  {h:'Seasonality in the Kingdom',b:`<p>Ramadan, Eid, Hajj, school terms and summer heat drive strong seasonal patterns, and the Hijri calendar shifts about 11 days a year against the Gregorian one. Seasonal indices must follow the right calendar.</p>`},
+  {h:'S&OP',b:`<p>Sales and Operations Planning aligns the demand plan, supply plan and financial plan monthly, with an executive decision meeting. Forecasting is one input, not the whole process.</p>`}],
+ quiz:[
+  {q:'Demand 100, 120, 110. Three-period moving average forecast?',o:['110','120','100','330'],a:0,w:'(100 + 120 + 110) ÷ 3.'},
+  {q:'α = 0.3, last forecast 100, actual 120. Next forecast?',o:['106','114','120','100'],a:0,w:'0.3 × 120 + 0.7 × 100 = 106.'},
+  {q:'A high α makes the forecast…',o:['Slower to react','Faster to react but noisier','Seasonal','Unbiased'],a:1,w:'More weight on the latest actual.'},
+  {q:'Bias measures…',o:['Average absolute error','Systematic over- or under-forecasting','Seasonality','Volatility'],a:1,w:'Mean signed error.'},
+  {q:'Why do Ramadan peaks move each Gregorian year?',o:['Random','The Hijri calendar is about 11 days shorter','Climate','Promotions'],a:1,w:'Use Hijri-aware seasonal indices.'},
+  {q:'Forecasts are more accurate when…',o:['More detailed (SKU, daily)','Aggregated (family, monthly)','Made by one person','Made further ahead'],a:1,w:'Errors partly cancel in aggregates.'}],
+ srs:[{q:'Exponential smoothing?',a:'F(t+1) = αA(t) + (1−α)F(t).'},{q:'MAPE?',a:'Mean of |actual − forecast| ÷ actual.'},{q:'Why track bias?',a:'Systematic error leads to chronic over- or under-stocking.'},{q:'S&OP?',a:'Monthly process aligning demand, supply and financial plans with executive decisions.'}],
+ read:[{t:'Forecasting: Principles and Practice',s:'Hyndman & Athanasopoulos (free online)',u:'https://otexts.com/fpp3/'},{t:'Exponential smoothing',s:'Wikipedia',u:WIKI('Exponential_smoothing')},{t:'Sales and operations planning',s:'HBR search',u:HBRS('sales and operations planning')}]},
+
+{id:'e11',track:'eng',title:'Inventory: EOQ and safety stock',mins:30,blurb:'How much to order, when to order, and how much buffer to hold.',
+ lab:{key:'eoq',name:'EOQ, safety stock and reorder point',intro:'Explore the total-cost curve and the price of service level.'},
+ cards:[
+  {h:'Why hold inventory?',b:`<p>Cycle stock (ordering in batches), safety stock (uncertainty), pipeline stock (in transit), anticipation stock (seasons, Ramadan) and decoupling stock between processes.</p>`},
+  {h:'EOQ',b:`<div class="formula">EOQ = √(2DS ÷ H)</div><p>Balances ordering cost (falls with bigger orders) and holding cost (rises). The curve is flat near the optimum: 20% off EOQ costs little.</p>`},
+  {h:'Safety stock',b:`<div class="formula">SS = z × σ_d × √L</div><p>z from the service level (95% → 1.645; 99% → 2.33). Going from 95% to 99% raises safety stock about 40%.</p>`},
+  {h:'Reorder point',b:`<div class="formula">ROP = d × L + SS</div><p>Order when inventory position (on hand + on order − backorders) reaches the ROP.</p>`},
+  {h:'ABC classification',b:`<p>Typically 20% of items are 80% of value (A items): manage tightly. C items: simple rules, larger safety stocks. Combine with XYZ (demand variability) for policy.</p>`}],
+ quiz:[
+  {q:'D 10,000, S 50, H 4. EOQ?',o:['500','250','1,000','5,000'],a:0,w:'√(2 × 10,000 × 50 ÷ 4) = √250,000 = 500.'},
+  {q:'z 1.645, σ_d 20, L 9 days. Safety stock?',o:['about 99','about 296','30','180'],a:0,w:'1.645 × 20 × 3 = 98.7.'},
+  {q:'d 50/day, L 9, SS 99. ROP?',o:['549','450','99','500'],a:0,w:'450 + 99.'},
+  {q:'Raising service level from 95% to 99%…',o:['Barely changes safety stock','Raises it about 40%','Halves it','Eliminates it'],a:1,w:'z goes from 1.645 to 2.33.'},
+  {q:'A items in ABC analysis are…',o:['Cheapest items','The few items with most of the value','Obsolete items','All items equally'],a:1,w:'Manage them most closely.'},
+  {q:'Ordering 20% more than EOQ raises total cost…',o:['About 20%','Only slightly','By half','To infinity'],a:1,w:'The cost curve is flat near the minimum.'}],
+ srs:[{q:'EOQ?',a:'√(2DS/H).'},{q:'Safety stock?',a:'z × σ_d × √L.'},{q:'Reorder point?',a:'Average demand during lead time + safety stock.'},{q:'ABC?',a:'Classify by value: A few items, most value — manage tightly.'}],
+ read:[{t:'Economic order quantity',s:'Wikipedia',u:WIKI('Economic_order_quantity')},{t:'Safety stock',s:'Wikipedia',u:WIKI('Safety_stock')},{t:'MIT OCW: supply chain planning',s:'MIT OpenCourseWare',u:OCW('supply chain planning')}]},
+
+{id:'e12',track:'eng',title:'Supply-chain design, bullwhip and localisation',mins:35,blurb:'Why small demand changes become big swings upstream, and how Saudi localisation reshapes networks.',
+ lab:{key:'bullwhip',name:'Bullwhip simulator',intro:'A four-tier chain reacts to a demand step. Tame the factory\'s orders.'},
+ cards:[
+  {h:'The bullwhip effect',b:`<p>Order variability grows as you move upstream. Causes: forecasting from orders instead of real demand, order batching, price promotions, rationing games, and long lead times.</p>`},
+  {h:'Cures',b:`<ul><li>Share point-of-sale data and forecasts</li><li>Shorter lead times</li><li>Smaller, more frequent orders</li><li>Everyday low pricing instead of promotions</li><li>Vendor-managed inventory</li></ul>`},
+  {h:'Network design',b:`<p>Where to put plants and warehouses trades off transport cost, service time, inventory (more sites = more safety stock), tariffs and resilience. Total landed cost, not unit price, decides sourcing.</p>`},
+  {h:'Saudi localisation',b:`<p>Local-content requirements in government and giga-project procurement, IKTVA-style supplier programmes in energy, and industrial-fund incentives push manufacturers to localise. Strong localisation cases combine an anchor buyer, scale, a supplier base and skills.</p>`},
+  {h:'Resilience',b:`<p>Single-source, long, just-in-time chains are efficient but fragile. Dual sourcing, regional buffers and supplier visibility cost money; the question is how much disruption risk the business can absorb.</p>`}],
+ quiz:[
+  {q:'The bullwhip effect means…',o:['Demand falls upstream','Order variability increases upstream','Prices rise downstream','Inventory disappears'],a:1,w:'Small retail changes become large factory swings.'},
+  {q:'Which reduces bullwhip?',o:['Big quarterly promotions','Sharing point-of-sale data','Longer lead times','Bigger batches'],a:1,w:'Upstream sees real demand.'},
+  {q:'More warehouses usually means…',o:['Less total inventory','More total safety stock, shorter delivery times','Lower transport cost always','No trade-offs'],a:1,w:'Inventory pooling is lost.'},
+  {q:'Sourcing decisions should compare…',o:['Unit price only','Total landed cost and risk','Supplier logos','Lead time only'],a:1,w:'Freight, duties, inventory, quality, risk.'},
+  {q:'A strong localisation case usually needs…',o:['Only a subsidy','Anchor demand, scale, suppliers and skills','A large office','A foreign brand'],a:1,w:'Incentives alone rarely make a plant viable.'},
+  {q:'Rationing games cause bullwhip because…',o:['Buyers over-order when supply is short','Prices fall','Lead times shrink','Forecasts improve'],a:0,w:'Inflated orders distort demand signals.'}],
+ srs:[{q:'Four causes of bullwhip?',a:'Forecasting from orders, batching, promotions, rationing (plus long lead times).'},{q:'Bullwhip cures?',a:'Share POS data, shorten lead times, smaller orders, stable pricing, VMI.'},{q:'Total landed cost?',a:'Unit price + freight + duties + inventory + quality + risk costs.'},{q:'Localisation success factors?',a:'Anchor demand, scale, supplier base, skills, plus incentives.'}],
+ read:[{t:'The Bullwhip Effect in Supply Chains',s:'MIT Sloan Management Review, 1997',n:'Lee, Padmanabhan & Whang',u:'https://sloanreview.mit.edu/article/the-bullwhip-effect-in-supply-chains/'},{t:'Bullwhip effect',s:'Wikipedia',u:WIKI('Bullwhip_effect')},{t:'Supply chain resilience',s:'HBR search',u:HBRS('supply chain resilience')}]},
+
+{id:'e13',track:'eng',title:'Operations research I: linear programming',mins:35,blurb:'Optimise a product mix under capacity constraints.',
+ lab:{key:'lp',name:'Two-variable LP solver',intro:'See the feasible region and evaluate its corners.'},
+ cards:[
+  {h:'Formulation',b:`<p>Decision variables (what you choose), objective (maximise profit or minimise cost), constraints (capacity, demand, materials), and non-negativity. Getting the formulation right is most of the work.</p>`},
+  {h:'Corner-point principle',b:`<p>For a linear programme, the optimum lies at a corner (vertex) of the feasible region, or along an edge if two corners tie. The simplex method walks from corner to better corner.</p>`},
+  {h:'Binding constraints and shadow prices',b:`<p>A binding constraint is used fully at the optimum. Its shadow price is the increase in the objective from one more unit of that resource — the value of an extra machine hour or shift.</p>`},
+  {h:'Sensitivity analysis',b:`<p>How far can a profit coefficient or resource change before the optimal mix changes? Solvers report these ranges; managers should read them before acting.</p>`},
+  {h:'Where LP is used',b:`<p>Product mix, blending (refining, feed, cement raw mix), transportation and distribution, workforce scheduling, and capital budgeting (with integer variables). Excel Solver handles most business-sized problems.</p>`}],
+ quiz:[
+  {q:'In an LP, the optimum is found…',o:['In the middle of the feasible region','At a corner point (or along an edge)','Outside the region','Anywhere'],a:1,w:'Linear objectives push to the boundary.'},
+  {q:'A constraint with slack at the optimum has a shadow price of…',o:['Zero','Infinity','One','Negative always'],a:0,w:'Extra units of an unused resource add nothing.'},
+  {q:'Shadow price of finishing hours is SAR 25. Overtime costs SAR 40/hour. Add overtime?',o:['Yes','No: it costs more than it earns','Only on weekends','Cannot tell'],a:1,w:'Value per hour (25) is below cost (40).'},
+  {q:'Which is a decision variable in a product-mix LP?',o:['Machine hours available','Number of chairs to make','Profit per chair','Market size'],a:1,w:'What management chooses.'},
+  {q:'Blending a refinery or cement raw mix is a typical use of…',o:['Queuing theory','Linear programming','CPM','SPC'],a:1,w:'Minimise cost subject to quality specs.'},
+  {q:'Corners: (0,80) → 9,600; (40,80) → 12,400; (120,0) → 8,400. Optimum?',o:['(0,80)','(40,80)','(120,0)','(0,0)'],a:1,w:'Highest objective among corners.'}],
+ srs:[{q:'Parts of an LP?',a:'Decision variables, objective, constraints, non-negativity.'},{q:'Corner-point principle?',a:'An LP optimum lies at a vertex of the feasible region (or along an edge on ties).'},{q:'Shadow price?',a:'Objective improvement from one more unit of a binding constraint\'s resource.'},{q:'Slack constraint shadow price?',a:'Zero.'}],
+ read:[{t:'MIT 15.053 Optimization Methods in Management Science',s:'MIT OpenCourseWare',u:OCW('optimization methods in management science')},{t:'Linear programming',s:'Wikipedia',u:WIKI('Linear_programming')},{t:'Shadow price',s:'Wikipedia',u:WIKI('Shadow_price')}]},
+
+{id:'e14',track:'eng',title:'Operations research II: queuing and scheduling',mins:30,blurb:'Waiting lines, server staffing and sequencing jobs.',
+ lab:{key:'queue',name:'M/M/c queue calculator',intro:'Staff a hospital pharmacy to a waiting-time target.'},
+ cards:[
+  {h:'Queue basics',b:`<p>Arrival rate λ, service rate μ per server, c servers. Utilisation ρ = λ ÷ (cμ). If ρ ≥ 1, the queue grows forever.</p>`},
+  {h:'Waiting explodes near 100%',b:`<p>For a single server, average wait in queue Wq = ρ ÷ (μ − λ). At 80% utilisation, waits are 4× the service time; at 95%, 19×. Small capacity additions near saturation cut waiting dramatically.</p>`},
+  {h:'Pooling',b:`<p>One shared queue feeding several servers beats separate queues per server — the same staff, shorter average waits (think airport check-in vs supermarket lanes).</p>`},
+  {h:'Johnson\'s rule',b:`<p>Two machines in sequence, n jobs: pick the shortest remaining time; if it is on machine 1, schedule that job as early as possible; if on machine 2, as late as possible. Minimises makespan.</p>`},
+  {h:'Dispatch rules',b:`<p>Shortest processing time minimises average flow time; earliest due date minimises maximum lateness; first come first served is fair but rarely optimal.</p>`}],
+ quiz:[
+  {q:'λ = 50/hr, μ = 12/hr per server, c = 5. Utilisation?',o:['83%','120%','60%','100%'],a:0,w:'50 ÷ 60.'},
+  {q:'Single server, λ = 8, μ = 10 per hour. Wq?',o:['0.4 h (24 min)','0.1 h','0.8 h','2 h'],a:0,w:'ρ = 0.8; Wq = 0.8 ÷ (10 − 8) = 0.4 h.'},
+  {q:'Pooling queues generally…',o:['Increases waits','Reduces average waits with the same staff','Has no effect','Needs more servers'],a:1,w:'Servers are never idle while someone waits elsewhere.'},
+  {q:'Johnson\'s rule minimises…',o:['Average lateness','Makespan on two machines','Cost','Number of jobs'],a:1,w:'Total completion time for a two-stage flow shop.'},
+  {q:'Which rule minimises average flow time?',o:['FCFS','SPT (shortest processing time)','EDD','Random'],a:1,w:'Short jobs first.'},
+  {q:'If ρ ≥ 1…',o:['Waits are short','The queue grows without limit','Servers are idle','Johnson\'s rule applies'],a:1,w:'Demand exceeds capacity.'}],
+ srs:[{q:'Utilisation in M/M/c?',a:'ρ = λ ÷ (cμ).'},{q:'M/M/1 waiting time?',a:'Wq = ρ ÷ (μ − λ).'},{q:'Johnson\'s rule?',a:'Shortest time first; if on machine 1 schedule early, if on machine 2 schedule late.'},{q:'SPT vs EDD?',a:'SPT minimises average flow time; EDD minimises maximum lateness.'}],
+ read:[{t:'Erlang C / queueing theory',s:'Wikipedia',u:WIKI('Queueing_theory')},{t:'Johnson\'s rule',s:'Wikipedia',u:WIKI('Johnson%27s_rule')},{t:'MIT OCW: queues and probabilistic models',s:'MIT OpenCourseWare',u:OCW('queueing')}]},
+
+{id:'e15',track:'eng',title:'Industry 4.0',mins:30,blurb:'IIoT, digital twins, automation — and the business case behind them.',
+ lab:{key:'i40',name:'Automation business case',intro:'Test whether a robotic cell pays back, and which benefit it hinges on.'},
+ cards:[
+  {h:'What Industry 4.0 means',b:`<p>Connecting machines, products and people through sensors, data platforms and analytics: IIoT, cloud and edge computing, advanced robotics, additive manufacturing, digital twins and AI-driven decisions.</p>`},
+  {h:'Digital twins',b:`<p>A live virtual model of an asset, line or plant fed by real data. Uses: predictive maintenance, what-if simulation, virtual commissioning, operator training.</p>`},
+  {h:'Start with the problem',b:`<p>Pilots fail when they start with technology. Start with a costly loss (downtime, scrap, energy) on a specific line, prove value in weeks, then scale. "Pilot purgatory" is the common failure mode.</p>`},
+  {h:'The business case',b:`<p>Count labour, but also quality, uptime, energy, safety, flexibility and the capacity to run extra shifts. Include integration, cybersecurity, maintenance and skills costs that vendor quotes leave out.</p>`},
+  {h:'The Saudi context',b:`<p>National programmes (e.g., the industrial strategy and Future Factories-type initiatives) encourage automation as Saudisation targets favour higher-skilled jobs. Skills — technicians, data engineers — are often the binding constraint.</p>`}],
+ quiz:[
+  {q:'A digital twin is…',o:['A backup server','A live virtual model of an asset fed by real data','A duplicate factory','A CAD drawing only'],a:1,w:'It mirrors the real asset\'s state.'},
+  {q:'"Pilot purgatory" means…',o:['Pilots that never scale','Pilots that fail on day one','Pilots run by pilots','Successful scaling'],a:0,w:'Many I4.0 pilots never reach full deployment.'},
+  {q:'Best starting point for an Industry 4.0 programme?',o:['Buy the newest platform','A specific costly loss on a specific line','Automate everything at once','Hire a vendor'],a:1,w:'Value first, technology second.'},
+  {q:'Commonly underestimated costs?',o:['Robot price','Integration, cybersecurity, skills and maintenance','Electricity','Floor space'],a:1,w:'They often decide the real return.'},
+  {q:'Capex SAR 12m, net benefit SAR 3.4m/yr. Payback?',o:['3.5 years','0.28 years','4 years','12 years'],a:0,w:'12 ÷ 3.4 ≈ 3.5.'},
+  {q:'Predictive maintenance relies on…',o:['Fixed calendars','Sensor data and models predicting failure','Waiting for breakdowns','Manual checklists only'],a:1,w:'Condition data → intervene before failure.'}],
+ srs:[{q:'Industry 4.0 core technologies?',a:'IIoT, cloud/edge, robotics, additive, digital twins, AI/analytics.'},{q:'Digital twin uses?',a:'Predictive maintenance, what-if simulation, virtual commissioning, training.'},{q:'Pilot purgatory?',a:'Pilots that show promise but never scale.'},{q:'Hidden costs in automation cases?',a:'Integration, cybersecurity, maintenance, software and skills.'}],
+ read:[{t:'Digital twin',s:'Wikipedia',u:WIKI('Digital_twin')},{t:'Industry 4.0',s:'HBR search',u:HBRS('industry 4.0 manufacturing')},{t:'MIT OCW: manufacturing and automation',s:'MIT OpenCourseWare',u:OCW('automation')}]},
+
+{id:'e16',track:'eng',title:'Project management: CPM and earned value',mins:35,blurb:'Critical path, slack and whether a project is on time and budget.',
+ lab:{key:'cpm',name:'Critical path + EVM tracker',intro:'Find the critical path of a commissioning project, then read its earned value.'},
+ cards:[
+  {h:'Plan the work',b:`<p>Work breakdown structure (deliverables → work packages), durations, dependencies, resources. A good WBS is MECE: all the work, no overlaps.</p>`},
+  {h:'Critical path method',b:`<p>Forward pass gives earliest start/finish; backward pass gives latest. Slack = LS − ES. Tasks with zero slack form the critical path: any delay there delays the project.</p>`},
+  {h:'PERT',b:`<div class="formula">Expected time = (optimistic + 4 × most likely + pessimistic) ÷ 6</div><p>Adds uncertainty to durations; the critical path can shift when estimates change.</p>`},
+  {h:'Earned value',b:`<ul><li>PV: planned value of work scheduled</li><li>EV: budgeted value of work actually done</li><li>AC: actual cost</li></ul><div class="formula">SPI = EV ÷ PV · CPI = EV ÷ AC · EAC ≈ BAC ÷ CPI</div>`},
+  {h:'Compressing schedules',b:`<p>Crashing adds resources to critical tasks (costs money); fast-tracking overlaps tasks (adds risk). Only critical-path tasks shorten the project.</p>`}],
+ quiz:[
+  {q:'Slack of a critical task is…',o:['Positive','Zero','Negative always','Equal to duration'],a:1,w:'By definition.'},
+  {q:'PERT: optimistic 4, most likely 6, pessimistic 14. Expected?',o:['7','6','8','24'],a:0,w:'(4 + 24 + 14) ÷ 6 = 7.'},
+  {q:'EV 1,000, PV 1,200. SPI?',o:['0.83','1.2','200','1.0'],a:0,w:'Behind schedule.'},
+  {q:'EV 1,000, AC 1,150. CPI?',o:['0.87','1.15','150','1.0'],a:0,w:'Over budget.'},
+  {q:'BAC 2,000, CPI 0.87. EAC?',o:['about 2,300','1,740','2,000','2,870'],a:0,w:'2,000 ÷ 0.87 ≈ 2,299.'},
+  {q:'Shortening a non-critical task…',o:['Shortens the project','Does not shorten the project','Always raises cost','Moves the critical path'],a:1,w:'It only adds slack.'}],
+ srs:[{q:'Slack?',a:'LS − ES (or LF − EF); zero on the critical path.'},{q:'PERT expected time?',a:'(o + 4m + p) ÷ 6.'},{q:'SPI and CPI?',a:'SPI = EV ÷ PV; CPI = EV ÷ AC; < 1 means behind / over budget.'},{q:'EAC (typical)?',a:'BAC ÷ CPI.'}],
+ read:[{t:'Critical path method',s:'Wikipedia',u:WIKI('Critical_path_method')},{t:'Earned value management',s:'Wikipedia',u:WIKI('Earned_value_management')},{t:'Project Management Institute',s:'PMI',u:'https://www.pmi.org/'}]}
+]);
+
 /* ================= MBA Core track: missions ================= */
-const INV=t=>'https://www.investopedia.com/terms/'+t;
-const OCW=q=>'https://ocw.mit.edu/search/?q='+encodeURIComponent(q);
-const DAMO='https://pages.stern.nyu.edu/~adamodar/';
 addMissions([
 {id:'m01',track:'mba',title:'Reading the three statements',mins:35,blurb:'Income statement, balance sheet and cash flow — and the links that tie them together.',
  lab:{key:'three',name:'Linked three-statement model',intro:'Change any driver and watch profit, cash and the balance sheet move together.'},
@@ -1481,6 +1821,133 @@ addMissions([
  srs:[{q:'R²?',a:'Share of variance in y explained by the model; not causation.'},{q:'p-value?',a:'Probability of a result at least this extreme if there is no real effect.'},{q:'A/B test rules?',a:'Randomise, change one thing, fix sample size and stopping rule in advance.'},{q:'Simpson\'s paradox?',a:'A trend in groups reverses when the groups are combined.'}],
  read:[{t:'A Refresher on Regression Analysis',s:'Harvard Business Review, 2015',u:'https://hbr.org/2015/11/a-refresher-on-regression-analysis'},{t:'A Refresher on A/B Testing',s:'Harvard Business Review, 2017',u:'https://hbr.org/2017/06/a-refresher-on-ab-testing'},{t:'MIT OCW: statistics for applications',s:'MIT OpenCourseWare',u:OCW('statistics')}]}
 ]);
+
+/* ================= Engineering Refresher labs ================= */
+/* generic classification drill */
+function classifyLab(el,done,cfg){let html=`<p class="note">${cfg.intro||''}</p>`+cfg.items.map((it,i)=>`<div style="margin:8px 0"><div style="font-size:.93rem">${it[0]}</div><select class="tin" data-c="${i}" style="margin-top:4px"><option value="">— choose —</option>${cfg.cats.map(c=>`<option>${c}</option>`).join('')}</select></div>`).join('')+`<div class="ctl"><button class="sbtn" id="cc">Check</button></div><div id="cm"></div>`;el.innerHTML=html;
+ $('#cc',el).onclick=()=>{let n=0;$$('[data-c]',el).forEach(s=>{const it=cfg.items[+s.dataset.c],g=s.value===it[1];if(g)n++;s.style.borderColor=s.value?g?'var(--ok)':'var(--bad)':'';s.title=it[2]||''});const need=cfg.pass||Math.ceil(cfg.items.length*.75);
+  $('#cm',el).innerHTML=`<div class="readout ${n>=need?'ok':''}"><b>${n}/${cfg.items.length}.</b> ${cfg.why}</div>${cfg.items.map(it=>`<div class="note">• ${it[0].replace(/<[^>]+>/g,'').slice(0,60)}… → <b>${it[1]}</b>${it[2]?': '+it[2]:''}</div>`).join('')}`;if(n>=need)done()}}
+
+/* e01 — product-process matrix */
+LABS.ppm=(el,m,done)=>classifyLab(el,done,{intro:'Match each product to the process type that usually fits its volume and variety.',cats:['Project','Job shop','Batch','Assembly line','Continuous flow'],
+ items:[['A desalination plant built once for a client','Project','one-off, huge, at the customer site'],['Custom machined parts for 40 different pump models, 5–50 each','Job shop','high variety, low volume, routing differs per job'],['Bakery producing 12 bread types, each in runs of a few thousand','Batch','moderate variety, runs then changeover'],['Car assembly of one platform at 60 cars per hour','Assembly line','standard product, high volume, paced line'],['Petrochemical cracker producing ethylene','Continuous flow','commodity, very high volume, 24/7'],['Ready-mix concrete, mixed per order in shifts','Batch','discrete orders mixed in batches'],['Satellite assembled for a space agency','Project','one-of-a-kind, long duration'],['Bottled water filling at 30,000 bottles per hour','Continuous flow','near-continuous, highly automated']],
+ why:'Volume and variety move together: high variety needs flexible general-purpose equipment; high volume pays for dedicated, automated flow. Mismatches (a job shop making commodity volume) cost money.'});
+
+/* e02 — line simulation: variability and buffers */
+function lineSim(n,means,cv,buf,seed){const r=RNG(seed),K=means.length;const nrm=()=>{let u=0,v=0;while(!u)u=r();v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+ const S=Array.from({length:K},()=>new Float64Array(n)),D=Array.from({length:K},()=>new Float64Array(n));
+ for(let j=0;j<n;j++)for(let i=0;i<K;i++){const s=Math.max(i?D[i-1][j]:0,j?D[i][j-1]:0);const p=Math.max(.1*means[i],means[i]*(1+cv*nrm()));S[i][j]=s;let d=s+p;if(i<K-1&&j-buf-1>=0)d=Math.max(d,S[i+1][j-buf-1]);D[i][j]=d}
+ return n/D[K-1][n-1]}
+LABS.linesim=(el,m,done)=>calcLab(el,m,done,{inputs:[['t1','Station 1 mean time (s)',58],['t2','Station 2 mean time (s)',60],['t3','Station 3 mean time (s)',59],['cv','Variability (CV of time, %)',40],['b','Buffer slots between stations',0]],
+ compute:v=>{const means=[v.t1,v.t2,v.t3].map(x=>Math.max(1,x));const bn=Math.max(...means),ideal=3600/bn;const th=lineSim(2000,means,Math.max(0,v.cv)/100,Math.max(0,Math.round(v.b)),7)*3600;const ratio=th/ideal;
+  const curve=[0,1,2,3,5,8].map(b=>[b,lineSim(1500,means,Math.max(0,v.cv)/100,b,7)*3600/ideal*100]);
+  return{out:{ratio},html:`<div class="grid g3"><div class="stat"><small>Bottleneck capacity</small><b>${fmt(ideal,1)} /hr</b></div><div class="stat"><small>Simulated throughput</small><b>${fmt(th,1)} /hr</b></div><div class="stat"><small>Share of bottleneck rate</small><b>${pct(ratio)}</b></div></div>${plotXY({x0:0,x1:8,y0:Math.min(...curve.map(c=>c[1]))-5,y1:100,h:200,fx:t=>fmt(t),fy:t=>fmt(t)+'%',series:[{pts:curve,l:'throughput vs buffer'}],vlines:[[Math.min(8,v.b),'var(--navy2)','you']],xl:'buffer slots'})}<p class="note">2,000 units simulated with random processing times. Without buffers, a slow cycle at one station blocks or starves its neighbours.</p>`}},
+ challenge:{text:'This line is well balanced, which makes it fragile. With 40% variability, find the <b>smallest buffer</b> that gets throughput to <b>95% or more</b> of the bottleneck rate.',test:(v,o)=>o.ratio>=.95&&v.cv>=40,why:'Variability plus tight coupling destroys capacity. Buffers (or less variability: standard work, TPM) protect the bottleneck. Lean reduces variability first so it can then remove buffers.'}});
+
+/* e03 — line balancing with RPW */
+const LB={tasks:{A:[45,''],B:[11,'A'],C:[9,'B'],D:[50,''],E:[15,'D'],F:[12,'C'],G:[12,'C'],H:[12,'E'],I:[12,'E'],J:[8,'FGHI']},takt:60};
+function rpw(){const T=LB.tasks,ks=Object.keys(T);const succ=k=>{const s=new Set();const go=x=>ks.forEach(y=>{if(T[y][1].includes(x)&&!s.has(y)){s.add(y);go(y)}});go(k);return s};const w={};ks.forEach(k=>{w[k]=T[k][0]+[...succ(k)].reduce((a,y)=>a+T[y][0],0)});
+ const order=ks.slice().sort((a,b)=>w[b]-w[a]);const asg={},done=new Set();let st=1,load=0;while(done.size<ks.length){const c=order.find(k=>!done.has(k)&&[...T[k][1]].every(p=>done.has(p))&&load+T[k][0]<=LB.takt);if(c){asg[c]=st;load+=T[c][0];done.add(c)}else{st++;load=0}}return{asg,w}}
+LABS.balance=(el,m,done)=>{const T=LB.tasks,ks=Object.keys(T),tot=ks.reduce((a,k)=>a+T[k][0],0),nmin=Math.ceil(tot/LB.takt);const C=CUST('lb');C.a=C.a||{};
+ const draw=()=>{el.innerHTML=`<p class="note">Demand 480 units per 8-hour shift → <b>takt time ${LB.takt} s</b>. Total work content ${tot} s → theoretical minimum <b>${nmin} stations</b>. Assign each task to a station without breaking precedence or exceeding takt.</p><div class="tablewrap"><table class="t" style="min-width:420px"><tr><th>Task</th><th>Time (s)</th><th>Must follow</th><th>Station</th></tr>${ks.map(k=>`<tr><td><b>${k}</b></td><td>${T[k][0]}</td><td>${T[k][1].split('').join(', ')||'—'}</td><td><select class="tin" data-k="${k}" style="padding:4px 6px;max-width:90px"><option value="">—</option>${[1,2,3,4,5,6].map(s=>`<option ${C.a[k]==s?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')}</table></div><div class="ctl"><button class="sbtn" id="ck">Check balance</button><button class="sbtn alt" id="rp">Show RPW heuristic</button></div><div id="out"></div>`;
+  $$('[data-k]',el).forEach(s=>s.onchange=()=>{C.a[s.dataset.k]=s.value?+s.value:undefined;save()});
+  $('#ck',el).onclick=()=>{const a=C.a;const miss=ks.filter(k=>!a[k]);if(miss.length){$('#out',el).innerHTML=`<div class="readout bad">Assign every task (missing: ${miss.join(', ')}).</div>`;return}const errs=[];ks.forEach(k=>[...T[k][1]].forEach(p=>{if(a[p]>a[k])errs.push(`${k} is before its predecessor ${p}`)}));const ns=Math.max(...ks.map(k=>a[k]));const loads=Array.from({length:ns},(_,i)=>ks.filter(k=>a[k]===i+1).reduce((s,k)=>s+T[k][0],0));loads.forEach((l,i)=>{if(l>LB.takt)errs.push(`Station ${i+1} has ${l} s > takt`)});const used=loads.filter(l=>l>0).length,eff=tot/(used*LB.takt);
+   $('#out',el).innerHTML=`${bars(loads.map((l,i)=>({l:'St '+(i+1),v:l,c:l>LB.takt?'var(--bad)':'var(--gold2)'})),{h:180,f:x=>x+'s'})}<div class="readout ${errs.length?'bad':'ok'}">${errs.length?errs.join('<br>'):`<b>Valid balance: ${used} stations, efficiency ${pct(eff)}, balance delay ${pct(1-eff)}.</b> ${used<=nmin?'You hit the theoretical minimum.':'Can you do it with '+nmin+'?'}`}</div>`;if(!errs.length&&used<=nmin+1)done()};
+  $('#rp',el).onclick=()=>{const {asg,w}=rpw();$('#out',el).innerHTML=`<div class="model"><b>Ranked positional weight:</b> weight = task time + time of all tasks that follow it. Assign in descending weight, respecting precedence and takt.<br>${ks.slice().sort((a,b)=>w[b]-w[a]).map(k=>`${k} (${w[k]}) → station ${asg[k]}`).join(' · ')}</div>`}};draw()};
+
+/* e04 — value-stream map calculator */
+LABS.vsm=(el,m,done)=>calcLab(el,m,done,{inputs:[['dd','Daily customer demand (units)',400],['i1','Raw material stock (units)',4000],['c1','Stamping cycle time (s)',30],['i2','WIP after stamping (units)',2400],['c2','Welding cycle time (s)',45],['i3','WIP after welding (units)',1600],['c3','Assembly cycle time (s)',55],['i4','Finished goods (units)',1200]],
+ compute:v=>{const inv=[v.i1,v.i2,v.i3,v.i4],lt=inv.reduce((a,b)=>a+b/v.dd,0),va=v.c1+v.c2+v.c3,pce=va/(lt*8*3600);
+  return{out:{lt,pce},html:`<div class="row" style="gap:6px;flex-wrap:nowrap;overflow-x:auto;padding:6px 0">${inv.map((x,i)=>`<div style="text-align:center;min-width:64px"><div style="font-size:1.4rem;color:var(--gold)">▲</div><small>${fmt(x/v.dd,1)} days</small></div>${i<3?`<div class="stat" style="min-width:90px;text-align:center;padding:8px"><b style="font-size:1rem">${['Stamping','Welding','Assembly'][i]}</b><small>${[v.c1,v.c2,v.c3][i]} s</small></div>`:''}`).join('')}</div><div class="grid g3"><div class="stat"><small>Production lead time</small><b>${fmt(lt,1)} days</b></div><div class="stat"><small>Value-added time</small><b>${fmt(va)} s</b></div><div class="stat"><small>Process cycle efficiency</small><b>${(pce*100).toFixed(3)}%</b><small>(8-hour working days)</small></div></div><p class="note">Lead time = Σ inventory ÷ daily demand. Value is added for seconds; parts wait for days.</p>`}},
+ challenge:{text:'Cut production lead time to <b>10 days or less</b> by reducing inventory. Which buffer would you attack first, and why?',test:(v,o)=>o.lt<=10,why:'Inventory hides problems (breakdowns, quality, long changeovers). Lower it step by step and fix what surfaces — the future-state map is a plan for exactly that.'}});
+
+/* e05 — kanban and SMED */
+LABS.kanban=(el,m,done)=>calcLab(el,m,done,{inputs:[['d','Demand (units/hour)',120],['l','Replenishment lead time (hours)',4],['a','Safety factor (%)',10],['c','Units per container',50],['co','Changeover time (minutes)',90],['n','Changeovers per day',3],['ext','Share of changeover that can be done while running (%)',40]],
+ compute:v=>{const k=v.d*v.l*(1+v.a/100)/v.c,kr=Math.ceil(k),saved=v.co*v.ext/100*v.n;
+  return{out:{kr},html:`<div class="grid g2"><div class="stat"><div class="eyebrow">Kanban</div>${kv([['Cards needed (exact)',fmt(k,2)],['Cards to issue',fmt(kr),1],['Max inventory in loop',fmt(kr*v.c)+' units']])}<div class="formula">N = D × L × (1 + α) ÷ C</div></div><div class="stat"><div class="eyebrow">SMED</div>${kv([['Changeover now',v.co+' min'],['After converting external work',fmt(v.co*(1-v.ext/100))+' min'],['Production time released per day',fmt(saved)+' min',1]])}<p class="note">Internal setup stops the machine; external setup can be done while it runs. Step 1 of SMED is separating them.</p></div></div>`}},
+ challenge:{text:'With the current inputs, how many <b>kanban cards</b> should be issued?',ask:{ans:(v,o)=>o.kr,tol:0,dp:0,unit:'cards',why:()=>'Always round up. Then reduce cards over time: each card removed lowers inventory and exposes the next problem to solve.'}}});
+
+/* e06 — OEE */
+LABS.oee=(el,m,done)=>calcLab(el,m,done,{inputs:[['pt','Planned production time (min)',420],['dt','Downtime (min)',60],['ict','Ideal cycle time (s/unit)',30],['tc','Total units produced',620],['gc','Good units',590]],
+ compute:v=>{const rt=v.pt-v.dt,A=rt/v.pt,Pf=v.ict*v.tc/60/rt,Q=v.gc/v.tc,o=A*Pf*Q;const lossA=v.dt,lossP=rt-v.ict*v.tc/60,lossQ=(v.tc-v.gc)*v.ict/60;
+  return{out:{o},html:`<div class="grid g4 g2m"><div class="stat"><small>Availability</small><b>${pct(A)}</b></div><div class="stat"><small>Performance</small><b>${pct(Pf)}</b></div><div class="stat"><small>Quality</small><b>${pct(Q)}</b></div><div class="stat"><small>OEE</small><b>${pct(o)}</b></div></div>${bars([{l:'Planned',v:v.pt,c:'var(--navy2)'},{l:'Downtime',v:-lossA,c:'var(--bad)'},{l:'Speed loss',v:-lossP,c:'var(--bad)'},{l:'Quality loss',v:-lossQ,c:'var(--bad)'},{l:'Fully productive',v:v.gc*v.ict/60,c:'var(--ok)'}],{h:200,f:x=>fmt(x)+'m'})}<p class="note">Loss waterfall in minutes. ${Pf>1?'<b>Performance above 100% means the ideal cycle time is wrong.</b>':''}</p>`}},
+ challenge:{text:'Reach <b>OEE of 75%</b> without changing planned time or the ideal cycle time. First try cutting only downtime — and notice what happens.',test:(v,o,v0)=>o.o>=.75&&v.pt===v0.pt&&v.ict===v0.ict&&v.gc<=v.tc,why:'OEE = good units × ideal cycle ÷ planned time. Cutting downtime alone just turns the lost minutes into a performance loss; OEE only rises when the recovered time produces more good parts.'}});
+
+/* e07 — process capability */
+LABS.cpk=(el,m,done)=>calcLab(el,m,done,{inputs:[['lsl','Lower spec limit (mm)',9.90,.01],['usl','Upper spec limit (mm)',10.10,.01],['mu','Process mean (mm)',10.03,.005],['sd','Process standard deviation (mm)',.025,.001]],
+ compute:v=>{const cp=(v.usl-v.lsl)/(6*v.sd),cpk=Math.min(v.usl-v.mu,v.mu-v.lsl)/(3*v.sd),out=(1-ncdf((v.usl-v.mu)/v.sd))+ncdf((v.lsl-v.mu)/v.sd),ppm=out*1e6;const x0=Math.min(v.lsl,v.mu-4*v.sd)-v.sd,x1=Math.max(v.usl,v.mu+4*v.sd)+v.sd;const pts=Array.from({length:81},(_,i)=>{const x=x0+(x1-x0)*i/80;return[x,Math.exp(-(((x-v.mu)/v.sd)**2)/2)]});
+  return{out:{cpk},html:`<div class="grid g4 g2m"><div class="stat"><small>Cp</small><b>${fmt(cp,2)}</b></div><div class="stat"><small>Cpk</small><b>${fmt(cpk,2)}</b></div><div class="stat"><small>Out of spec</small><b>${fmt(ppm,ppm<10?1:0)} ppm</b></div><div class="stat"><small>Sigma level (short-term)</small><b>${fmt(3*cpk,1)}σ</b></div></div>${plotXY({x0,x1,y0:0,y1:1.1,h:190,fx:t=>t.toFixed(2),fy:()=>'',series:[{pts}],vlines:[[v.lsl,'var(--bad)','LSL'],[v.usl,'var(--bad)','USL'],[v.mu,'var(--navy2)','mean']]})}<div class="formula">Cp = (USL − LSL) ÷ 6σ · Cpk = min(USL − μ, μ − LSL) ÷ 3σ</div>`}},
+ challenge:{text:'The customer requires <b>Cpk ≥ 1.33</b>. Reach it. Is centring the process or reducing variation the cheaper first move here?',test:(v,o,v0)=>o.cpk>=1.33&&v.lsl===v0.lsl&&v.usl===v0.usl,why:'Centring (Cp vs Cpk gap) is usually a quick adjustment; reducing σ needs root-cause work. Check Cp first: if Cp is already ≥ 1.33, just centre.'}});
+
+/* e08 — SPC X-bar / R */
+LABS.spc=(el,m,done)=>{let seed=Date.now()%1e9;const run=()=>{const r=RNG(seed),nrm=()=>{let u=0;while(!u)u=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*r())};const k=12+Math.floor(r()*8),sh=.9;const sub=Array.from({length:25},(_,i)=>Array.from({length:5},()=>50+nrm()*1+(i>=k?sh*1.4:0)));
+  const xb=sub.map(s=>s.reduce((a,b)=>a+b,0)/5),R=sub.map(s=>Math.max(...s)-Math.min(...s));const base=xb.slice(0,10),rb=R.slice(0,10);const X=base.reduce((a,b)=>a+b,0)/10,Rb=rb.reduce((a,b)=>a+b,0)/10;const ucl=X+.577*Rb,lcl=X-.577*Rb;
+  let first=-1;for(let i=0;i<25&&first<0;i++){if(xb[i]>ucl||xb[i]<lcl)first=i+1;else if(i>=6){const w=xb.slice(i-6,i+1);if(w.every(x=>x>X)||w.every(x=>x<X))first=i+1}}
+  el.innerHTML=`<p class="note">25 subgroups of 5 shaft diameters. Limits are set from the first 10 subgroups (A₂ = 0.577 for n = 5). Find the <b>first subgroup</b> that signals the process is out of control: a point outside the limits, or 7 in a row on one side of the centre line.</p>${plotXY({x0:1,x1:25,y0:Math.min(lcl,...xb)-.3,y1:Math.max(ucl,...xb)+.3,h:230,fx:t=>fmt(t),fy:t=>t.toFixed(1),series:[{pts:xb.map((x,i)=>[i+1,x]),c:'var(--navy2)'},{pts:[[1,ucl],[25,ucl]],c:'var(--bad)',dash:1,l:'UCL'},{pts:[[1,X],[25,X]],c:'var(--mut)',dash:1,l:'CL'},{pts:[[1,lcl],[25,lcl]],c:'var(--bad)',dash:1,l:'LCL'}],dots:xb.map((x,i)=>[i+1,x,'var(--gold2)',3.5])})}<p class="note">X̄ chart · UCL ${ucl.toFixed(2)} · CL ${X.toFixed(2)} · LCL ${lcl.toFixed(2)} · R̄ ${Rb.toFixed(2)}</p><div class="row"><input class="tin" id="sg" type="number" style="max-width:120px" placeholder="subgroup #"><button class="sbtn" id="sc">Check</button><button class="sbtn alt" id="nw">New data</button></div><div id="sm"></div>`;
+  $('#nw',el).onclick=()=>{seed++;run()};$('#sc',el).onclick=()=>{const g=+$('#sg',el).value;const ok=first>0&&g===first;$('#sm',el).innerHTML=`<div class="readout ${ok?'ok':'bad'}">${first<0?'No signal in this sample — press New data.':ok?`<b>Correct: subgroup ${first}.</b> The shift actually began at subgroup ${k+1}. Control charts separate special causes (find and fix) from common-cause noise (do not tamper).`:`<b>Not quite: the first signal is subgroup ${first}.</b> Check both rules: beyond a limit, and 7 consecutive points on one side.`}</div>`;if(ok)done()}};run()};
+
+/* e09 — FMEA */
+LABS.fmea=(el,m,done)=>{const C=CUST('fmea');if(!C.r)C.r=[['Seal leaks under pressure','Wrong seal material',8,5,6],['Shaft misalignment','Assembly fixture worn',7,4,5],['Impeller cracks','Casting porosity',9,3,7],['Bearing overheats','Insufficient grease',6,6,4],['Wrong part label','Manual labelling',4,5,3]];
+ const draw=()=>{const rows=C.r.map((r,i)=>({r,i,rpn:r[2]*r[3]*r[4]})).sort((a,b)=>b.rpn-a.rpn);const mx=rows[0].rpn;
+  el.innerHTML=`<p class="note">Pump-assembly FMEA. Rate Severity, Occurrence and Detection from 1 to 10 (10 = worst; for Detection, 10 = almost impossible to detect). RPN = S × O × D. Propose actions by lowering O (prevention) or D (detection) — severity rarely changes without a redesign.</p><div class="tablewrap"><table class="t" style="min-width:560px"><tr><th>Failure mode</th><th>Cause</th><th>S</th><th>O</th><th>D</th><th>RPN</th></tr>${rows.map(({r,i,rpn})=>`<tr><td>${r[0]}</td><td>${r[1]}</td>${[2,3,4].map(j=>`<td><input class="tin" type="number" min="1" max="10" data-i="${i}" data-j="${j}" value="${r[j]}" style="padding:4px;max-width:58px"></td>`).join('')}<td><b style="color:${rpn>=150?'var(--bad)':rpn>=100?'var(--gold)':'var(--ok)'}">${rpn}</b></td></tr>`).join('')}</table></div><div class="readout ${mx<100?'ok':''}">Highest RPN: <b>${mx}</b>. ${mx<100?'All modes below 100.':'Bring every mode below 100 — and note the severity-9 item: many companies act on high severity regardless of RPN.'}</div>`;
+  $$('input[data-i]',el).forEach(x=>x.onchange=()=>{C.r[+x.dataset.i][+x.dataset.j]=Math.max(1,Math.min(10,+x.value||1));save();draw();const mx2=Math.max(...C.r.map(r=>r[2]*r[3]*r[4]));if(mx2<100)done()})};draw()};
+
+/* e10 — forecasting */
+const FD=[880,940,860,960,900,1000,930,1040,960,1060,990,1090];
+LABS.forecast=(el,m,done)=>calcLab(el,m,done,{inputs:[['n','Moving average periods',3],['al','Exponential smoothing α (0–1)',.3,.05]],
+ compute:v=>{const n=Math.max(1,Math.min(6,Math.round(v.n))),a=Math.max(0,Math.min(1,v.al));const ma=FD.map((_,t)=>t>=n?FD.slice(t-n,t).reduce((x,y)=>x+y,0)/n:null);const es=[];es[0]=FD[0];for(let t=1;t<FD.length;t++)es[t]=a*FD[t-1]+(1-a)*es[t-1];
+  const err=f=>{let ad=0,ap=0,c=0;FD.forEach((d,t)=>{if(t>=n&&f[t]!=null){ad+=Math.abs(d-f[t]);ap+=Math.abs(d-f[t])/d;c++}});return{mad:ad/c,mape:ap/c*100}};const e1=err(ma),e2=err(es);
+  let best=0,bm=1e9;for(let x=0;x<=100;x++){const s=[FD[0]];for(let t=1;t<FD.length;t++)s[t]=x/100*FD[t-1]+(1-x/100)*s[t-1];const e=err(s).mape;if(e<bm){bm=e;best=x/100}}
+  return{out:{best},html:`${plotXY({x0:1,x1:12,y0:700,y1:1300,h:210,fx:t=>['J','F','M','A','M','J','J','A','S','O','N','D'][Math.round(t)-1]||'',series:[{pts:FD.map((d,t)=>[t+1,d]),c:'var(--navy2)',l:'demand'},{pts:ma.map((f,t)=>f==null?null:[t+1,f]).filter(Boolean),c:'var(--mut)',dash:1,l:'MA'},{pts:es.map((f,t)=>[t+1,f]),c:'var(--gold2)',l:'ES'}]})}<div class="tablewrap"><table class="t"><tr><th>Method</th><th>MAD</th><th>MAPE</th></tr><tr><td>${n}-period moving average</td><td>${fmt(e1.mad,1)}</td><td>${fmt(e1.mape,1)}%</td></tr><tr><td>Exponential smoothing, α = ${a}</td><td>${fmt(e2.mad,1)}</td><td>${fmt(e2.mape,1)}%</td></tr></table></div><p class="note">Demand has an upward trend plus noise. Simple smoothing always lags a trend (look at the second half); Holt's method adds a trend term, and Winters adds seasonality such as Ramadan peaks.</p>`}},
+ challenge:{text:'Tune α to <b>minimise MAPE</b> for exponential smoothing (within ±0.05 of the best).',test:(v,o)=>Math.abs(v.al-o.best)<=.05,why:'A high α reacts fast but chases noise; a low α is stable but slow. The "best" α on history is a starting point — check it on new data before trusting it.'}});
+
+/* e11 — EOQ, safety stock, reorder point */
+LABS.eoq=(el,m,done)=>calcLab(el,m,done,{inputs:[['D','Annual demand (units)',24000],['S','Cost per order (SAR)',600],['H','Holding cost per unit per year (SAR)',12],['L','Lead time (days)',10],['sd','Std dev of daily demand (units)',18],['sl','Service level (%)',95,.5],['q','Your order quantity',2000]],
+ compute:v=>{const eoq=Math.sqrt(2*v.D*v.S/v.H),d=v.D/360;const zt=[[90,1.28],[95,1.645],[97.5,1.96],[99,2.33],[99.5,2.58],[99.9,3.09]];let z=1.645;zt.forEach(([p,zz])=>{if(v.sl>=p)z=zz});const ss=z*v.sd*Math.sqrt(v.L),rop=d*v.L+ss;const tc=q=>v.D/q*v.S+q/2*v.H;const q0=Math.max(100,eoq*.2),q1=eoq*2.5;const pts=Array.from({length:40},(_,i)=>{const q=q0+(q1-q0)*i/39;return[q,tc(q)]});
+  return{out:{rop,eoq},html:`<div class="grid g4 g2m"><div class="stat"><small>EOQ</small><b>${fmt(eoq)}</b></div><div class="stat"><small>Safety stock (z = ${z})</small><b>${fmt(ss)}</b></div><div class="stat"><small>Reorder point</small><b>${fmt(rop)}</b></div><div class="stat"><small>Annual cost at your Q</small><b>SAR ${fmt(tc(v.q))}</b><small>vs ${fmt(tc(eoq))} at EOQ</small></div></div>${plotXY({x0:q0,x1:q1,y0:0,y1:Math.max(...pts.map(p=>p[1])),h:200,fx:t=>fmt(t),series:[{pts,l:'ordering + holding'}],vlines:[[eoq,'var(--ok)','EOQ'],[Math.min(q1,Math.max(q0,v.q)),'var(--navy2)','you']],xl:'order quantity'})}<div class="formula">EOQ = √(2DS ÷ H) · Safety stock = z × σ_d × √L · ROP = d × L + SS (360-day year)</div>`}},
+ challenge:{text:'What is the <b>reorder point</b> at the current inputs (units)?',ask:{ans:(v,o)=>o.rop,tol:3,dp:0,unit:'units',why:()=>'Notice how flat the total-cost curve is near EOQ: being 20% off barely matters. Safety stock, by contrast, grows fast as service level approaches 100%.'}}});
+
+/* e12 — bullwhip (simplified beer game) */
+function beer(beta,share,ss){const W=30,L=2,T=4;const dem=t=>t<5?4:8;const tiers=Array.from({length:T},()=>({inv:12,back:0,pipe:Array(L).fill(4),fc:4}));const orders=Array.from({length:T},()=>[]);
+ for(let t=0;t<W;t++){let incoming=dem(t);for(let k=0;k<T;k++){const s=tiers[k];s.inv+=s.pipe.shift();const need=incoming+s.back,ship=Math.min(s.inv,need);s.inv-=ship;s.back=need-ship;const sig=share?dem(t):incoming;s.fc=.4*sig+.6*s.fc;const ip=s.inv-s.back+s.pipe.reduce((a,b)=>a+b,0);const tgt=s.fc*(L+1)+ss;const o=Math.max(0,s.fc+beta*(tgt-ip));orders[k].push(o);s.pipe.push(o);incoming=o}}
+ const vr=a=>{const m=a.reduce((x,y)=>x+y,0)/a.length;return Math.sqrt(a.reduce((x,y)=>x+(y-m)**2,0)/a.length)};const cust=Array.from({length:W},(_,t)=>dem(t));return{orders,cust,amp:vr(orders[3])/vr(cust)}}
+LABS.bullwhip=(el,m,done)=>calcLab(el,m,done,{inputs:[['beta','Inventory correction speed β (0–1)',.8,.05],['share','Share end-customer demand upstream? (1 = yes, 0 = no)',0],['ss','Safety stock target (units)',4]],
+ compute:v=>{const r=beer(Math.max(0,Math.min(1,v.beta)),v.share>=1,v.ss);const names=['Retailer','Wholesaler','Distributor','Factory'],cols=['#7C8BA3','#5B7DB1','var(--navy2)','var(--bad)'];const mx=Math.max(...r.orders.flat(),8);
+  return{out:{amp:r.amp},html:`${plotXY({x0:0,x1:29,y0:0,y1:mx*1.05,h:230,fx:t=>'w'+fmt(t),series:[{pts:r.cust.map((d,t)=>[t,d]),c:'var(--gold2)',l:'customers'},...r.orders.map((o,k)=>({pts:o.map((x,t)=>[t,x]),c:cols[k],l:k===3?'factory':''}))]})}<p class="note">Customer demand steps from 4 to 8 in week 5. Each tier forecasts from the orders it sees and corrects its inventory with speed β; lead time 2 weeks.</p><div class="grid g2"><div class="stat"><small>Factory order swings ÷ customer demand swings (std dev)</small><b>${fmt(r.amp,1)}×</b></div><div class="stat"><small>Peak factory order</small><b>${fmt(Math.max(...r.orders[3]),1)}</b><small>vs customer peak 8</small></div></div>`}},
+ challenge:{text:'Bring factory order amplification <b>below 2.2×</b>. You will need both levers: slower correction and sharing end-customer demand.',test:(v,o)=>o.amp<2.2,why:'Bullwhip comes from each tier reacting to its neighbour\'s orders, with delays and over-correction. Sharing end-customer data, smoothing orders and shortening lead times are the cures.'}});
+
+/* e13 — linear programming (2 variables) */
+LABS.lp=(el,m,done)=>calcLab(el,m,done,{inputs:[['p1','Profit per chair (SAR)',70],['p2','Profit per table (SAR)',120],['a1','Carpentry h per chair',2],['b1','Carpentry h per table',4],['r1','Carpentry hours available',400],['a2','Finishing h per chair',2],['b2','Finishing h per table',2],['r2','Finishing hours available',240],['mx','Max tables (market)',80]],
+ compute:v=>{const cons=[[v.a1,v.b1,v.r1],[v.a2,v.b2,v.r2],[0,1,v.mx],[-1,0,0],[0,-1,0]];const pts=[];for(let i=0;i<cons.length;i++)for(let j=i+1;j<cons.length;j++){const [a,b,c]=cons[i],[d,e,f]=cons[j];const det=a*e-b*d;if(Math.abs(det)<1e-9)continue;const x=(c*e-b*f)/det,y=(a*f-c*d)/det;if(cons.every(([p,q,r])=>p*x+q*y<=r+1e-6))pts.push([x,y])}
+  const uniq=pts.filter((p,i)=>pts.findIndex(q=>Math.abs(q[0]-p[0])<1e-6&&Math.abs(q[1]-p[1])<1e-6)===i);const cx=uniq.reduce((a,p)=>a+p[0],0)/uniq.length,cy=uniq.reduce((a,p)=>a+p[1],0)/uniq.length;uniq.sort((p,q)=>Math.atan2(p[1]-cy,p[0]-cx)-Math.atan2(q[1]-cy,q[0]-cx));
+  let best=null,bz=-1;uniq.forEach(p=>{const z=v.p1*p[0]+v.p2*p[1];if(z>bz){bz=z;best=p}});const X1=Math.max(...uniq.map(p=>p[0]),1)*1.2,Y1=Math.max(...uniq.map(p=>p[1]),1)*1.3;
+  const W=560,H=260,L=46,B=30;const sx=x=>L+x/X1*(W-L-12),sy=y=>H-B-y/Y1*(H-B-12);
+  const svg=`<div class="chart"><svg viewBox="0 0 ${W} ${H}"><polygon points="${uniq.map(p=>sx(p[0])+','+sy(p[1])).join(' ')}" fill="var(--goldsoft)" stroke="var(--gold2)" stroke-width="2"/>${uniq.map(p=>`<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="4" fill="${p===best?'var(--ok)':'var(--navy2)'}"/><text x="${sx(p[0])+6}" y="${sy(p[1])-6}" style="fill:var(--ink)">(${fmt(p[0])}, ${fmt(p[1])})</text>`).join('')}<text x="${W-12}" y="${H-8}" text-anchor="end">chairs →</text><text x="${L}" y="12">tables ↑</text></svg></div>`;
+  return{out:{bz},html:svg+`<div class="readout">Corner points of the feasible region are marked. The optimum of a linear programme is always at a corner (or along an edge).</div><details><summary class="note">Show the optimum</summary><p>Best corner: <b>${fmt(best[0])} chairs, ${fmt(best[1])} tables</b>, profit <b>SAR ${fmt(bz)}</b>.</p></details>`}},
+ challenge:{text:'Evaluate the corner points yourself: what is the <b>maximum profit</b> (SAR)?',ask:{ans:(v,o)=>o.bz,tol:1,dp:0,unit:'SAR',why:()=>'Shadow prices tell you what one more hour of a binding constraint is worth — the starting point for "should we add a finishing shift?" questions.'}}});
+
+/* e14 — M/M/c queue + Johnson's rule */
+function mmc(l,mu,c){const a=l/mu,rho=a/c;if(rho>=1)return{rho,wq:Infinity};let s=0,f=1;for(let k=0;k<c;k++){if(k>0)f*=k;s+=Math.pow(a,k)/f}const fc=f*(c>0?c:1);const top=Math.pow(a,c)/fc/(1-rho);const p0=1/(s+top);const lq=p0*Math.pow(a,c)*rho/(fc*(1-rho)**2);return{rho,p0,lq,wq:lq/l,pw:top*p0}}
+LABS.queue=(el,m,done)=>calcLab(el,m,done,{inputs:[['l','Arrivals per hour (λ)',50],['mu','Service rate per server per hour (μ)',12],['c','Number of servers (c)',5],['tg','Target average wait (minutes)',2,.5]],
+ compute:v=>{const c=Math.max(1,Math.round(v.c)),q=mmc(v.l,v.mu,c);const cs=Array.from({length:8},(_,i)=>Math.max(1,Math.ceil(v.l/v.mu))+i).map(k=>[k,Math.min(30,mmc(v.l,v.mu,k).wq*60)]);
+  return{out:{wq:q.wq*60},html:q.rho>=1?'<div class="readout bad">Utilisation ≥ 100%: the queue grows without limit. Add servers.</div>':`<div class="grid g4 g2m"><div class="stat"><small>Utilisation ρ</small><b>${pct(q.rho)}</b></div><div class="stat"><small>Probability a customer waits</small><b>${pct(q.pw)}</b></div><div class="stat"><small>Avg queue length Lq</small><b>${fmt(q.lq,2)}</b></div><div class="stat"><small>Avg wait Wq</small><b>${fmt(q.wq*60,2)} min</b></div></div>${plotXY({x0:cs[0][0],x1:cs[cs.length-1][0],y0:0,y1:Math.max(...cs.map(x=>x[1]))*1.1||1,h:190,fx:t=>fmt(t),fy:t=>fmt(t,1),series:[{pts:cs,l:'wait (min)'}],vlines:[[c,'var(--navy2)','you']],xl:'servers'})}<div class="formula">M/M/c (Erlang C): Poisson arrivals, exponential service, c servers.</div>`}},
+ challenge:{text:'A hospital pharmacy gets 50 prescriptions an hour; each pharmacist fills 12 an hour. Find the <b>fewest pharmacists</b> that keep the average wait at or below 2 minutes.',test:(v,o)=>v.l===50&&v.mu===12&&v.tg===2&&o.wq<=2&&mmc(50,12,Math.round(v.c)-1).wq*60>2,why:'Five servers run at 83% utilisation and the wait is long; one more server cuts it sharply. Near full utilisation, a little capacity buys a lot of waiting time.'}});
+
+/* e15 — automation business case + Industry 4.0 maturity */
+LABS.i40=(el,m,done)=>calcLab(el,m,done,{inputs:[['capex','Capex: robots, sensors, integration (SAR m)',12],['lab','Labour cost saved per year (SAR m)',2.4],['qual','Scrap and rework saved per year (SAR m)',0.9],['dt','Downtime cost avoided per year (SAR m)',0.8],['mnt','Extra maintenance and software per year (SAR m)',0.7],['yrs','Useful life (years)',8],['r','Discount rate (%)',10]],
+ compute:v=>{const cf=v.lab+v.qual+v.dt-v.mnt;const c=[-v.capex,...Array(Math.max(1,Math.round(v.yrs))).fill(cf)];const n=npvf(v.r/100,c),i=irrf(c),pb=cf>0?v.capex/cf:Infinity;
+  return{out:{pb},html:`<div class="grid g4 g2m"><div class="stat"><small>Net annual benefit</small><b>${sar(cf,2)}</b></div><div class="stat"><small>NPV</small><b style="color:${n>=0?'var(--ok)':'var(--bad)'}">${sar(n,1)}</b></div><div class="stat"><small>IRR</small><b>${isFinite(i)?pct(i):'—'}</b></div><div class="stat"><small>Payback</small><b>${isFinite(pb)?fmt(pb,1)+' yrs':'never'}</b></div></div><p class="note">Automation cases that rely only on labour savings are often weak. Quality, uptime, safety, and the ability to run more shifts usually decide them.</p>`}},
+ challenge:{text:'What is the <b>simple payback</b> in years at the current inputs?',ask:{ans:(v,o)=>o.pb,tol:.1,dp:1,unit:'years',why:()=>'Then test the case without the quality and downtime benefits: if it collapses, those are the benefits to verify in a pilot before scaling.'}}});
+
+/* e16 — CPM + earned value */
+const CPMT={A:['Site survey',3,''],B:['Design',5,'A'],C:['Procure equipment',8,'B'],D:['Civil works',6,'B'],E:['Install equipment',4,'CD'],F:['Train operators',3,'B'],G:['Commission',2,'EF'],H:['Handover',1,'G']};
+function cpm(){const ks=Object.keys(CPMT),es={},ef={},ls={},lf={};ks.forEach(k=>{es[k]=Math.max(0,...[...CPMT[k][2]].map(p=>ef[p]));ef[k]=es[k]+CPMT[k][1]});const end=Math.max(...ks.map(k=>ef[k]));ks.slice().reverse().forEach(k=>{const sc=ks.filter(s=>CPMT[s][2].includes(k));lf[k]=sc.length?Math.min(...sc.map(s=>ls[s])):end;ls[k]=lf[k]-CPMT[k][1]});return{es,ef,ls,lf,end}}
+LABS.cpm=(el,m,done)=>{const r=cpm(),ks=Object.keys(CPMT);
+ el.innerHTML=`<h4>Critical path (weeks)</h4><div class="tablewrap"><table class="t" style="min-width:520px"><tr><th>Task</th><th>Duration</th><th>After</th><th>ES</th><th>EF</th><th>LS</th><th>LF</th><th>Slack</th></tr>${ks.map(k=>{const sl=r.ls[k]-r.es[k];return`<tr style="${sl===0?'font-weight:700':''}"><td>${k} · ${CPMT[k][0]}</td><td>${CPMT[k][1]}</td><td>${CPMT[k][2].split('').join(', ')||'—'}</td><td>${r.es[k]}</td><td>${r.ef[k]}</td><td>${r.ls[k]}</td><td>${r.lf[k]}</td><td style="color:${sl===0?'var(--bad)':'var(--ok)'}">${sl}</td></tr>`}).join('')}</table></div><p class="note">Bold rows have zero slack: the critical path. ES/EF: earliest start/finish (forward pass). LS/LF: latest (backward pass).</p>
+ <div class="row"><span>Project duration (weeks)?</span><input class="tin" id="pd" type="number" style="max-width:100px"><span>Critical path (e.g. ABCEGH)?</span><input class="tin" id="cp" style="max-width:140px;text-transform:uppercase"><button class="sbtn" id="pc">Check</button></div><div id="pm"></div>
+ <h4 style="margin-top:16px">Earned value at week 12</h4><div class="grid g4 g2m">${numIn('bac','Budget at completion (SAR k)',2000)}${numIn('pv','Planned value to date (SAR k)',1200)}${numIn('ev','Earned value (SAR k)',1000)}${numIn('ac','Actual cost (SAR k)',1150)}</div><div id="eo"></div>`;
+ const ev=()=>{const bac=V('bac',el),pv=V('pv',el),e=V('ev',el),ac=V('ac',el);const spi=e/pv,cpi=e/ac;$('#eo',el).innerHTML=kv([['Schedule variance (EV − PV)',fmt(e-pv)],['Cost variance (EV − AC)',fmt(e-ac)],['SPI',fmt(spi,2)+(spi<1?' — behind schedule':' — on/ahead')],['CPI',fmt(cpi,2)+(cpi<1?' — over budget':' — on/under budget')],['Estimate at completion (BAC ÷ CPI)',fmt(bac/cpi),1]])};$$('#bac,#pv,#ev,#ac',el).forEach(x=>x.oninput=ev);ev();
+ const crit=ks.filter(k=>r.ls[k]===r.es[k]).join('');$('#pc',el).onclick=()=>{const ok=+$('#pd',el).value===r.end&&$('#cp',el).value.toUpperCase().replace(/[^A-Z]/g,'')===crit;$('#pm',el).innerHTML=`<div class="readout ${ok?'ok':'bad'}">${ok?'<b>Correct.</b> Any delay on these tasks delays handover; tasks with slack (like training) can float.':`<b>Duration ${r.end} weeks, critical path ${crit.split('').join('→')}.</b> Do the forward pass: each task starts when its latest predecessor finishes.`}</div>`;if(ok)done()}};
 
 /* ================= MBA Core labs (working models; all figures illustrative) ================= */
 /* calcLab: inputs → live model → a challenge that makes you use the model */
