@@ -1,6 +1,6 @@
 # Launchpad — session handoff
 
-Last updated: 2026-10-05 · Status: **four career tracks live (62 missions, 16 cases) + full CFA program: Level I (20), Level II (16), Level III (22 = 10 core + 12 pathway) with exam simulator. 120 missions total. Build v10.**
+Last updated: 2026-10-05 · Status: **four career tracks live (62 missions, 16 cases) + full CFA program: Level I (20), Level II (16), Level III (22 = 10 core + 12 pathway) with exam simulator. 120 missions total. CFA section relabelled "Investment Foundations (CFA-aligned)" + CFA study tracker on the 2027 outline. Build v11.**
 
 ## What it is
 Family learning PWA (single-file HTML) at https://malmajed.github.io/majed-launchpad/
@@ -25,6 +25,8 @@ Family standings, read-only Follow page (follow.html) with profile selector.
 - Link helper gotcha: `INV()` already prefixes `terms/`; Investopedia blocks curl (402) so prefer verifiable links.
 - CFA content is ORIGINAL, aligned to CFA Institute's published topic outline/weights (2026). Never copy curriculum text. Code & Standards per 2023 revision (effective 1 Jan 2024: I(E) Competence; VI(A) Avoid or Disclose Conflicts).
 - Tests: `/home/claude/test7.js` (Level I missions/labs/quizzes), `test8.js` (exam simulator), server on 8766.
+
+- CFA STUDY TRACKER (build v11, after charterholder feedback that the CFA missions were too shallow for exam prep): `cfa_outline.js` = CFAO, 2027 topic names/weights and learning-module titles parsed from CFA Institute's 2027 topic outline PDFs (L1 102 modules, L2 51, L3 28 core + PM 8 / PMK 7 / PW 7); titles + LO counts only (outlines are marked not for distribution). `study.js` = `#/study/<lv>`: per-module read/practice(q,c)/confidence/last-review in `state.cfa.m['lv:topic:i']`, hours `state.cfa.hrs[[ts,h,lv,mod]]`, mocks `state.cfa.mk[[ts,lv,score,src]]`, exam dates `state.cfa.date`. Mastery = .35 read + .45 acc×min(1,q/20) + .2 conf/5, ×.85 if >45 days stale; readiness = weighted by topic midpoints, blended 60/40 with avg of last 2 mocks. Follow page shows `studySummaryHTML`. Practice simulator uses 2027 weights. Tests: /home/claude/t13.js.
 
 ## Files
 - `build/src/core.js` — launchpad-kit core (sync, photos, DUEL). Patched only for: per-profile USER/LSKEY, `user` in push/pull/photo, duel `current.id` crash fix. Chess engine removed.
